@@ -2,7 +2,7 @@
 
 ## Location and installation
 
-PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) was merged into private `main` at `3f45cf66eab5f6fd172763e604d794e12cef5cf1`. This continuation branch is `suqing/live-e2e`.
+PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) was merged into private `main` at `3f45cf66eab5f6fd172763e604d794e12cef5cf1`. The `suqing/live-e2e` delivery was subsequently merged through [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) at `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. The merge does not complete pending human acceptance.
 
 Plugin: **MCP Extensions Go**, ID `mcp-extensions-go@mcp-extensions-go-local`, local marketplace **MCP Extensions Go Local**, version `0.0.0-dev` (installation metadata only; no release/tag). The package contains actual MCP configuration, a generated executable, App HTML and an icon; no empty skills/hooks/apps are included.
 
@@ -64,4 +64,4 @@ Full OpenAI extended forms/MRTR remain incomplete for the documented SDK boundar
 
 Security self-review: HTTP auth was preserved; local stdio uses parent process access; host URIs never become filesystem reads; persistent paths are operator-owned with bounded reads, OS locks and private atomic state files; browser output uses text DOM APIs. These findings do not establish multi-user authorization or complete host acceptance.
 
-Commit/push closeout reuses this development evidence without repeating tests or checks. The branch remains available for human acceptance; this does not merge or publish a new release.
+Commit/push/merge closeout reuses this development evidence without repeating tests or checks. Human acceptance continues against the merged code. No new release or tag is published. Future implementable gaps are recorded in the [bilingual GitHub Wiki source](wiki/README.md).

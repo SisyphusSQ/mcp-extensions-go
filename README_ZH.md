@@ -102,3 +102,4 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 - [前端与宿主验收清单](docs/frontend-validation.md)
 - [交接记录](docs/handoff.md)
 - [本地插件与人工验收](docs/live-e2e.md)
+- [中英文 GitHub Wiki 源文档](docs/wiki/README.md)与[可直接开发的缺口清单](docs/wiki/Implementation-Roadmap-ZH.md)

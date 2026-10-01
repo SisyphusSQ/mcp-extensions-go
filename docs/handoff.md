@@ -1,8 +1,10 @@
 # Server extensions handoff
 
-## Current continuation: local plugin acceptance
+## Current continuation: merged plugin and bilingual Wiki
 
-PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) merged into private main at `3f45cf66eab5f6fd172763e604d794e12cef5cf1`. The active continuation branch is `suqing/live-e2e`. The initial delivery record below predates that merge; current host and persistence status is defined by [live-e2e.md](live-e2e.md).
+PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) merged into private main at `3f45cf66eab5f6fd172763e604d794e12cef5cf1`. PR [#2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) merged `suqing/live-e2e` at `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. The original local-plugin stop below was superseded by the user's explicit PR/merge and bilingual GitHub Wiki request. Host acceptance status remains defined by [live-e2e.md](live-e2e.md).
+
+Wiki source is under `docs/wiki`, with English/Chinese home, implementation roadmap, validation/limits pages and shared navigation. D1–D6 are directly implementable gaps; S1 is conditional modern extended MRTR; S2 is blocked legacy custom sending. The Wiki feature is enabled, but publication at source preparation time required an initial web page and authenticated browser access. See [publication procedure](wiki/README.md); source merge alone must not be reported as Wiki publication. No feature implementation is authorized by merely listing its backlog.
 
 The official stdio example and private local plugin are implemented and installed/enabled on sqmc04. Shared example business handlers retain HTTP authentication. Single-owner file settings use bounded reads, OS locks and atomic replacement; real simultaneous stdio processes preserve unrelated patches and a restarted process reads persisted values. The App initializes saved controls, sends changed fields only, and displays actual host mode with appropriate fullscreen feedback.
 
@@ -14,7 +16,7 @@ Native desktop UI control and its default CLI control socket were unavailable. T
 
 Security self-review preserved authentication and resource boundaries, operator-controlled bounded file access, private local settings and explicit concurrency ownership; no unresolved issue was found in this local single-owner scope. Multi-user and Windows/Linux runtime acceptance remain outside the evidence.
 
-Stop for human acceptance after commit/push; keep this branch separate from main. Do not repeat tests/checks during closeout. No tag, release, public publication, automation or memory/TODO update is created.
+Human acceptance remains pending after merge. No tests/checks are repeated during PR/merge or documentation closeout; this documentation-only continuation reuses the recorded development evidence. No tag, release, public publication, automation or memory/TODO update is created. Security review of the Wiki additions found no credentials or expanded resource permissions; all new capability entries remain explicitly unimplemented.
 
 ## Initial server extension delivery (historical)
 
