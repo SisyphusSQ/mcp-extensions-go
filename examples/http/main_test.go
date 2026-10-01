@@ -50,11 +50,13 @@ func TestAuthenticatedMCPOverHTTP(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(tools.Tools) != 1 || tools.Tools[0].Name != "open_workspace" {
+	if len(tools.Tools) != 5 {
 		t.Fatalf("unexpected tools: %#v", tools.Tools)
 	}
-	if tools.Tools[0].Meta["ui"].(map[string]any)["resourceUri"] != appURI {
-		t.Fatal("tool did not expose app binding")
+	for _, tool := range tools.Tools {
+		if tool.Name == "open_workspace" && tool.Meta["ui"].(map[string]any)["resourceUri"] != appURI {
+			t.Fatal("tool did not expose app binding")
+		}
 	}
 	result, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: "open_workspace", Arguments: map[string]any{}})
 	if err != nil {
@@ -69,6 +71,22 @@ func TestAuthenticatedMCPOverHTTP(t *testing.T) {
 	}
 	if len(resource.Contents) != 1 || resource.Contents[0].Text != appHTML || resource.Contents[0].MIMEType != ui.MIMEType {
 		t.Fatalf("unexpected resource: %#v", resource)
+	}
+	updated, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: "settings.update", Arguments: map[string]any{"set": map[string]any{"showGrid": true}}})
+	if err != nil || updated.IsError {
+		t.Fatalf("settings update: %#v %v", updated, err)
+	}
+	read, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: "settings.read", Arguments: map[string]any{}})
+	if err != nil || read.IsError || read.StructuredContent.(map[string]any)["values"].(map[string]any)["showGrid"] != true {
+		t.Fatalf("settings did not persist across stateless requests: %#v %v", read, err)
+	}
+	mentions, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: "search_mentions", Arguments: map[string]any{"query": "bolt"}})
+	if err != nil || mentions.IsError || len(mentions.StructuredContent.(map[string]any)["items"].([]any)) != 1 {
+		t.Fatalf("mentions: %#v %v", mentions, err)
+	}
+	part, err := session.ReadResource(t.Context(), &mcp.ReadResourceParams{URI: "parts://bolt"})
+	if err != nil || part.Contents[0].Text != "Demo part: bolt" {
+		t.Fatalf("mention resource: %#v %v", part, err)
 	}
 }
 

@@ -1,56 +1,66 @@
 # Architecture
 
-## Goal and current scope
+## Goal and responsibility layers
 
-Provide Go types, metadata encoding, and registration helpers for OpenAI MCP Extensions. Business services continue to use the official MCP Go SDK; this repository does not maintain a second JSON-RPC or transport implementation.
-
-This delivery provides a compilable, runnable SDK foundation with protocol integration tests: UI metadata, HTML resources, an authenticated HTTP example, and handoff documentation. Other extensions await concrete requirements. No empty packages or unusable future interfaces are included.
-
-## Layers
+Provide validated Go server helpers for OpenAI MCP Extensions while the official MCP Go SDK v1.8.0 owns the protocol, schemas, transports and sessions. The public Go version floor remains 1.25.0. No SDK internals, unsafe/reflection tricks, SDK fork or second JSON-RPC stack are used.
 
 ```text
 Business service / examples/http
-  +-- ui: extension types, metadata validation, HTML resource registration
-  +-- github.com/modelcontextprotocol/go-sdk/mcp v1.8.0
-       +-- tool registration, input validation, output schemas
-       +-- resources, sessions, capabilities
-       +-- JSON-RPC, Streamable HTTP, standard elicitation
+  +-- settings: native settings tools + capability + declaration validation
+  +-- mentions: app-visible search tool + two result variants
+  +-- resources: file input/context parsing + optional authorized root reader
+  +-- ui: App metadata + trusted HTML registration
+  +-- official mcp.Server
+       +-- schemas, tools, resources, discovery, sessions and transports
+       +-- standard elicitation and standard MRTR
 
-Frontend (future): standard MCP Apps App + OpenAI TypeScript app extensions
-  +-- browser DOM, postMessage, host context, deep links
+examples/frontend
+  +-- standard MCP Apps App
+  +-- OpenAI TypeScript OpenAIExtensions
+       +-- host context, file resources, model context, messages and deep links
+
+Tests
+  +-- official in-memory / authenticated HTTP integration
+  +-- private SDK-boundary probes and business continuation fixture
+  +-- official AppBridge + real browser + Go HTTP server
 ```
 
-OpenAI's Python extension SDK similarly builds on the MCP Python SDK, adding Pydantic models, FastMCP helpers, and extension behavior. Go follows the same layering direction, but Python dynamic objects and TypeScript browser APIs cannot be translated mechanically. See the pinned [upstream Python source](https://github.com/openai/mcp-extensions/tree/900032d8bd7c1566202d0cb1666986584f932043/python).
+The implementation order was settings, mentions, file context, SDK forms/MRTR investigation, then a real frontend and validation. The [capability inventory](compatibility.md) separates server, frontend and host responsibilities for every upstream feature.
 
-## Current design
+## Settings
 
-`ui` does not wrap the entire `mcp.Server` or redesign ToolHandler. Callers obtain `mcp.Meta` through Metadata methods and pass it to `mcp.AddTool`, preserving official type inference and lifecycle handling.
+`settings.NewServer` is a construction helper returning the official `*mcp.Server`. It validates and snapshots static field/layout definitions before constructing both read/update tools and their modern/legacy capability locations. It preserves other server options and capabilities and never calls persistence during registration. Consumers register other MCP tools as usual. Settings tool names are reserved by the caller; public SDK replacement semantics still apply.
 
-Metadata is validated and snapshotted through JSON encoding. Functions, channels, and other non-JSON values are rejected. Entrypoint structs represent a union discriminated by Type; fields belonging to another variant are rejected before encoding. File extensions must already be canonical: `.csv` is accepted, surrounding whitespace is rejected rather than trimmed.
+The existing SDK dependency `jsonschema-go` is used directly, at the unchanged version v0.4.3. Primitive types and string/numeric constraints define both complete value schemas and a nonempty partial patch schema. Official typed `mcp.AddTool` handles input/output schema processing. Complete callback state is checked before a result succeeds; every field is required as an effective value, and unknown fields are rejected. Values are independently snapshotted. Numeric callbacks use Go numeric primitives because the validator regards `json.Number` as a string.
 
-`AddHTMLResource` accepts developer-trusted HTML strings, not paths, URLs, or template input. MIME type, HTML byte size, and URI are fixed at registration. Original resource Meta is preserved on the descriptor, then merged with OpenAI display declarations on resource contents. Re-registering a URI follows official SDK replacement semantics. Icons, Annotations, and other descriptor fields follow SDK ownership conventions and must not be mutated concurrently after registration.
+Read must be read-only. Update must independently authorize, preserve omitted fields, check cross-field constraints and persist atomically. The SDK helper supplies no database, implicit retries, locks or tenant model. The example demonstrates a mutex-protected store owned by one bearer credential. It resets on restart and is not durable multi-user storage.
 
-The HTTP example uses stateless JSON responses for its current tools and resources. It does not support server-initiated requests that require a client response. Authentication belongs to the example's access layer; the library does not infer user identity. Visibility, entrypoints, and annotations are declarations only.
+## Mentions
 
-## Extension points in v1.8.0
+The helper registers an ordinary tool with `openai/extensions.mentions/search` and app visibility. Existing ui/extension fields are preserved in an independent snapshot. Search remains caller-owned and accepts an empty query. Results use standard official `mcp.ResourceLink` encoding or the SDK-source `resource` variant. Invalid result variants become tool errors; empty results encode as `items: []`. There is no upstream standalone mention server capability to fabricate.
 
-| Official SDK API | Applicable extension work | Boundary |
-| --- | --- | --- |
-| `mcp.Meta` | UI, mentions, resource paths, other namespaces | Requires extension validation; metadata is not feature implementation |
-| `ServerCapabilities.Extensions` | OpenAI capability negotiation | Configure before constructing Server; declare only implemented capabilities |
-| `AddReceivingMiddleware` / `AddSendingMiddleware` | Request context, interception, result adaptation | Method parsing precedes receiving middleware; unknown methods do not become supported automatically |
-| `AddReceivingCustomMethod` | Client-to-server extension methods | Cannot override built-in methods; not a generic bidirectional RPC channel |
-| Standard `ServerSession.Elicit` | Standard elicitation | Standard type and client capability checks apply; not full OpenAI forms |
+## File context
 
-MRTR and extended forms need a separate protocol investigation. v1.8.0 exposes no generic `ServerSession.CallCustomMethod`; its `InputRequest` interface and encoding paths support specific built-in request types. This framework does not access private connections or modify SDK internals. For nonstandard server-initiated requests, establish a supported extension API or propose an upstream API before choosing an implementation.
+`FileInput` carries a filename and an opaque host resource URI. The App reads the resource using the official TypeScript resource API; Go does not map that URI to a filesystem path. Path, representation, and writable/etag metadata parsers allow future unrelated keys but reject malformed known fields.
 
-For an MRTR flow based on extended multi-round tool results, first verify `tools/call` result adaptation, host follow-up input, and resumed tool calls. Constructing extension fields alone does not establish host acceptance, and standard Elicit is not a substitute. This delivery does not claim that MRTR can be fully implemented without SDK changes.
+`resources.Reader` is optional and performs no authentication or per-resource authorization. The caller configures an absolute allowed root and positive byte limit. `os.Root` enforces containment during open, allowing relative in-root symlinks and rejecting escapes. Nonblocking open on Unix and regular-file checks reject FIFO/device/directory reads. Stat limits plus a bounded read handle files that grow after stat. Cancellation is checked around I/O. A trusted root must exclude hostile mounts/hard links; paths are interpreted within the caller's configured root namespace, including macOS `/var` aliases. The HTTP example reads only an operator-selected trusted App build; it never reads a host-provided path.
 
-## Suggested continuation
+## UI and frontend
 
-1. Connect a real frontend using standard MCP Apps App and OpenAI TypeScript app extensions. Validate initialization, tool results, display modes, and entrypoints while keeping the server in Go.
-2. Add settings, mentions, and file-context helpers for real business requirements. Implement handlers, negotiation, and errors before updating the matrix. Validate file metadata paths against authorized roots before reading; never trust an arbitrary host path.
-3. Verify extended forms and MRTR against a host. Define cancellation, duplicate input, concurrency isolation, expiration, and resume semantics before designing the Go API.
-4. Before publishing, decide version policy, license, compatibility guarantees, and release workflow. This delivery creates no release or tag.
+`ui` retains the existing metadata snapshot/validation and trusted static resource APIs. Tools bind to `ui://` resources. Visibility, entrypoints and display choices are declarations, never permission or host acceptance.
 
-These are continuation options, not implemented features or separately created tasks.
+The browser example bundles the official App and OpenAI extensions into trusted HTML with a script hash CSP. Handlers are installed before connection, the initial tool result is rendered without repeating its launch tool, and unsupported host capabilities disable actions. User-triggered model context/message actions use the host; no Go host bridge was invented. File contents, errors and results enter the DOM as text. Go credentials remain server-side.
+
+The test-only bridge fixture uses official AppBridge/PostMessageTransport, an isolated headless Chrome profile, a same-origin bounded local proxy and an ephemeral Go bearer credential. Model/context/file host behavior is fixture data. It is local integration evidence, not OpenAI product acceptance.
+
+## Forms and MRTR decision
+
+The official SDK implements standard MRTR, now verified with actual multi-round calls. Business continuation ownership, expiration, replay and transactions remain application concerns.
+
+Legacy OpenAI custom server-to-client elicitation is blocked by the public outbound method registry. Typed MRTR InputRequestMap cannot encode/decode the OpenAI method. Receiving middleware plus ResultBase can emit an adapted extended result over official HTTP; this viable seam is recorded rather than described as impossible. It remains a private experiment without a real extension-capable host, complete extended-field/selection validation, or a production continuation contract. No public placeholder API or unsupported capability was added. See [reproductions, exact SDK source locations and requested public interfaces](protocol-investigation.md).
+
+## Security and lifecycle
+
+The HTTP example retains runtime-only credentials, constant-time digest comparison, loopback defaults, cross-origin/localhost protection, a 1 MiB request limit, timeouts and graceful shutdown. Library handlers receive the official request/context so verified identity and authorization can be supplied by the owning server. Callback error messages must not contain credentials. Root filesystem errors may contain paths and must be mapped appropriately by a business tool.
+
+No global tooling, persistent service, remote TLS deployment, public repository, tag or release is created. Go 1.25 matrix testing uses the cache-local `GOTOOLCHAIN` mechanism. Node installs are local to the frontend example with locked versions and lifecycle scripts disabled.

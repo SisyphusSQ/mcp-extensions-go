@@ -5,3 +5,5 @@
 coverage.out
 .DS_Store
 .idea/
+node_modules/
+examples/frontend/dist/

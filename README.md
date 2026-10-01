@@ -2,79 +2,86 @@
 
 [中文说明](README_ZH.md)
 
-A private Go SDK framework for the server-side features of [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions), built on the official [MCP Go SDK](https://github.com/modelcontextprotocol/go-sdk). This is a personal project, not an official OpenAI Go SDK. No version has been released.
+A private, personal Go library for the server-side features of [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions), built on the official [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk). This is not an official OpenAI Go SDK. No version or tag has been released.
 
-The official SDK owns JSON-RPC, tools, resources, schemas, sessions, and HTTP transports. This module adds extension metadata and registration helpers.
+The official SDK owns JSON-RPC, schemas, tools, resources, discovery, sessions, transports and standard MRTR. This module adds server extension types and helpers. Browser/host behavior uses the official TypeScript App SDKs.
 
-## Current features
+## Implemented
 
-- `ui.ToolMetadata.Metadata`: standard MCP Apps resource binding and visibility, plus OpenAI global/thread/file/settings entrypoints, quick actions, and model display preferences.
-- `ui.ResourceMetadata.Metadata`: OpenAI resource display hints, preserving caller-provided standard MCP Apps CSP and other metadata.
-- `ui.AddHTMLResource`: registers trusted static HTML as `text/html;profile=mcp-app`.
-- `examples/http`: an authenticated Streamable HTTP server exposing `open_workspace` and its HTML resource.
+- `settings.NewServer`: real read/update tools, native primitive schemas and constraints, layout, full effective values, nonempty partial patches, and modern/legacy `openai/settings` discovery. The returned server is the ordinary official `*mcp.Server`.
+- `mentions.AddTool`: searchable resource links and the upstream SDK's resource variant, `mentions/search` tool metadata, read-only hints and required app visibility.
+- `resources`: typed file-entrypoint input, opaque resource references, `openai/resource` path/representation/write-hint parsing, and an optional byte-limited `os.Root` reader for already-authorized local files.
+- `ui`: standard MCP Apps resource binding/visibility, OpenAI entrypoints, quick actions/display metadata, and trusted HTML resource registration.
+- `examples/http`: authenticated stateless Streamable HTTP with real in-memory settings, searchable/readable demo parts, workspace/file tools, loopback defaults, request limits and graceful shutdown.
+- `examples/frontend`: a bundled browser App using standard MCP Apps `App` plus OpenAI TypeScript extensions, with local browser integration tests through the official `AppBridge`.
 
-Full forms, MRTR, mentions, file context, settings capability negotiation, and a browser-side SDK are not implemented. See the [compatibility matrix](docs/compatibility.md) for exact boundaries.
+Settings storage, resource authorization, cross-field validation and transactions are caller-owned. Visibility and metadata never grant permission. The example's one-credential memory store resets on restart.
 
-## Run the example
+Full OpenAI extended forms are not implemented. v1.8.0 supports standard MRTR, but its typed input map and custom outbound request API have specific limits. A receiving-middleware result adapter can emit extension fields, but that alone does not establish extended MRTR support. See the [complete responsibility matrix](docs/compatibility.md) and [reproducible SDK investigation](docs/protocol-investigation.md). OpenAI host acceptance remains unverified.
 
-Requires Go 1.25.0 or newer. The official MCP Go SDK is pinned to v1.8.0. No Node.js or frontend dependency installation is needed.
+## Run the Go example
+
+Requires Go 1.25.0 or newer. No Node dependency is needed for the default static page.
 
 ```sh
-# Run from the repository root.
 export MCP_BEARER_TOKEN="$(openssl rand -hex 32)"
 go run ./examples/http
 ```
 
-The default endpoint is `http://127.0.0.1:8080/mcp`. Press Ctrl+C to stop. `MCP_BEARER_TOKEN` is required and must contain at least 32 bytes without whitespace. Never print or commit credentials.
+The endpoint defaults to `http://127.0.0.1:8080/mcp`. Configure a host with Streamable HTTP and `Authorization: Bearer <runtime credential>`. The token must contain at least 32 bytes without whitespace; never print or commit it. Ctrl+C stops the process. Opening `/mcp` in a browser does not render HTML; MCP `resources/read` supplies App resources.
 
-Set `MCP_LISTEN_ADDR` to bind a specific private address when needed. Remote clients should connect through a configured HTTPS entrypoint with authentication and network access controls. The example does not configure TLS certificates, a reverse proxy, or a persistent background service.
+For the real browser App, build `examples/frontend` and set `MCP_APP_HTML` to the absolute path of its trusted `dist/app.html`; follow [frontend setup and validation](docs/frontend-validation.md). Without that setting, the embedded page is static and performs no `ui/initialize` handshake.
 
-Configure the host to use Streamable HTTP and supply `Authorization: Bearer <runtime credential>` through its authentication settings. Never commit a configuration containing the actual credential. Opening `/mcp` in a browser does not render the page: HTML is served by MCP `resources/read`.
+`MCP_LISTEN_ADDR` selects an explicit address. Remote access requires caller-configured HTTPS termination, authentication and network controls. The example does not configure TLS or install a background service.
 
-The example HTML is static and contains no JavaScript. It does not implement the browser `App` bridge or the `ui/initialize` handshake, and is not evidence of Codex or ChatGPT host compatibility.
-
-## Use in your server
-
-Import `github.com/SisyphusSQ/mcp-extensions-go/ui` alongside `github.com/modelcontextprotocol/go-sdk/mcp`.
+## Use settings in a business server
 
 ```go
-meta, err := (ui.ToolMetadata{
-    ResourceURI: "ui://my-app/home.html",
-    Entrypoints: []ui.Entrypoint{{Type: ui.Global}, {Type: ui.Thread}},
-    PreferredModelDisplayMode: ui.Inline,
-}).Metadata(nil)
+server, err := settings.NewServer(
+    &mcp.Implementation{Name: "my-server", Version: "1"}, nil,
+    settings.Config{
+        Fields: map[string]settings.Field{
+            "units": {Type: "string", Title: "Units", Enum: []string{"mm", "in"}},
+        },
+        Read: func(ctx context.Context, req *mcp.CallToolRequest) (settings.Values, error) {
+            // Authorize using verified request identity and return all effective values.
+            return store.Read(ctx, req)
+        },
+        Update: func(ctx context.Context, req *mcp.CallToolRequest, set settings.Values) (settings.Values, error) {
+            // Authorize, preserve omitted fields, and persist atomically before returning.
+            return store.Update(ctx, req, set)
+        },
+    },
+)
 if err != nil {
     return err
 }
-tool := &mcp.Tool{Name: "open_app", Meta: meta}
-// Register your typed business handler with mcp.AddTool(server, tool, handler).
+// Register other business tools normally. Reserve settings.read/settings.update.
 mcp.AddTool(server, tool, handler)
-
-err = ui.AddHTMLResource(server, &mcp.Resource{
-    URI: "ui://my-app/home.html", Name: "home",
-}, trustedHTML, ui.ResourceMetadata{
-    AvailableDisplayModes: []ui.DisplayMode{ui.Inline, ui.Fullscreen},
-    PreferredDisplayMode: ui.Inline,
-})
-if err != nil {
-    return err
-}
 ```
 
-Other consumers of this private module need GitHub repository access, appropriate `GOPRIVATE` settings, and Git authentication in their own environment. This repository does not modify global Go settings.
+Import `github.com/SisyphusSQ/mcp-extensions-go/settings` and the official `mcp` package. The factory snapshots declarations, validates definitions without invoking storage, and configures both tools and their capability together. See the runnable HTTP example for complete callbacks. Invalid arguments and ordinary storage/validation failures become MCP tool errors. Callbacks must use Go primitive values and return client-safe errors.
 
-`ToolMetadata.Metadata` preserves unrelated top-level keys but replaces `ui` and `openai/ui`. `ResourceMetadata.Metadata` replaces only `openai/ui`. Both return JSON snapshots without retaining aliases to caller-owned nested maps or slices. Metadata is a UI declaration, not authentication, authorization, or capability negotiation.
+For mention search, use `mentions.AddTool(server, &mcp.Tool{Name: "search_mentions"}, searchHandler)`. Empty queries are valid. It preserves other metadata and ensures app visibility; no separate mentions capability is specified upstream.
 
-## Development and handoff
+For UI declarations, use `ui.ToolMetadata.Metadata` and `ui.AddHTMLResource` with official tools/resources. Metadata snapshots preserve arbitrary JSON number precision and ownership. For files, `resources.Path(req.Params.Meta)` only parses context; authenticate and authorize independently before calling a root-contained `Reader`. Never open arbitrary host paths or opaque resource URIs directly.
+
+Other consumers of this private module need repository access, Git authentication and their own `GOPRIVATE` configuration. This project changes no global Go settings.
+
+## Development
 
 ```sh
 make fmt
 make test vet build
+# Optional exact-floor matrix, using Go's cache-local toolchain mechanism:
+GOTOOLCHAIN=go1.25.0 make test vet build
 ```
 
-The executable is written to `bin/mcp-extensions-http`, which is ignored by Git. Tests use official SDK in-memory transports and temporary local HTTP ports; they do not access external business services. The example has no business persistence or background installation behavior.
+`make test` runs race tests with official memory/HTTP transports, settings/search/file behavior, and SDK boundary reproductions. The ignored executable is `bin/mcp-extensions-http`. Frontend build/type/browser commands are documented separately. Tests passed on sqmc04 with Go 1.25.0 and Go 1.27.0; the frontend dependency installation reported zero npm audit vulnerabilities. This is not a full Go vulnerability reachability scan, remote deployment, or OpenAI host acceptance.
 
 - [Documentation index](docs/README.md)
-- [Architecture and extension path](docs/architecture.md)
-- [Compatibility and scope](docs/compatibility.md)
-- [Handoff record](docs/handoff.md)
+- [Architecture](docs/architecture.md)
+- [Compatibility and complete capability inventory](docs/compatibility.md)
+- [Forms/MRTR investigation](docs/protocol-investigation.md)
+- [Frontend setup and host acceptance checklist](docs/frontend-validation.md)
+- [Handoff](docs/handoff.md)

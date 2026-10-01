@@ -1,38 +1,54 @@
-# Compatibility and implementation scope
+# Compatibility and capability inventory
 
-## Baseline
+## Verified upstream baseline
 
-- Official Go SDK: pinned [v1.8.0](https://github.com/modelcontextprotocol/go-sdk/releases/tag/v1.8.0), requiring Go 1.25.0 or newer.
-- Indirect `golang.org/x/sys` is pinned to v0.44.0 to address [GO-2026-5024](https://pkg.go.dev/vuln/GO-2026-5024) in upstream's v0.41.0; the Go version floor remains 1.25.0.
-- OpenAI MCP Extensions: reference commit [`900032d8bd7c1566202d0cb1666986584f932043`](https://github.com/openai/mcp-extensions/tree/900032d8bd7c1566202d0cb1666986584f932043). This is a source baseline, not a promise to track floating main.
-- UI field sources: [TypeScript definitions](https://github.com/openai/mcp-extensions/blob/900032d8bd7c1566202d0cb1666986584f932043/typescript/src/server/ui.ts) and [Python definitions](https://github.com/openai/mcp-extensions/blob/900032d8bd7c1566202d0cb1666986584f932043/python/src/openai_mcp_extensions/ui.py). No upstream implementation files were copied.
+On 2026-10-01, the GitHub commits API and a full source checkout both resolved upstream `main` to [`900032d8bd7c1566202d0cb1666986584f932043`](https://github.com/openai/mcp-extensions/tree/900032d8bd7c1566202d0cb1666986584f932043). There was no diff from the requested baseline. The inventory below was rebuilt from [the protocol specification](https://github.com/openai/mcp-extensions/blob/900032d8bd7c1566202d0cb1666986584f932043/docs/spec.md), TypeScript server/app/shared sources, and Python sources. Prior handoff statements were not used as evidence of current SDK behavior.
 
-## Matrix
+The official MCP Go SDK remains v1.8.0 with Go floor 1.25.0. `golang.org/x/sys v0.44.0` remains pinned for GO-2026-5024. This is a personal server extension library, not an official OpenAI SDK.
 
-| Feature | Status | API / boundary |
-| --- | --- | --- |
-| Tool-to-resource binding | Implemented | `ToolMetadata.ResourceURI` maps to `_meta.ui.resourceUri`; requires `ui://`, a host, and no userinfo |
-| Tool visibility | Implemented | `_meta.ui.visibility` accepts app/model; not authorization |
-| OpenAI entrypoints | Metadata implemented | global, thread, file, settings; host affordances not validated |
-| Global quickAction | Metadata implemented | title, nonempty icons, tool target, JSON arguments; caller registers the target tool |
-| Model display mode | Metadata implemented | Tool `_meta["openai/ui"].preferredModelDisplayMode`: inline/fullscreen |
-| Resource display modes | Metadata implemented | Content `_meta["openai/ui"]`: availableDisplayModes and preferredDisplayMode; upstream types include pip, example declares inline/fullscreen only; host support needs validation |
-| Static HTML | Implemented | `AddHTMLResource`, MIME `text/html;profile=mcp-app`; no file reads or URL downloads |
-| MCP Apps CSP / permissions | Passed through | Resource `_meta.ui`; no specialized types or generators |
-| HTTP and Bearer authentication | Example implemented | Official stateless Streamable HTTP, 1 MiB body limit, timeouts, cross-origin protection, default localhost protection, graceful shutdown |
-| Frontend App handshake | Not implemented | Static HTML has no `ui/initialize` or browser bridge; use frontend SDKs in future |
-| settings read/update | Not implemented | A settings UI entrypoint does not implement `openai/settings` capabilities or handlers |
-| mentions/search | Not implemented | No mentions types, search handlers, or metadata helpers |
-| File picker / `openai/resource.path` | Not implemented | No parsing, path authorization, or file handlers |
-| Extended forms and MRTR | Not implemented | SDK and host request/result adaptation need separate verification |
-| Model context, model message, deep links | Not implemented | Browser-to-host interactions; Go does not replace the frontend SDK |
+## Complete responsibility matrix
 
-UI validation covers enums, entrypoint variants, required fields, and JSON encodability. It is not a complete port of every Zod/Pydantic validator. For example, it does not resolve or fetch icon URLs or validate the business meaning of arbitrary base metadata. Display-list consistency remains the caller's responsibility; no constraint absent from upstream was added.
+“Protocol test” below means a local test, not OpenAI host acceptance. Host support depends on platform; upstream explicitly excludes classic ChatGPT from its Work browser support table.
 
-## Important boundaries
+| Upstream capability | Go server responsibility | Frontend / host responsibility | Current implementation | Gap / limitation | Acceptance entrypoint |
+| --- | --- | --- | --- | --- | --- |
+| Standard MCP tools, schemas, resources, discovery, sessions, HTTP | Register business handlers | Connect using MCP | Official SDK v1.8.0 | No second implementation | Official memory / HTTP integration tests |
+| MCP Apps resource binding and visibility | `_meta.ui.resourceUri` and app/model visibility | Load App; enforce surface visibility | `ui.ToolMetadata` | Visibility is not authorization | `ui` wire tests; host launch unverified |
+| Global entrypoint | Tool accepts `{}`, title/icons, entrypoint declaration | Sidebar, fullscreen and conversation instance | Metadata + `open_workspace` | Host navigation unverified | HTTP `{}` call; host sidebar checklist |
+| Global quick action (SDK source) | Tool target + arguments + title/icons | Render action and invoke target | `ui.QuickAction` | SDK-source feature; spec has no separate quickAction section | Wire contract tests; host unverified |
+| Thread entrypoint | Tool accepts `{}` | Separate App instance per conversation | Metadata + example | Host instance isolation unverified | HTTP call; host checklist |
+| Settings App entrypoint (SDK source) | UI metadata and optional custom App tool | Settings App presentation/search | `ui.Settings` + example | Distinct from structured settings | Metadata test; host unverified |
+| Structured native settings | Advertise real read/update tools; schema/layout; effective values; authorize and persist | Native settings rendering and changed-field patch calls | `settings.NewServer`, complete primitive types, constraints, layout, modern + legacy capability | Storage, cross-field rules and transactions supplied by caller; example memory resets on restart | Modern discover / legacy initialize, partial updates and errors in `settings` tests; authenticated HTTP test |
+| Settings tool buttons | Layout references same-server tools accepting `{}` | Spinner/tooltip or App modal | `settings.Item` tool variant | Referenced business tools are caller-owned; no tool registry introspection | Definition checks; host button UX unverified |
+| Composer mentions | Search query/result types; marker; app visibility; authorize search | Composer typeahead and selected references | `mentions.AddTool`, both `resource_link` and SDK `resource` variants | No separate server capability is required by spec or upstream SDK; platform UX unverified | Mention protocol/error/visibility tests, HTTP search + readable resource |
+| File extension launch | FileInput `{file:{name,resourceUri}}`, typed tool and entrypoint metadata | Inject opaque URI; deliver initial tool input | `resources.FileInput`, example `open_file` | Opaque URI is never treated as a path | Typed SDK input test; real file launch unverified |
+| `openai/resource.path` on tools/call | Parse metadata; independently authorize any file read | Host attaches local execution path | `resources.Path`, optional root-contained `Reader` | Metadata alone cannot prove host identity or permission | Malformed metadata; root/symlink/size/cancellation tests |
+| Host resources/read representation | Parse text/blob hints when relevant to owned resources | Host intercepts reads for the opened opaque file URI | `ParseReadMetadata`, TypeScript App resource read | Host-owned file read unverified | Parsing tests; local App bridge test and host checklist |
+| Host resource write hints | Parse writable/etag for application logic | Enforce writes, conditional ETag, saved/conflict/too-large outcomes | `ParseContentMetadata`; official TS app resource API reused | No Go write-to-host RPC; no fabricated writable capability | Parsing tests; host write behavior unverified |
+| Resource subscriptions and writes | Implement ordinary owned MCP resources if needed | Intercept opened-file URI reads/subscriptions; `openai/resources/write` | Official SDK / official TS APIs | Example is a read-only file viewer | Host file subscription/write checklist remains unverified |
+| Resource display modes | Available/preferred modes on contents; model preference on tool | Current mode and display changes | `ui.ResourceMetadata`; App fullscreen action | `pip` is an upstream type; spec says ChatGPT currently supports inline/fullscreen | Wire tests; actual host display unverified |
+| MCP Apps CSP and permissions | Declare resource security metadata | Sandbox and enforce policy | Passthrough metadata; bundled App has a script hash CSP | Caller declares business domains/permissions | Static resource test; frontend script CSP browser test |
+| App `ui/initialize`, tool input/result | Supply trusted bundled HTML and tools | Standard App bridge, lifecycle and host context | `examples/frontend` uses official App | Static default HTML still has no handshake; live bundle must be selected | Local browser bridge test; OpenAI host unverified |
+| Deep links | Provide App entrypoint; no browser state in Go | Parse hostContext, subsequent changes and platform URI navigation | Official TS `OpenAIExtensions.deepLink` example | Actual codex/chatgpt link navigation unverified | Browser host-context test; host checklist |
+| Model context and updateId | Supply business tool/resource content | Replace per-App context; idempotence, removals and notifications | Official TS modelContext example | Model acceptance and removal behavior are host-owned | Local bridge protocol test; host unverified |
+| Content title/thumbnail and background audience | Use official content metadata/annotations | Composer attachment label/thumbnail; assistant-only background context | Standard MCP content passthrough; titled context in App | No separate Go model-context capability; iOS thumbnail limitation | Local context payload test; host unverified |
+| `ui/message`, active/new target and send | Return data suitable for an explicit UI action | Send message through host; mobile target limitations | Official TS message API, explicit Send button | No unsolicited messages; model response unverified | Local bridge payload test; host unverified |
+| Local file opening | Only provide authorized absolute paths when business permits | `openai/files/open` and native viewer | Official TS API available through frontend dependency | No Go-to-host custom RPC, example exposes no path | Host-only checklist, unverified |
+| Interaction cursor (SDK source) | None | Host context + CSS variable | Official TS OpenAIExtensions constructor | Host interaction mode unverified | Local App initialization |
+| Plugin onboarding | None in a server SDK | Plugin manifest `com.openai.onboardingSkill`; packaged skill | Documented boundary | No plugin package or manifest fabricated | Plugin installation / onboarding host-only |
+| Standard elicitation and MRTR | Return built-in inputRequests/requestState; validate application continuations | Fulfill standard input and retry | Official SDK; local investigation tests | State ownership, deduplication, expiration and isolation are application responsibilities | `internal/sdkcheck` standard multi-round tests |
+| OpenAI extended forms | Extended string pattern, described/thumbnail options, suggestions, resource selection and previews; selection validation | Advertise `openai/elicitation.form`, render full supported form | Source/protocol investigation only | Standard Elicit is not this extension. See [SDK investigation](protocol-investigation.md) | Reproducible SDK wire-boundary tests; no host acceptance |
+| Legacy `openai/elicitation/create` | Send custom server-to-client method | Render and return accept/cancel/decline | Not supported by a public typed Go SDK sending API | Custom receiving methods cannot enable custom sending | Sending middleware reproduction |
+| Extended MRTR form inputRequests | Preserve custom method and continuation round semantics | Fulfill extension method and echo responses/state | Investigation only | Typed InputRequestMap accepts only built-ins; arbitrary result encoding alone is not support | Sealed-map and middleware adaptation reproductions |
 
-Successful encoding does not establish host support for an entrypoint or display mode. Successful resource registration does not complete the host handshake. This framework does not advertise `io.modelcontextprotocol/ui` as a server capability or fabricate client/host capabilities. Unimplemented OpenAI features have no capability declarations.
+## Boundaries and error semantics
 
-The HTTP example supports stateless request-response calls. Server-initiated standard elicitation and nonstandard input requests are outside its scope. Adding forms requires revisiting the transport/host flow, timeouts, and lifecycle.
+Settings registration rejects invalid native declarations, layout references and duplicate capability configuration before returning a server. The factory creates both handlers and both capability locations together. Other server options and unrelated capability keys are preserved. Settings tool names must remain reserved after creation. Layout tool existence and acceptance of `{}` remain the caller's responsibility because the public server API has no registry query.
 
-The Go version floor follows the dependency contract. Local validation used Go 1.27.0; no Go 1.25 toolchain was downloaded for matrix testing.
+The official typed tool helper reports invalid arguments and ordinary handler failures through `isError: true`. Settings result validation rejects missing/unknown fields and invalid state before success. A caller deliberately returning `*jsonrpc.Error` retains official protocol-error semantics. Storage callbacks must provide client-safe error messages, authorize the request, preserve omitted values, and persist atomically. Numeric callback values use Go primitive numeric types; `json.Number` is not a numeric primitive understood by jsonschema-go's value validator. Patterns use the existing Go JSON Schema validator's RE2 syntax.
+
+File parsing does not grant access. `Reader` requires an explicitly configured absolute allowed root and byte limit, uses `os.Root` during open, allows only root-contained symlinks and regular files, and checks cancellation around file I/O. It cannot authorize individual resources, prevent hostile mounts/hard links inside a caller-controlled root, or interrupt an OS regular-file syscall. The caller must control the root and authorize each read. The example does not use host-provided paths to read any file.
+
+Browser features are declared only by the actual host. The server never advertises `openai/elicitation`, `openai/files`, `openai/modelContext`, `openai/message`, or host resource permissions on the host's behalf. No API is advertised as a complete extended-form implementation.
+
+See [frontend validation](frontend-validation.md) for the runnable frontend and the separation between local bridge tests and OpenAI host acceptance, and [handoff](handoff.md) for final development evidence.

@@ -1,0 +1,56 @@
+# Frontend example and validation boundary
+
+## Run with the Go server
+
+The example uses `@modelcontextprotocol/ext-apps 1.7.5` and `@openai/mcp-extensions 0.1.0` directly. Node dependencies are local and locked. Browser/server credentials are never bundled into HTML. The default embedded HTTP page remains static; select the real built App explicitly:
+
+```sh
+cd /Users/suqing/coding/golang/00_self/mcp-extensions-go/examples/frontend
+npm ci --ignore-scripts
+npm run build
+npm run typecheck
+cd /Users/suqing/coding/golang/00_self/mcp-extensions-go
+export MCP_BEARER_TOKEN="$(openssl rand -hex 32)"
+export MCP_APP_HTML="/Users/suqing/coding/golang/00_self/mcp-extensions-go/examples/frontend/dist/app.html"
+go run ./examples/http
+```
+
+`MCP_APP_HTML` must be an absolute path to developer-trusted HTML. The example reads it from an explicitly allowed directory with a 2 MiB limit at startup. This is an operator setting, never a host-provided `openai/resource.path`. Nothing installs a background service. Ctrl+C closes the server. The built HTML is ignored by Git; rebuild from the locked frontend inputs.
+
+Connect an MCP Apps-capable host to authenticated Streamable HTTP at `http://127.0.0.1:8080/mcp`, then launch `open_workspace` or its entrypoint. The App registers input/result/host-context listeners before `app.connect()`, renders the initial result without repeating the launch call, reads/updates settings, searches readable demo parts, and offers explicit model-context/message/fullscreen actions when host capabilities allow them. The `open_file` entrypoint reads its opaque file reference through the host resource API and displays text; it never asks Go to read an arbitrary path. Errors are shown using text DOM output. Opening the HTML outside a host shows a notice and disables actions.
+
+Settings storage is one mutex-protected in-memory record for one runtime bearer credential. It persists across stateless HTTP calls but resets when the process restarts. Multi-user services must provide durable identity-scoped storage, resource authorization and atomic patches; the demo is not a multi-user storage design.
+
+## Local automated integration
+
+`browser-test.mjs` starts the built Go executable on a temporary loopback port with an ephemeral credential, connects an official TypeScript MCP client, reads the actual Go HTML resource, and loads it in a sandboxed iframe. The test host uses the official `AppBridge` and `PostMessageTransport`. Its local proxy limits methods/resources, checks same-origin JSON requests, and keeps the bearer credential out of the browser. All listeners, servers, the MCP client, browser and child process are closed after the run.
+
+```sh
+# Build Go before running the browser suite.
+make build
+cd examples/frontend
+npm run build
+npm run typecheck
+# Supply an installed Playwright module and an installed Chrome/Chromium.
+PLAYWRIGHT_MODULE_PATH=/absolute/path/to/playwright/index.mjs \
+PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/absolute/path/to/chrome npm test
+```
+
+Without `PLAYWRIGHT_MODULE_PATH`, the suite tries a caller-installed `playwright` package. It never installs Playwright or downloads browsers automatically. On sqmc04 the existing bundled Playwright 1.62.1 and `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` were used with an isolated headless profile.
+
+The suite covers actual `ui/initialize`, initialized notification, initial tool result, authenticated Go settings read/update, mention search, display/deep-link updates, context/message payloads, host resource text with inert HTML-like contents, missing host capabilities, and standalone mode. Context/message/resource responses are test-host fixtures, not OpenAI model behavior.
+
+## OpenAI host acceptance: unverified
+
+As of 2026-10-01, the current Codex MCP Apps surface contained no tab connected to this example. The available browser automation inventory also reported `Unable to load browser request-header policy`. No configured OpenAI host installation/connection for this private server was available, so real Codex/ChatGPT acceptance was not performed. No persistent host configuration, plugin installation or user conversation message was created. The local bridge suite does not prove native settings, mentions, file routing or model-context behavior in an OpenAI host.
+
+Once a suitable authenticated host connection exists, perform and record:
+
+1. Global/thread launch, single initial result, isolation of two conversation/App instances, and supported display modes.
+2. Native settings discover/read, grouped layout/tool button, valid changed-field patches, visible validation/persistence errors, and storage behavior after a restart.
+3. Composer mention typeahead, empty query, selection, readable selected resource, and denied/unavailable search.
+4. File-extension input, host-owned resource read representations, large-file rejection, and unsupported capabilities. Writes/subscriptions need a separate example before claiming their acceptance.
+5. Model-context replacement/removal/updateId, explicit active/new conversation messages, and deep-link initialization plus subsequent navigation.
+6. Extension-capable forms and genuine MRTR continuation only after the SDK/host requirements in `protocol-investigation.md` are resolved.
+
+Do not mark any of these complete based on the local protocol fixture.
