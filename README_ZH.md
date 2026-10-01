@@ -84,6 +84,8 @@ UI 使用 `ui.ToolMetadata.Metadata`、`ui.AddHTMLResource` 和官方工具/资�
 
 仓库已按所有者在 2026-10-01 的明确要求公开。读取公开源码不需要私有仓库认证或 `GOPRIVATE`；发布版本前请固定经过审阅的提交。本地插件尚未上架公开插件目录，本项目不更改全局 Go 设置。
 
+[GitHub Wiki](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home) 将中文、英文分别组织，包含完整架构、能力对应表、前端验证、表单/MRTR 调查、本地插件验收及后续开发清单。源文档保留在 `docs/wiki`；Handoff 仅保留在源码仓库。
+
 ## 开发
 
 ```sh

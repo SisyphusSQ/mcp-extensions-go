@@ -73,6 +73,8 @@ For UI declarations, use `ui.ToolMetadata.Metadata` and `ui.AddHTMLResource` wit
 
 The repository became public at the owner's explicit request on 2026-10-01. Public source access does not require private-repository authentication or `GOPRIVATE`; pin a reviewed commit until a version is released. This project changes no global Go settings.
 
+The [GitHub Wiki](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home) provides separate English and Chinese guides for architecture, the complete capability matrix, frontend validation, SDK forms/MRTR investigation, local plugin acceptance and future implementation work. Its source remains under `docs/wiki`; Handoff remains in the source repository.
+
 ## Development
 
 ```sh
