@@ -18,7 +18,7 @@ JSON-RPC、schema、工具、资源、发现、会话、传输和标准 MRTR 由
 
 设置存储、资源授权、跨字段规则和事务由调用者负责。可见性与元数据不授予权限。HTTP 默认使用单个凭据对应的内存记录，可通过绝对路径 `MCP_SETTINGS_FILE` 启用持久化；本地插件默认使用带操作系统锁和原子文件替换的持久设置。该示例不提供多用户存储隔离。
 
-完整 OpenAI 扩展表单尚未实现。Go SDK v1.8.0 已支持标准 MRTR，但类型化输入映射和自定义发出请求存在具体限制；接收中间件可以输出扩展结果字段，单凭这一点不能声明扩展 MRTR 已实现。详见 [完整能力对应表](docs/compatibility.md) 与 [可复现的 SDK 调查](docs/protocol-investigation.md)。用户截图已确认真实桌面的全局入口、Connected 状态和首次工具结果，其余宿主场景仍待验收。
+完整 OpenAI 扩展表单尚未实现。Go SDK v1.8.0 已支持标准 MRTR，但类型化输入映射和自定义发出请求存在具体限制；接收中间件可以输出扩展结果字段，单凭这一点不能声明扩展 MRTR 已实现。详见 [完整能力对应表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility) 与 [可复现的 SDK 调查](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation)。用户截图已确认真实桌面的全局入口、Connected 状态和首次工具结果，其余宿主场景仍待验收。
 
 ## 运行 Go 示例
 
@@ -32,7 +32,7 @@ go run ./examples/http
 
 端点默认是 `http://127.0.0.1:8080/mcp`。在宿主中配置 Streamable HTTP 和 `Authorization: Bearer <运行时凭据>`。Token 至少 32 字节且无空白，不能打印或提交。Ctrl+C 退出。直接用浏览器打开 `/mcp` 不会显示 HTML；App 资源通过 MCP `resources/read` 提供。
 
-使用真实浏览器 App 时，先构建 `examples/frontend`，再将 `MCP_APP_HTML` 设为可信 `dist/app.html` 的绝对路径，完整步骤见 [前端设置与验证](docs/frontend-validation.md)。未设置时仍使用不包含 `ui/initialize` 握手的静态页面。
+使用真实浏览器 App 时，先构建 `examples/frontend`，再将 `MCP_APP_HTML` 设为可信 `dist/app.html` 的绝对路径，完整步骤见 [前端设置与验证](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Frontend-Validation)。未设置时仍使用不包含 `ui/initialize` 握手的静态页面。
 
 `MCP_LISTEN_ADDR` 用于选择明确的地址。远程访问需自行配置 HTTPS 入口、认证和网络访问控制；示例不配置 TLS 或安装后台服务。
 
@@ -48,7 +48,7 @@ codex plugin marketplace add /absolute/path/to/mcp-extensions-go
 codex plugin add mcp-extensions-go@mcp-extensions-go-local
 ```
 
-插件使用官方 stdio 传输，不监听端口。二进制和 HTML 均为本机生成并被 Git 忽略，安装副本进入 Codex 插件缓存。设置在 sqmc04 上默认写入 `/Users/suqing/Library/Application Support/mcp-extensions-go/live-e2e/settings.json`。完整步骤、证据与限制见 [本地插件与人工验收](docs/live-e2e.md)。
+插件使用官方 stdio 传输，不监听端口。二进制和 HTML 均为本机生成并被 Git 忽略，安装副本进入 Codex 插件缓存。设置在 sqmc04 上默认写入 `/Users/suqing/Library/Application Support/mcp-extensions-go/live-e2e/settings.json`。完整步骤、证据与限制见 [本地插件与人工验收](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Live-E2E)。
 
 ## 在业务服务中使用 Settings
 
@@ -97,12 +97,14 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 
 `make test` 包括 race、官方内存/HTTP/真实子进程 stdio 传输、Settings/Mentions/文件行为及 SDK 边界复现。产物为不进入 Git 的 `bin/mcp-extensions-http` 与 `bin/mcp-extensions-stdio`。前端构建、类型检查和浏览器测试见专门文档。sqmc04 已通过 Go 1.25.0 与 Go 1.27.0 验证；前端依赖安装的 npm audit 报告为零漏洞。缓存内运行的 `govulncheck v1.8.0` 报告未发现漏洞，未安装全局工具。这些检查不代表远程部署或完整桌面 UI 验收。
 
-- [文档入口](docs/README.md)
-- [架构](docs/architecture.md)
-- [完整能力与兼容性对应表](docs/compatibility.md)
-- [表单/MRTR 调查](docs/protocol-investigation.md)
-- [前端与宿主验收清单](docs/frontend-validation.md)
-- [交接记录](docs/handoff.md)
-- [本地插件与人工验收](docs/live-e2e.md)
+- [文档入口（GitHub Wiki）](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
+- [架构](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Architecture)
+- [完整能力与兼容性对应表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility)
+- [表单/MRTR 调查](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation)
+- [前端与宿主验收清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Frontend-Validation)
+- [本地插件与人工验收](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Live-E2E)
 - GitHub Wiki：[中文文档](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview) / [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview)
-- [可直接开发的缺口清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap)与[Wiki 源文档和发布步骤](docs/wiki/README.md)
+- [可直接开发的缺口清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap)
+- [验收证据与 SDK 限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits)
+- [交接记录（源码仓库）](docs/handoff.md)
+- [Wiki 源文档和发布步骤](docs/wiki/README.md)
