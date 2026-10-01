@@ -1,10 +1,10 @@
-# mcp-extensions-go 中文 Wiki
+# 项目概览
 
-[English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home) · [可实现缺口与后续开发](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Implementation-Roadmap-ZH) · [验收状态与 SDK 限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Validation-and-SDK-Limits-ZH)
+[English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview) · **中文** · [Wiki 首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
-这是私有的个人 Go 服务端 SDK，不是 OpenAI 官方 SDK。它复用 `github.com/modelcontextprotocol/go-sdk v1.8.0`，Go 下限为 1.25.0。JSON-RPC、传输、会话、工具/资源和标准 MRTR 由官方 SDK 负责；浏览器与宿主行为复用标准 MCP Apps 和 OpenAI TypeScript App SDK。
+这是源码公开的个人 Go 服务端 SDK，不是 OpenAI 官方 SDK。它复用 `github.com/modelcontextprotocol/go-sdk v1.8.0`，Go 下限为 1.25.0。JSON-RPC、传输、会话、工具/资源和标准 MRTR 由官方 SDK 负责；浏览器与宿主行为复用标准 MCP Apps 和 OpenAI TypeScript App SDK。
 
-状态记录日期：2026-10-01。服务端扩展已通过 [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) 合并。本地插件与实际验收支持已通过 [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) 合并，提交为 `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`。未发布 tag/release，也未公开仓库或插件。合并不等于所有宿主验收已经完成。
+状态记录日期：2026-10-01。服务端扩展已通过 [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) 合并。本地插件与实际验收支持已通过 [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) 合并，提交为 `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`。中英文 Wiki 源文档已通过 [PR #3](https://github.com/SisyphusSQ/mcp-extensions-go/pull/3) 合并；随后所有者明确授权将源码仓库公开。未发布 tag/release，插件也尚未上架公开目录。合并不等于所有宿主验收已经完成。
 
 ## 已实现
 
@@ -22,9 +22,9 @@ Settings schema 目前覆盖明确的字段集合，尚未与 Pydantic 完全对
 
 ## 后续从哪里开始
 
-[后续开发清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Implementation-Roadmap-ZH) 给出了六项可直接开发的缺口：Settings 额外约束、表单 schema 与丰富选项、建议值、资源选择器、回答/上传引用校验，以及 Go 模型与 schema 绑定。每项都有范围、依赖、验收要求和源码入口，方便逐项实施。
+[后续开发清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap) 给出了六项可直接开发的缺口：Settings 额外约束、表单 schema 与丰富选项、建议值、资源选择器、回答/上传引用校验，以及 Go 模型与 schema 绑定。每项都有范围、依赖、验收要求和源码入口，方便逐项实施。
 
-现代扩展表单 MRTR 需要继续验证完整 SDK/宿主链路；旧式自定义表单请求则受当前官方 Go SDK 公开发送接口限制。这两类事项与“代码已经实现、宿主尚未验收”分开记录在[验收状态与限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Validation-and-SDK-Limits-ZH)。
+现代扩展表单 MRTR 需要继续验证完整 SDK/宿主链路；旧式自定义表单请求则受当前官方 Go SDK 公开发送接口限制。这两类事项与“代码已经实现、宿主尚未验收”分开记录在[验收状态与限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits)。
 
 ## 运行与文档
 

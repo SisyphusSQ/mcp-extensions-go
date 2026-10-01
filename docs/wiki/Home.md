@@ -1,41 +1,15 @@
-# mcp-extensions-go
+# mcp-extensions-go Wiki
 
-[中文首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home-ZH) · [Implementation roadmap](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Implementation-Roadmap) · [Validation and SDK limits](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Validation-and-SDK-Limits)
+Choose a language / 请选择语言：
 
-This is a private personal Go server SDK, not an official OpenAI SDK. It extends official `github.com/modelcontextprotocol/go-sdk v1.8.0`; the Go floor is 1.25.0. The official SDK owns JSON-RPC, transports, sessions, tools/resources and standard MRTR. Browser and host behavior uses standard MCP Apps and OpenAI's TypeScript App SDK.
+- [English documentation](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview)
+- [中文文档](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview)
 
-Status snapshot: 2026-10-01. Server extensions were merged through [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1). The local plugin and live acceptance setup were merged through [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2), commit `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. No tag/release or public publication was created. A merge does not imply completion of host acceptance.
+This Wiki is published from [`docs/wiki`](https://github.com/SisyphusSQ/mcp-extensions-go/tree/main/docs/wiki). Changes are reviewed in the main repository; direct edits to managed Wiki pages may be overwritten by the next publication.
 
-## Implemented
+本 Wiki 从仓库中的 [`docs/wiki`](https://github.com/SisyphusSQ/mcp-extensions-go/tree/main/docs/wiki) 发布。文档变更通过主仓库审查；直接修改 Wiki 的受管页面可能在下次发布时被覆盖。
 
-| Capability | Implementation / boundary |
-| --- | --- |
-| Native settings | Read/update tools, modern/legacy capability, primitive schema/constraints and layout; caller-owned authorization/storage |
-| Mentions | Search types, both result variants, app visibility and metadata; caller-owned search |
-| Files | File-entrypoint input, opaque resource references, path/representation/write-hint parsing, optional authorized root/byte-limited reader |
-| UI | MCP Apps binding/visibility; global/thread/file/settings entrypoints, quickAction and display metadata; trusted HTML registration |
-| Runnable examples | Authenticated stateless HTTP and official stdio; one shared example implementation |
-| Local plugin | Installed/enabled MCP Extensions Go; durable single-owner settings, changed-field App patches and display-mode feedback |
-| Browser App | Official handshake, settings/search, file text, deep-link context, supported model context/message/display actions |
+Focused guides / 专题指南：
 
-Settings schema coverage is explicit, not full Pydantic parity. Extended forms and their complete OpenAI MRTR workflow are not implemented. Definitions/metadata alone must not be advertised as a complete form capability.
-
-## Continue development
-
-The [roadmap](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Implementation-Roadmap) records six directly implementable gaps: additional settings constraints, form schema/rich choices, suggestions, resource pickers, answer/upload-reference validation, and Go model/schema binding. Each has scope, dependencies, acceptance and source references.
-
-Modern extended-form MRTR is conditional on end-to-end SDK/host interoperability. Legacy custom outbound elicitation is blocked under the current public Go SDK API. [Validation and limits](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Validation-and-SDK-Limits) keeps those separate from already implemented features awaiting host acceptance.
-
-## Run and read
-
-```sh
-# With existing Go/Node tools and locked local frontend dependencies:
-npm --prefix examples/frontend ci --ignore-scripts
-make plugin
-codex plugin marketplace add /absolute/path/to/mcp-extensions-go
-codex plugin add mcp-extensions-go@mcp-extensions-go-local
-```
-
-Open **Open workspace** in the desktop sidebar's more menu. Reopen after installation updates; an existing page/process may retain an older document. The stdio plugin opens no listening port. Its single-owner settings live under the user configuration directory. It is not multi-user production storage.
-
-Source documents: [README](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/README.md), [architecture](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/architecture.md), [complete capability inventory](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md), [SDK investigation](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/protocol-investigation.md), [local plugin acceptance](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/live-e2e.md), and [handoff](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/handoff.md).
+- [Implementation roadmap](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Implementation-Roadmap) / [可实现缺口与后续开发](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap)
+- [Validation and SDK limits](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Validation-and-SDK-Limits) / [验收状态与 SDK 限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits)

@@ -2,7 +2,7 @@
 
 [English](README.md)
 
-基于官方 [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk) 的个人 Go 扩展库，用于实现 [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions) 的服务端职责。仓库保持私有，不是 OpenAI 官方 Go SDK，尚未发布版本或 tag。
+基于官方 [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk) 的个人 Go 扩展库，用于实现 [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions) 的服务端职责。仓库已公开，不是 OpenAI 官方 Go SDK，尚未发布版本或 tag。
 
 JSON-RPC、schema、工具、资源、发现、会话、传输和标准 MRTR 由官方 SDK 负责。本库增加服务端扩展类型与辅助；浏览器和宿主行为复用官方 TypeScript App SDK。
 
@@ -14,7 +14,7 @@ JSON-RPC、schema、工具、资源、发现、会话、传输和标准 MRTR 由
 - `ui`：标准 MCP Apps 工具资源绑定和可见性、OpenAI 入口、快捷动作与显示模式元数据、可信 HTML 注册。
 - `examples/http`：带 Bearer 认证的 stateless Streamable HTTP，包含真实内存设置、可搜索/读取的示例零件、工作区与文件入口工具、loopback 默认地址、请求限制与优雅退出。
 - `examples/frontend`：使用标准 MCP Apps `App` 和 OpenAI TypeScript 扩展的浏览器 App，并通过官方 `AppBridge` 进行本机浏览器集成测试。
-- `examples/stdio` 和私有本地 Codex 插件：官方 stdio 传输、自包含 App，以及跨进程重启保留的单用户设置。
+- `examples/stdio` 和本地 Codex 插件：官方 stdio 传输、自包含 App，以及跨进程重启保留的单用户设置。
 
 设置存储、资源授权、跨字段规则和事务由调用者负责。可见性与元数据不授予权限。HTTP 默认使用单个凭据对应的内存记录，可通过绝对路径 `MCP_SETTINGS_FILE` 启用持久化；本地插件默认使用带操作系统锁和原子文件替换的持久设置。该示例不提供多用户存储隔离。
 
@@ -82,7 +82,7 @@ Mentions 使用 `mentions.AddTool(server, &mcp.Tool{Name: "search_mentions"}, se
 
 UI 使用 `ui.ToolMetadata.Metadata`、`ui.AddHTMLResource` 和官方工具/资源。元数据快照保留 JSON 数字精度且不持有调用方的可变别名。`resources.Path(req.Params.Meta)` 只解析文件上下文；调用限于允许根目录的 `Reader` 前，必须独立认证和授权，不能直接打开任意宿主路径或不透明资源 URI。
 
-其他私有模块使用者需要仓库权限、Git 认证和自己的 `GOPRIVATE` 配置；本项目不更改全局 Go 设置。
+仓库已按所有者在 2026-10-01 的明确要求公开。读取公开源码不需要私有仓库认证或 `GOPRIVATE`；发布版本前请固定经过审阅的提交。本地插件尚未上架公开插件目录，本项目不更改全局 Go 设置。
 
 ## 开发
 
@@ -102,4 +102,5 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 - [前端与宿主验收清单](docs/frontend-validation.md)
 - [交接记录](docs/handoff.md)
 - [本地插件与人工验收](docs/live-e2e.md)
-- [中英文 GitHub Wiki 源文档](docs/wiki/README.md)与[可直接开发的缺口清单](docs/wiki/Implementation-Roadmap-ZH.md)
+- GitHub Wiki：[中文文档](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview) / [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview)
+- [可直接开发的缺口清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap)与[Wiki 源文档和发布步骤](docs/wiki/README.md)

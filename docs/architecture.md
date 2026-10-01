@@ -21,7 +21,7 @@ examples/frontend
 
 Tests
   +-- official in-memory / authenticated HTTP / child-process stdio integration
-  +-- private SDK-boundary probes and business continuation fixture
+  +-- test-only SDK-boundary probes and business continuation fixture
   +-- official AppBridge + real browser + Go HTTP server
 ```
 
@@ -51,7 +51,7 @@ The helper registers an ordinary tool with `openai/extensions.mentions/search` a
 
 The browser example bundles the official App and OpenAI extensions into trusted HTML with a script hash CSP. Handlers are installed before connection, the initial tool result is rendered without repeating its launch tool, and unsupported host capabilities disable actions. User-triggered model context/message actions use the host; no Go host bridge was invented. File contents, errors and results enter the DOM as text. Go credentials remain server-side. Persisted settings initialize controls without replacing the initial result; Save sends changed fields only to preserve unrelated updates from other App instances.
 
-The private local plugin packages the generated official stdio executable and App. The repo marketplace exposes one local plugin. The supported `.codex-plugin/plugin.json` and `.mcp.json` compatibility format is used because the installed CLI recognized portable plugin metadata but did not load its MCP server. Official CLI installation materializes the cache copy and enables it. The stdio parent controls access; HTTP authentication remains mandatory. No network listener, daemon, credential or public directory entry is created. See [live-e2e.md](live-e2e.md).
+The local plugin packages the generated official stdio executable and App. The repo marketplace exposes one local plugin. The supported `.codex-plugin/plugin.json` and `.mcp.json` compatibility format is used because the installed CLI recognized portable plugin metadata but did not load its MCP server. Official CLI installation materializes the cache copy and enables it. The stdio parent controls access; HTTP authentication remains mandatory. No network listener, daemon, credential or public plugin-directory entry is created. See [live-e2e.md](live-e2e.md).
 
 The test-only bridge fixture uses official AppBridge/PostMessageTransport, an isolated headless Chrome profile, a same-origin bounded local proxy and an ephemeral Go bearer credential. Model/context/file host behavior is fixture data. It is local integration evidence, not OpenAI product acceptance.
 
@@ -59,10 +59,10 @@ The test-only bridge fixture uses official AppBridge/PostMessageTransport, an is
 
 The official SDK implements standard MRTR, now verified with actual multi-round calls. Business continuation ownership, expiration, replay and transactions remain application concerns.
 
-Legacy OpenAI custom server-to-client elicitation is blocked by the public outbound method registry. Typed MRTR InputRequestMap cannot encode/decode the OpenAI method. Receiving middleware plus ResultBase can emit an adapted extended result over official HTTP; this viable seam is recorded rather than described as impossible. It remains a private experiment without a real extension-capable host, complete extended-field/selection validation, or a production continuation contract. No public placeholder API or unsupported capability was added. See [reproductions, exact SDK source locations and requested public interfaces](protocol-investigation.md).
+Legacy OpenAI custom server-to-client elicitation is blocked by the public outbound method registry. Typed MRTR InputRequestMap cannot encode/decode the OpenAI method. Receiving middleware plus ResultBase can emit an adapted extended result over official HTTP; this viable seam is recorded rather than described as impossible. It remains a test-only experiment without a real extension-capable host, complete extended-field/selection validation, or a production continuation contract. No public placeholder API or unsupported capability was added. See [reproductions, exact SDK source locations and requested public interfaces](protocol-investigation.md).
 
 ## Security and lifecycle
 
 The HTTP example retains runtime-only credentials, constant-time digest comparison, loopback defaults, cross-origin/localhost protection, a 1 MiB request limit, timeouts and graceful shutdown. Library handlers receive the official request/context so verified identity and authorization can be supplied by the owning server. Callback error messages must not contain credentials. Root filesystem errors may contain paths and must be mapped appropriately by a business tool.
 
-No global tooling, persistent service, remote TLS deployment, public repository, tag or release is created. Go 1.25 matrix testing uses the cache-local `GOTOOLCHAIN` mechanism. Node installs are local to the frontend example with locked versions and lifecycle scripts disabled.
+The source repository became public at the owner's explicit request on 2026-10-01. Repository visibility does not change runtime authentication, filesystem authorization or the local plugin's distribution. No global tooling, persistent service, remote TLS deployment, tag or release is created. Go 1.25 matrix testing uses the cache-local `GOTOOLCHAIN` mechanism. Node installs are local to the frontend example with locked versions and lifecycle scripts disabled.

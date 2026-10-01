@@ -1,6 +1,6 @@
 # Implementation roadmap
 
-[中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Implementation-Roadmap-ZH) · [Home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
+**English** · [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap) · [Overview](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview) · [Wiki home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
 All items below are **not implemented**, unless explicitly described as an existing foundation. This is a future implementation checklist, not a support declaration. Upstream reference: `openai/mcp-extensions` commit `900032d8bd7c1566202d0cb1666986584f932043`, independently checked against upstream main on 2026-10-01.
 
@@ -67,7 +67,7 @@ Sources: [Python form schema generation](https://github.com/openai/mcp-extension
 
 ## Conditional work: modern OpenAI form MRTR
 
-S1 is not a directly implementable parity claim. A public receiving-middleware/ResultBase adapter already emitted an extended `input_required` result over official HTTP in a private test. Complete transport/continuation interoperability remains unproven; the official typed Go client rejects the custom input method.
+S1 is not a directly implementable parity claim. A public receiving-middleware/ResultBase adapter already emitted an extended `input_required` result over official HTTP in a local protocol test. Complete transport/continuation interoperability remains unproven; the official typed Go client rejects the custom input method.
 
 After D2–D5, verify an extension-capable real host with the actual per-request client capability. Trace parameter/result decoding and middleware order in the pinned SDK before designing a public API. Bind continuation state to verified identity, tool, arguments and round; bound capacity/lifetime; validate replay, expiration, completion, cancellation/decline, resume and concurrent isolation. For stateless HTTP, prove authenticated identity isolation and ownership after restart if durability is claimed. Caller-provided storage owns transactions and recovery.
 

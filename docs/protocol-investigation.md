@@ -36,12 +36,12 @@ Standard `ServerSession.Elicit` checks the ordinary elicitation capability and u
 | [`server.go:1729`](https://github.com/modelcontextprotocol/go-sdk/blob/v1.8.0/mcp/server.go#L1729), Elicit | Standard capability checks, method and result schema validation | Not a generic custom server-to-client request function |
 | [`server.go:2286`](https://github.com/modelcontextprotocol/go-sdk/blob/v1.8.0/mcp/server.go#L2286), AddReceivingCustomMethod | Handles custom client-to-server methods; rejects standard-method shadowing | Useful for owned custom services, does not solve custom outbound requests |
 | [`shared.go:206`](https://github.com/modelcontextprotocol/go-sdk/blob/v1.8.0/mcp/shared.go#L206), receiving dispatch | Method lookup and parameter decoding run before receiving middleware | Cannot intercept an unregistered unknown method or recover already-rejected input-map decoding |
-| `ResultBase` + receiving middleware | A private result adapter successfully emits an `input_required` result whose input method is `openai/elicitation/create` over official HTTP | Modern server output adaptation is technically possible; it is **not** blocked in all directions |
+| `ResultBase` + receiving middleware | A test-only result adapter successfully emits an `input_required` result whose input method is `openai/elicitation/create` over official HTTP | Modern server output adaptation is technically possible; it is **not** blocked in all directions |
 | Same adapted result + official Go client | Typed result decoding rejects the custom method | Encoding that result alone is not end-to-end extended MRTR support |
 
 Modern raw HTTP probes include protocol metadata/client capabilities and the required `Mcp-Method`/`Mcp-Name` headers. This avoids confusing malformed modern requests with extension limitations.
 
-The receiving-result adapter remains a **private experiment**, not a public forms API. It has no live OpenAI host acceptance, complete extended-field/selection validation, or durable authenticated continuation contract. No `openai/elicitation` capability or unusable placeholder package was added. A future modern-only implementation could use that public result seam, but must first complete those requirements and test with an extension-capable host. Legacy direct custom elicitation remains blocked by the public sending API.
+The receiving-result adapter remains a **test-only experiment**, not a public forms API. It has no live OpenAI host acceptance, complete extended-field/selection validation, or durable authenticated continuation contract. No `openai/elicitation` capability or unusable placeholder package was added. A future modern-only implementation could use that public result seam, but must first complete those requirements and test with an extension-capable host. Legacy direct custom elicitation remains blocked by the public sending API.
 
 ## Public SDK interfaces needed
 

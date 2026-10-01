@@ -1,8 +1,8 @@
-# Private local Codex plugin and acceptance
+# Local Codex plugin and acceptance
 
 ## Location and installation
 
-PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) was merged into private `main` at `3f45cf66eab5f6fd172763e604d794e12cef5cf1`. The `suqing/live-e2e` delivery was subsequently merged through [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) at `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. The merge does not complete pending human acceptance.
+PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) was merged into `main` at `3f45cf66eab5f6fd172763e604d794e12cef5cf1` while the repository was private. The `suqing/live-e2e` delivery was subsequently merged through [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) at `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. The source repository became public at the owner's explicit request on 2026-10-01; the plugin remains a local installation without a public plugin-directory listing. The merge does not complete pending human acceptance.
 
 Plugin: **MCP Extensions Go**, ID `mcp-extensions-go@mcp-extensions-go-local`, local marketplace **MCP Extensions Go Local**, version `0.0.0-dev` (installation metadata only; no release/tag). The package contains actual MCP configuration, a generated executable, App HTML and an icon; no empty skills/hooks/apps are included.
 

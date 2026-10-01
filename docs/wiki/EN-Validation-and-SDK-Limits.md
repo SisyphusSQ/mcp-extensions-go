@@ -1,6 +1,6 @@
 # Validation and SDK limits
 
-[中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Validation-and-SDK-Limits-ZH) · [Home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
+**English** · [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits) · [Overview](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview) · [Wiki home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
 This page separates implementation gaps from host acceptance and business ownership. The [capability matrix](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md) remains the detailed implementation authority.
 
@@ -45,4 +45,4 @@ Only advertise capabilities actually implemented. Read actual client capabilitie
 
 Callers own verified identity, per-resource authorization, multi-user settings, search sources, cross-field transactions and durable continuation policy. The persistent example is single-owner; its Unix state files use 0600, Windows inherited ACLs were not validated, and power-loss durability is not claimed.
 
-Parsing `openai/resource.path` or receiving an opaque URI grants no access. Local reads require authorization, a trusted allowed root, symlink containment and limits. Roots containing hostile hard links/mounts and interruptible regular-file syscalls remain outside the reader contract. Preserve HTTP authentication, runtime credentials, browser text output and all resource boundaries during future changes. No remote HTTPS deployment, public repository/plugin, tag or release was performed.
+Parsing `openai/resource.path` or receiving an opaque URI grants no access. Local reads require authorization, a trusted allowed root, symlink containment and limits. Roots containing hostile hard links/mounts and interruptible regular-file syscalls remain outside the reader contract. Preserve HTTP authentication, runtime credentials, browser text output and all resource boundaries during future changes. The source repository became public at the owner's explicit request on 2026-10-01; this does not change runtime access controls. No remote HTTPS deployment, public plugin-directory distribution, tag or release was performed.
