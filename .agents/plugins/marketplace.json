@@ -1,0 +1,12 @@
+{
+  "name": "mcp-extensions-go-local",
+  "interface": { "displayName": "MCP Extensions Go Local" },
+  "plugins": [
+    {
+      "name": "mcp-extensions-go",
+      "source": { "source": "local", "path": "./plugins/mcp-extensions-go" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Developer Tools"
+    }
+  ]
+}

@@ -5,7 +5,7 @@
 Provide validated Go server helpers for OpenAI MCP Extensions while the official MCP Go SDK v1.8.0 owns the protocol, schemas, transports and sessions. The public Go version floor remains 1.25.0. No SDK internals, unsafe/reflection tricks, SDK fork or second JSON-RPC stack are used.
 
 ```text
-Business service / examples/http
+Business service / internal/example (HTTP and stdio)
   +-- settings: native settings tools + capability + declaration validation
   +-- mentions: app-visible search tool + two result variants
   +-- resources: file input/context parsing + optional authorized root reader
@@ -20,7 +20,7 @@ examples/frontend
        +-- host context, file resources, model context, messages and deep links
 
 Tests
-  +-- official in-memory / authenticated HTTP integration
+  +-- official in-memory / authenticated HTTP / child-process stdio integration
   +-- private SDK-boundary probes and business continuation fixture
   +-- official AppBridge + real browser + Go HTTP server
 ```
@@ -33,7 +33,7 @@ The implementation order was settings, mentions, file context, SDK forms/MRTR in
 
 The existing SDK dependency `jsonschema-go` is used directly, at the unchanged version v0.4.3. Primitive types and string/numeric constraints define both complete value schemas and a nonempty partial patch schema. Official typed `mcp.AddTool` handles input/output schema processing. Complete callback state is checked before a result succeeds; every field is required as an effective value, and unknown fields are rejected. Values are independently snapshotted. Numeric callbacks use Go numeric primitives because the validator regards `json.Number` as a string.
 
-Read must be read-only. Update must independently authorize, preserve omitted fields, check cross-field constraints and persist atomically. The SDK helper supplies no database, implicit retries, locks or tenant model. The example demonstrates a mutex-protected store owned by one bearer credential. It resets on restart and is not durable multi-user storage.
+Read must be read-only. Update must independently authorize, preserve omitted fields, check cross-field constraints and persist atomically. The SDK helper supplies no database, implicit retries, locks or tenant model. `internal/example.Store` is single-owner example code, not a public storage API. HTTP defaults to memory; an absolute operator-owned `MCP_SETTINGS_FILE` enables a file backend. The stdio plugin defaults to a file under the user configuration directory. Reads are bounded to 64 KiB, files use mode 0600, and OS locking spans reload/patch/atomic replacement with a cancellable five-second acquisition limit. Invalid or unreadable state fails explicitly. This supports normal process restarts, not power-loss durability or identity-scoped multi-user transactions. The file backend supports Windows and the listed flock-capable Unix platforms; other platforms fail explicitly while memory storage remains usable.
 
 ## Mentions
 
@@ -49,7 +49,9 @@ The helper registers an ordinary tool with `openai/extensions.mentions/search` a
 
 `ui` retains the existing metadata snapshot/validation and trusted static resource APIs. Tools bind to `ui://` resources. Visibility, entrypoints and display choices are declarations, never permission or host acceptance.
 
-The browser example bundles the official App and OpenAI extensions into trusted HTML with a script hash CSP. Handlers are installed before connection, the initial tool result is rendered without repeating its launch tool, and unsupported host capabilities disable actions. User-triggered model context/message actions use the host; no Go host bridge was invented. File contents, errors and results enter the DOM as text. Go credentials remain server-side.
+The browser example bundles the official App and OpenAI extensions into trusted HTML with a script hash CSP. Handlers are installed before connection, the initial tool result is rendered without repeating its launch tool, and unsupported host capabilities disable actions. User-triggered model context/message actions use the host; no Go host bridge was invented. File contents, errors and results enter the DOM as text. Go credentials remain server-side. Persisted settings initialize controls without replacing the initial result; Save sends changed fields only to preserve unrelated updates from other App instances.
+
+The private local plugin packages the generated official stdio executable and App. The repo marketplace exposes one local plugin. The supported `.codex-plugin/plugin.json` and `.mcp.json` compatibility format is used because the installed CLI recognized portable plugin metadata but did not load its MCP server. Official CLI installation materializes the cache copy and enables it. The stdio parent controls access; HTTP authentication remains mandatory. No network listener, daemon, credential or public directory entry is created. See [live-e2e.md](live-e2e.md).
 
 The test-only bridge fixture uses official AppBridge/PostMessageTransport, an isolated headless Chrome profile, a same-origin bounded local proxy and an ephemeral Go bearer credential. Model/context/file host behavior is fixture data. It is local integration evidence, not OpenAI product acceptance.
 

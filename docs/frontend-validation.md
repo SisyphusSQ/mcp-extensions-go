@@ -19,7 +19,7 @@ go run ./examples/http
 
 Connect an MCP Apps-capable host to authenticated Streamable HTTP at `http://127.0.0.1:8080/mcp`, then launch `open_workspace` or its entrypoint. The App registers input/result/host-context listeners before `app.connect()`, renders the initial result without repeating the launch call, reads/updates settings, searches readable demo parts, and offers explicit model-context/message/fullscreen actions when host capabilities allow them. The `open_file` entrypoint reads its opaque file reference through the host resource API and displays text; it never asks Go to read an arbitrary path. Errors are shown using text DOM output. Opening the HTML outside a host shows a notice and disables actions.
 
-Settings storage is one mutex-protected in-memory record for one runtime bearer credential. It persists across stateless HTTP calls but resets when the process restarts. Multi-user services must provide durable identity-scoped storage, resource authorization and atomic patches; the demo is not a multi-user storage design.
+HTTP defaults to one mutex-protected in-memory record for one runtime bearer credential. An absolute operator-owned `MCP_SETTINGS_FILE` enables the shared durable example store. The local stdio plugin uses that durable store by default. OS locking and atomic replacement preserve unrelated partial patches across processes. The App reads persisted controls on initialization and saves changed fields only. Multi-user services must still supply identity-scoped storage and authorization.
 
 ## Local automated integration
 
@@ -40,11 +40,13 @@ Without `PLAYWRIGHT_MODULE_PATH`, the suite tries a caller-installed `playwright
 
 The suite covers actual `ui/initialize`, initialized notification, initial tool result, authenticated Go settings read/update, mention search, display/deep-link updates, context/message payloads, host resource text with inert HTML-like contents, missing host capabilities, and standalone mode. Context/message/resource responses are test-host fixtures, not OpenAI model behavior.
 
-## OpenAI host acceptance: unverified
+## OpenAI host acceptance: partial, user-observed
 
-As of 2026-10-01, the current Codex MCP Apps surface contained no tab connected to this example. The available browser automation inventory also reported `Unable to load browser request-header policy`. No configured OpenAI host installation/connection for this private server was available, so real Codex/ChatGPT acceptance was not performed. No persistent host configuration, plugin installation or user conversation message was created. The local bridge suite does not prove native settings, mentions, file routing or model-context behavior in an OpenAI host.
+On 2026-10-01 the private local plugin was installed and enabled using the official CLI. A separate official app-server process discovered all five tools and three resources. User-provided desktop screenshots confirmed the global Open workspace entrypoint, Connected state, initial tool result, effective setting values, and an explicit question/model response with context count 1 and an answer identifying bolt. The user also reported that Open fullscreen appeared ineffective; the App now displays actual mode, disables unavailable/already-fullscreen requests, and reports a host response that retains another mode. Reloaded desktop acceptance of that feedback fix is pending.
 
-Once a suitable authenticated host connection exists, perform and record:
+Native desktop control was unavailable: `com.openai.codex` was rejected by the UI tool, and the running desktop exposes no default CLI control socket. The agent did not restart it or send a conversation message. The local bridge suite and CLI discovery do not establish the remaining desktop outcomes. See [live-e2e.md](live-e2e.md) for installation and manual acceptance details.
+
+Continue human acceptance of the installed plugin and record:
 
 1. Global/thread launch, single initial result, isolation of two conversation/App instances, and supported display modes.
 2. Native settings discover/read, grouped layout/tool button, valid changed-field patches, visible validation/persistence errors, and storage behavior after a restart.

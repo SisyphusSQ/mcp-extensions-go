@@ -14,10 +14,11 @@ The official SDK owns JSON-RPC, schemas, tools, resources, discovery, sessions, 
 - `ui`: standard MCP Apps resource binding/visibility, OpenAI entrypoints, quick actions/display metadata, and trusted HTML resource registration.
 - `examples/http`: authenticated stateless Streamable HTTP with real in-memory settings, searchable/readable demo parts, workspace/file tools, loopback defaults, request limits and graceful shutdown.
 - `examples/frontend`: a bundled browser App using standard MCP Apps `App` plus OpenAI TypeScript extensions, with local browser integration tests through the official `AppBridge`.
+- `examples/stdio` and a private local Codex plugin: official stdio transport, bundled App and single-owner settings persisted across process restarts.
 
-Settings storage, resource authorization, cross-field validation and transactions are caller-owned. Visibility and metadata never grant permission. The example's one-credential memory store resets on restart.
+Settings storage, resource authorization, cross-field validation and transactions are caller-owned. Visibility and metadata never grant permission. HTTP defaults to a one-credential memory store; an absolute operator-owned `MCP_SETTINGS_FILE` enables persistent state. The local plugin uses the durable example store by default, with OS locking and atomic file replacement. This is not multi-user storage.
 
-Full OpenAI extended forms are not implemented. v1.8.0 supports standard MRTR, but its typed input map and custom outbound request API have specific limits. A receiving-middleware result adapter can emit extension fields, but that alone does not establish extended MRTR support. See the [complete responsibility matrix](docs/compatibility.md) and [reproducible SDK investigation](docs/protocol-investigation.md). OpenAI host acceptance remains unverified.
+Full OpenAI extended forms are not implemented. v1.8.0 supports standard MRTR, but its typed input map and custom outbound request API have specific limits. A receiving-middleware result adapter can emit extension fields, but that alone does not establish extended MRTR support. See the [complete responsibility matrix](docs/compatibility.md) and [reproducible SDK investigation](docs/protocol-investigation.md). Desktop screenshots confirm global launch and a connected App with the initial result; the remaining host acceptance scenarios are pending.
 
 ## Run the Go example
 
@@ -33,6 +34,10 @@ The endpoint defaults to `http://127.0.0.1:8080/mcp`. Configure a host with Stre
 For the real browser App, build `examples/frontend` and set `MCP_APP_HTML` to the absolute path of its trusted `dist/app.html`; follow [frontend setup and validation](docs/frontend-validation.md). Without that setting, the embedded page is static and performs no `ui/initialize` handshake.
 
 `MCP_LISTEN_ADDR` selects an explicit address. Remote access requires caller-configured HTTPS termination, authentication and network controls. The example does not configure TLS or install a background service.
+
+## Local Codex plugin
+
+For a ready-to-install private local Codex plugin, see [local plugin setup and human acceptance](docs/live-e2e.md). It packages the official stdio example and opens no listening port. Build/install commands and the observed desktop acceptance boundary are recorded there.
 
 ## Use settings in a business server
 
@@ -77,7 +82,7 @@ make test vet build
 GOTOOLCHAIN=go1.25.0 make test vet build
 ```
 
-`make test` runs race tests with official memory/HTTP transports, settings/search/file behavior, and SDK boundary reproductions. The ignored executable is `bin/mcp-extensions-http`. Frontend build/type/browser commands are documented separately. Tests passed on sqmc04 with Go 1.25.0 and Go 1.27.0; the frontend dependency installation reported zero npm audit vulnerabilities. This is not a full Go vulnerability reachability scan, remote deployment, or OpenAI host acceptance.
+`make test` runs race tests with official memory/HTTP/child-process stdio transports, settings/search/file behavior, and SDK boundary reproductions. The ignored executables are `bin/mcp-extensions-http` and `bin/mcp-extensions-stdio`. Frontend build/type/browser commands are documented separately. Tests passed on sqmc04 with Go 1.25.0 and Go 1.27.0; the frontend dependency installation reported zero npm audit vulnerabilities. Cache-local `govulncheck v1.8.0` reported no vulnerabilities. These checks do not establish remote deployment or completion of desktop UI acceptance.
 
 - [Documentation index](docs/README.md)
 - [Architecture](docs/architecture.md)
@@ -85,3 +90,4 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 - [Forms/MRTR investigation](docs/protocol-investigation.md)
 - [Frontend setup and host acceptance checklist](docs/frontend-validation.md)
 - [Handoff](docs/handoff.md)
+- [Private local plugin and human acceptance](docs/live-e2e.md)

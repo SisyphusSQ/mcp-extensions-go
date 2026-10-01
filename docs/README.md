@@ -7,5 +7,6 @@
 | [protocol-investigation.md](protocol-investigation.md) | Verified standard MRTR, extended-form boundaries, reproductions and required public SDK interfaces |
 | [frontend-validation.md](frontend-validation.md) | Runnable App, local bridge test and unverified OpenAI host acceptance checklist |
 | [handoff.md](handoff.md) | Delivery locations, development evidence and remaining work |
+| [live-e2e.md](live-e2e.md) | Private local plugin, actual CLI discovery, desktop screenshots and pending acceptance |
 
 The root [README.md](../README.md) describes usage, [README_ZH.md](../README_ZH.md) provides the Chinese companion, and [AGENTS.md](../AGENTS.md) defines collaboration rules.

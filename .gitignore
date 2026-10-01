@@ -7,3 +7,5 @@ coverage.out
 .idea/
 node_modules/
 examples/frontend/dist/
+plugins/mcp-extensions-go/bin/
+plugins/mcp-extensions-go/assets/app.html

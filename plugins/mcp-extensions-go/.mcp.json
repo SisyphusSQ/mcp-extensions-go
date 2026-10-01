@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "workspace": {
+      "command": "./bin/mcp-extensions-stdio",
+      "cwd": ".",
+      "env": {
+        "MCP_APP_HTML": "./assets/app.html"
+      }
+    }
+  }
+}

@@ -14,10 +14,11 @@ JSON-RPC、schema、工具、资源、发现、会话、传输和标准 MRTR 由
 - `ui`：标准 MCP Apps 工具资源绑定和可见性、OpenAI 入口、快捷动作与显示模式元数据、可信 HTML 注册。
 - `examples/http`：带 Bearer 认证的 stateless Streamable HTTP，包含真实内存设置、可搜索/读取的示例零件、工作区与文件入口工具、loopback 默认地址、请求限制与优雅退出。
 - `examples/frontend`：使用标准 MCP Apps `App` 和 OpenAI TypeScript 扩展的浏览器 App，并通过官方 `AppBridge` 进行本机浏览器集成测试。
+- `examples/stdio` 和私有本地 Codex 插件：官方 stdio 传输、自包含 App，以及跨进程重启保留的单用户设置。
 
-设置存储、资源授权、跨字段规则和事务由调用者负责。可见性与元数据不授予权限。示例只有一个运行时凭据，共用带锁的内存记录，重启后恢复默认值。
+设置存储、资源授权、跨字段规则和事务由调用者负责。可见性与元数据不授予权限。HTTP 默认使用单个凭据对应的内存记录，可通过绝对路径 `MCP_SETTINGS_FILE` 启用持久化；本地插件默认使用带操作系统锁和原子文件替换的持久设置。该示例不提供多用户存储隔离。
 
-完整 OpenAI 扩展表单尚未实现。Go SDK v1.8.0 已支持标准 MRTR，但类型化输入映射和自定义发出请求存在具体限制；接收中间件可以输出扩展结果字段，单凭这一点不能声明扩展 MRTR 已实现。详见 [完整能力对应表](docs/compatibility.md) 与 [可复现的 SDK 调查](docs/protocol-investigation.md)。真实 OpenAI 宿主仍未验收。
+完整 OpenAI 扩展表单尚未实现。Go SDK v1.8.0 已支持标准 MRTR，但类型化输入映射和自定义发出请求存在具体限制；接收中间件可以输出扩展结果字段，单凭这一点不能声明扩展 MRTR 已实现。详见 [完整能力对应表](docs/compatibility.md) 与 [可复现的 SDK 调查](docs/protocol-investigation.md)。用户截图已确认真实桌面的全局入口、Connected 状态和首次工具结果，其余宿主场景仍待验收。
 
 ## 运行 Go 示例
 
@@ -34,6 +35,20 @@ go run ./examples/http
 使用真实浏览器 App 时，先构建 `examples/frontend`，再将 `MCP_APP_HTML` 设为可信 `dist/app.html` 的绝对路径，完整步骤见 [前端设置与验证](docs/frontend-validation.md)。未设置时仍使用不包含 `ui/initialize` 握手的静态页面。
 
 `MCP_LISTEN_ADDR` 用于选择明确的地址。远程访问需自行配置 HTTPS 入口、认证和网络访问控制；示例不配置 TLS 或安装后台服务。
+
+## 本机 Codex 插件
+
+本机已安装并启用 **MCP Extensions Go**，本地目录源名为 **MCP Extensions Go Local**。用户已通过侧栏更多菜单的 **Open workspace** 打开页面。可依次验收设置读写与重开后的保留、bolt 搜索，以及宿主提供的 fullscreen、mentions 和 `.txt` 文件入口。模型上下文和发送消息按钮仅在宿主声明支持时可用。
+
+重新构建安装：
+
+```sh
+make plugin
+codex plugin marketplace add /absolute/path/to/mcp-extensions-go
+codex plugin add mcp-extensions-go@mcp-extensions-go-local
+```
+
+插件使用官方 stdio 传输，不监听端口。二进制和 HTML 均为本机生成并被 Git 忽略，安装副本进入 Codex 插件缓存。设置在 sqmc04 上默认写入 `/Users/suqing/Library/Application Support/mcp-extensions-go/live-e2e/settings.json`。完整步骤、证据与限制见 [本地插件与人工验收](docs/live-e2e.md)。
 
 ## 在业务服务中使用 Settings
 
@@ -78,7 +93,7 @@ make test vet build
 GOTOOLCHAIN=go1.25.0 make test vet build
 ```
 
-`make test` 包括 race、官方内存/HTTP 传输、Settings/Mentions/文件行为及 SDK 边界复现。产物为不进入 Git 的 `bin/mcp-extensions-http`。前端构建、类型检查和浏览器测试见专门文档。sqmc04 已通过 Go 1.25.0 与 Go 1.27.0 验证；前端依赖安装的 npm audit 报告为零漏洞。这不代表 Go 完整漏洞可达性扫描、远程部署或 OpenAI 宿主验收。
+`make test` 包括 race、官方内存/HTTP/真实子进程 stdio 传输、Settings/Mentions/文件行为及 SDK 边界复现。产物为不进入 Git 的 `bin/mcp-extensions-http` 与 `bin/mcp-extensions-stdio`。前端构建、类型检查和浏览器测试见专门文档。sqmc04 已通过 Go 1.25.0 与 Go 1.27.0 验证；前端依赖安装的 npm audit 报告为零漏洞。缓存内运行的 `govulncheck v1.8.0` 报告未发现漏洞，未安装全局工具。这些检查不代表远程部署或完整桌面 UI 验收。
 
 - [文档入口](docs/README.md)
 - [架构](docs/architecture.md)
@@ -86,3 +101,4 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 - [表单/MRTR 调查](docs/protocol-investigation.md)
 - [前端与宿主验收清单](docs/frontend-validation.md)
 - [交接记录](docs/handoff.md)
+- [本地插件与人工验收](docs/live-e2e.md)

@@ -1,0 +1,7 @@
+MCP Extensions Go file acceptance
+
+This file is a small, disposable test input. The App should display its text.
+The Go server must receive an opaque resource URI, not open this host path.
+
+HTML-like text must remain inert:
+<img src=x onerror=alert('this must not run')>
