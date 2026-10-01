@@ -91,3 +91,4 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 - [Frontend setup and host acceptance checklist](docs/frontend-validation.md)
 - [Handoff](docs/handoff.md)
 - [Private local plugin and human acceptance](docs/live-e2e.md)
+- [English/Chinese GitHub Wiki source and implementation roadmap](docs/wiki/README.md)
