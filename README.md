@@ -2,7 +2,7 @@
 
 [中文说明](README_ZH.md)
 
-A private, personal Go library for the server-side features of [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions), built on the official [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk). This is not an official OpenAI Go SDK. No version or tag has been released.
+A public, personal Go library for the server-side features of [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions), built on the official [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk). This is not an official OpenAI Go SDK. No version or tag has been released.
 
 The official SDK owns JSON-RPC, schemas, tools, resources, discovery, sessions, transports and standard MRTR. This module adds server extension types and helpers. Browser/host behavior uses the official TypeScript App SDKs.
 
@@ -14,7 +14,7 @@ The official SDK owns JSON-RPC, schemas, tools, resources, discovery, sessions, 
 - `ui`: standard MCP Apps resource binding/visibility, OpenAI entrypoints, quick actions/display metadata, and trusted HTML resource registration.
 - `examples/http`: authenticated stateless Streamable HTTP with real in-memory settings, searchable/readable demo parts, workspace/file tools, loopback defaults, request limits and graceful shutdown.
 - `examples/frontend`: a bundled browser App using standard MCP Apps `App` plus OpenAI TypeScript extensions, with local browser integration tests through the official `AppBridge`.
-- `examples/stdio` and a private local Codex plugin: official stdio transport, bundled App and single-owner settings persisted across process restarts.
+- `examples/stdio` and a local Codex plugin: official stdio transport, bundled App and single-owner settings persisted across process restarts.
 
 Settings storage, resource authorization, cross-field validation and transactions are caller-owned. Visibility and metadata never grant permission. HTTP defaults to a one-credential memory store; an absolute operator-owned `MCP_SETTINGS_FILE` enables persistent state. The local plugin uses the durable example store by default, with OS locking and atomic file replacement. This is not multi-user storage.
 
@@ -37,7 +37,7 @@ For the real browser App, build `examples/frontend` and set `MCP_APP_HTML` to th
 
 ## Local Codex plugin
 
-For a ready-to-install private local Codex plugin, see [local plugin setup and human acceptance](docs/live-e2e.md). It packages the official stdio example and opens no listening port. Build/install commands and the observed desktop acceptance boundary are recorded there.
+For a ready-to-install local Codex plugin, see [local plugin setup and human acceptance](docs/live-e2e.md). It packages the official stdio example and opens no listening port. Build/install commands and the observed desktop acceptance boundary are recorded there. The source repository is public; the plugin has not been distributed through a public plugin directory.
 
 ## Use settings in a business server
 
@@ -71,7 +71,9 @@ For mention search, use `mentions.AddTool(server, &mcp.Tool{Name: "search_mentio
 
 For UI declarations, use `ui.ToolMetadata.Metadata` and `ui.AddHTMLResource` with official tools/resources. Metadata snapshots preserve arbitrary JSON number precision and ownership. For files, `resources.Path(req.Params.Meta)` only parses context; authenticate and authorize independently before calling a root-contained `Reader`. Never open arbitrary host paths or opaque resource URIs directly.
 
-Other consumers of this private module need repository access, Git authentication and their own `GOPRIVATE` configuration. This project changes no global Go settings.
+The repository became public at the owner's explicit request on 2026-10-01. Public source access does not require private-repository authentication or `GOPRIVATE`; pin a reviewed commit until a version is released. This project changes no global Go settings.
+
+The [GitHub Wiki](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home) provides separate English and Chinese guides for architecture, the complete capability matrix, frontend validation, SDK forms/MRTR investigation, local plugin acceptance and future implementation work. Its source remains under `docs/wiki`; Handoff remains in the source repository.
 
 ## Development
 
@@ -90,5 +92,6 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 - [Forms/MRTR investigation](docs/protocol-investigation.md)
 - [Frontend setup and host acceptance checklist](docs/frontend-validation.md)
 - [Handoff](docs/handoff.md)
-- [Private local plugin and human acceptance](docs/live-e2e.md)
-- [English/Chinese GitHub Wiki source and implementation roadmap](docs/wiki/README.md)
+- [Local plugin and human acceptance](docs/live-e2e.md)
+- [GitHub Wiki: English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview) / [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview)
+- [English/Chinese Wiki source and publication procedure](docs/wiki/README.md)

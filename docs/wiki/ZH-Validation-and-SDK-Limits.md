@@ -1,6 +1,6 @@
 # 验收状态与 SDK 限制
 
-[English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Validation-and-SDK-Limits) · [中文首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home-ZH)
+[English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Validation-and-SDK-Limits) · **中文** · [项目概览](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview) · [Wiki 首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
 这里区分实现缺口、宿主验收和业务责任。[完整能力对应表](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md)仍是详细实现状态的权威记录。
 
@@ -45,4 +45,4 @@ OpenAI 扩展表单是另一条契约。Go 的类型化 `InputRequestMap` 无法
 
 调用者负责已验证身份、每个资源授权、多用户设置、搜索来源、跨字段事务和持久续轮策略。持久设置示例只有一个所有者；Unix 状态文件使用 0600，Windows 继承 ACL 未验证，不宣称断电耐久性。
 
-解析 `openai/resource.path` 或收到不透明 URI 都不授予读取权。读取本地文件要独立授权、配置可信允许根目录、限制符号链接与资源大小。根目录内的恶意硬链接/mount 和可中断普通文件系统调用仍在 Reader 契约之外。后续修改保持 HTTP 认证、运行时凭据、浏览器文本输出和资源权限边界。未进行远程 HTTPS 部署、公开仓库/插件、tag 或 release。
+解析 `openai/resource.path` 或收到不透明 URI 都不授予读取权。读取本地文件要独立授权、配置可信允许根目录、限制符号链接与资源大小。根目录内的恶意硬链接/mount 和可中断普通文件系统调用仍在 Reader 契约之外。后续修改保持 HTTP 认证、运行时凭据、浏览器文本输出和资源权限边界。源码仓库已按所有者在 2026-10-01 的明确要求公开，运行时访问控制没有因此改变。未进行远程 HTTPS 部署、公开插件目录上架、tag 或 release。

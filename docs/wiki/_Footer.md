@@ -1,0 +1,1 @@
+Documentation source / 文档源：[SisyphusSQ/mcp-extensions-go · docs/wiki](https://github.com/SisyphusSQ/mcp-extensions-go/tree/main/docs/wiki) · [Report an issue / 反馈问题](https://github.com/SisyphusSQ/mcp-extensions-go/issues)

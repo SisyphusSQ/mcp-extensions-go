@@ -1,5 +1,9 @@
 # Forms and MRTR: verified public SDK boundaries
 
+**English** · [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation) · [Wiki home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
+
+Source: [`docs/protocol-investigation.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/protocol-investigation.md).
+
 ## Sources and method
 
 The OpenAI protocol and both extension implementations were read at commit `900032d8bd7c1566202d0cb1666986584f932043`. Relevant upstream sources:

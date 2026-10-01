@@ -1,6 +1,6 @@
 # 可实现缺口与后续开发
 
-[English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Implementation-Roadmap) · [中文首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home-ZH)
+[English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Implementation-Roadmap) · **中文** · [项目概览](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview) · [Wiki 首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
 除明确写为已有基础外，下列事项均为**尚未实现**，是后续开发清单，不是能力支持声明。上游参照为 `openai/mcp-extensions` 的 `900032d8bd7c1566202d0cb1666986584f932043`，2026-10-01 已独立核对它仍是上游 main。
 
@@ -67,7 +67,7 @@
 
 ## 有条件实施：现代 OpenAI 表单 MRTR
 
-S1 不能归入“现在即可完整对齐”。已有私有测试证明：公开接收中间件与 ResultBase 适配可以经官方 HTTP 输出扩展 `input_required` 结果。完整传输/续轮链路仍未验证，官方 Go 类型化客户端会拒绝这个自定义输入方法。
+S1 不能归入“现在即可完整对齐”。已有本机协议测试证明：公开接收中间件与 ResultBase 适配可以经官方 HTTP 输出扩展 `input_required` 结果。完整传输/续轮链路仍未验证，官方 Go 类型化客户端会拒绝这个自定义输入方法。
 
 完成 D2–D5 后，在真实扩展宿主中按每次请求的实际客户端能力验证。先核对固定 SDK 的参数/结果解码和中间件顺序，再设计公开 API。续轮状态绑定已验证身份、工具、参数和轮次，限制容量/生命周期，处理重放、过期、完成、取消/拒绝、恢复及并发隔离。Stateless HTTP 必须验证真实身份隔离；如宣称持久恢复，还须验证进程重启后的所有权。事务和恢复由调用者存储负责。
 

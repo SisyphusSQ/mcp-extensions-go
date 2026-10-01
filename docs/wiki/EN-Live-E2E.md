@@ -1,5 +1,9 @@
 # Local Codex plugin and acceptance
 
+**English** · [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Live-E2E) · [Wiki home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
+
+Source: [`docs/live-e2e.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/live-e2e.md).
+
 ## Location and installation
 
 PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) was merged into `main` at `3f45cf66eab5f6fd172763e604d794e12cef5cf1` while the repository was private. The `suqing/live-e2e` delivery was subsequently merged through [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) at `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. The source repository became public at the owner's explicit request on 2026-10-01; the plugin remains a local installation without a public plugin-directory listing. The merge does not complete pending human acceptance.
@@ -64,4 +68,4 @@ Full OpenAI extended forms/MRTR remain incomplete for the documented SDK boundar
 
 Security self-review: HTTP auth was preserved; local stdio uses parent process access; host URIs never become filesystem reads; persistent paths are operator-owned with bounded reads, OS locks and private atomic state files; browser output uses text DOM APIs. These findings do not establish multi-user authorization or complete host acceptance.
 
-Commit/push/merge closeout reuses this development evidence without repeating tests or checks. Human acceptance continues against the merged code. No new release or tag is published. Future implementable gaps are recorded in the [bilingual GitHub Wiki source](wiki/README.md).
+Commit/push/merge closeout reuses this development evidence without repeating tests or checks. Human acceptance continues against the merged code. No new release or tag is published. Future implementable gaps are recorded in the [implementation roadmap](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Implementation-Roadmap).

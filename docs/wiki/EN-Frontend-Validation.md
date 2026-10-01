@@ -1,5 +1,9 @@
 # Frontend example and validation boundary
 
+**English** · [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Frontend-Validation) · [Wiki home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
+
+Source: [`docs/frontend-validation.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/frontend-validation.md).
+
 ## Run with the Go server
 
 The example uses `@modelcontextprotocol/ext-apps 1.7.5` and `@openai/mcp-extensions 0.1.0` directly. Node dependencies are local and locked. Browser/server credentials are never bundled into HTML. The default embedded HTTP page remains static; select the real built App explicitly:
@@ -44,7 +48,7 @@ The suite covers actual `ui/initialize`, initialized notification, initial tool 
 
 On 2026-10-01 the local plugin was installed and enabled using the official CLI. A separate official app-server process discovered all five tools and three resources. User-provided desktop screenshots confirmed the global Open workspace entrypoint, Connected state, initial tool result, effective setting values, and an explicit question/model response with context count 1 and an answer identifying bolt. The user also reported that Open fullscreen appeared ineffective; the App now displays actual mode, disables unavailable/already-fullscreen requests, and reports a host response that retains another mode. Reloaded desktop acceptance of that feedback fix is pending.
 
-Native desktop control was unavailable: `com.openai.codex` was rejected by the UI tool, and the running desktop exposes no default CLI control socket. The agent did not restart it or send a conversation message. The local bridge suite and CLI discovery do not establish the remaining desktop outcomes. See [live-e2e.md](live-e2e.md) for installation and manual acceptance details.
+Native desktop control was unavailable: `com.openai.codex` was rejected by the UI tool, and the running desktop exposes no default CLI control socket. The agent did not restart it or send a conversation message. The local bridge suite and CLI discovery do not establish the remaining desktop outcomes. See [live-e2e.md](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Live-E2E) for installation and manual acceptance details.
 
 Continue human acceptance of the installed plugin and record:
 
@@ -53,6 +57,6 @@ Continue human acceptance of the installed plugin and record:
 3. Composer mention typeahead, empty query, selection, readable selected resource, and denied/unavailable search.
 4. File-extension input, host-owned resource read representations, large-file rejection, and unsupported capabilities. Writes/subscriptions need a separate example before claiming their acceptance.
 5. Model-context replacement/removal/updateId, explicit active/new conversation messages, and deep-link initialization plus subsequent navigation.
-6. Extension-capable forms and genuine MRTR continuation only after the SDK/host requirements in `protocol-investigation.md` are resolved.
+6. Extension-capable forms and genuine MRTR continuation only after the SDK/host requirements in [the SDK investigation](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Protocol-Investigation) are resolved.
 
 Do not mark any of these complete based on the local protocol fixture.

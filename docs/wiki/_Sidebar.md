@@ -1,9 +1,21 @@
-## mcp-extensions-go
+**English**
 
-- [Home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
-- [中文首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home-ZH)
-- [Implementation roadmap](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Implementation-Roadmap)
-- [可实现缺口与后续开发](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Implementation-Roadmap-ZH)
-- [Validation and SDK limits](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Validation-and-SDK-Limits)
-- [验收状态与 SDK 限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Validation-and-SDK-Limits-ZH)
-- [Source repository](https://github.com/SisyphusSQ/mcp-extensions-go)
+- [Overview](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview)
+- [Architecture](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Architecture)
+- [Compatibility and capabilities](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility)
+- [Frontend validation](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Frontend-Validation)
+- [Local plugin and live acceptance](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Live-E2E)
+- [Forms and MRTR investigation](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Protocol-Investigation)
+- [Implementation roadmap](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Implementation-Roadmap)
+- [Validation and SDK limits](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Validation-and-SDK-Limits)
+
+**中文**
+
+- [项目概览](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview)
+- [架构](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Architecture)
+- [兼容性与完整能力表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility)
+- [前端验证](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Frontend-Validation)
+- [本地插件与实际验收](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Live-E2E)
+- [表单与 MRTR 调查](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation)
+- [可实现缺口与后续开发](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap)
+- [验收状态与 SDK 限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits)
