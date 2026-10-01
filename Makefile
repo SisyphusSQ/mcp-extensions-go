@@ -1,7 +1,7 @@
 .PHONY: fmt test vet build
 
 fmt:
-	gofmt -w ui examples/http
+	gofmt -w ui settings mentions resources internal examples/http
 
 test:
 	go test -race ./...

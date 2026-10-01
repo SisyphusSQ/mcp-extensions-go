@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src SCRIPT_HASH; style-src 'unsafe-inline'">
+  <title>Go workspace</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color-scheme: light dark; }
+    body { margin: 0; padding: 24px; } main { max-width: 760px; margin: auto; }
+    button, input, select { font: inherit; margin: 4px; padding: 8px; }
+    fieldset { margin: 18px 0; border: 1px solid #8886; border-radius: 8px; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 12px; background: #8881; }
+  </style>
+</head>
+<body><main>
+  <h1>Workspace</h1>
+  <p id="status" role="status">Connecting to host…</p>
+  <p>Current page: <span id="deep-link">/</span></p>
+  <fieldset><legend>Settings</legend>
+    <label>Units <select id="units"><option>mm</option><option>in</option></select></label>
+    <label><input id="grid" type="checkbox">Show grid</label>
+    <button id="read" disabled>Read settings</button><button id="save" disabled>Save settings</button>
+  </fieldset>
+  <fieldset><legend>Parts</legend>
+    <input id="query" aria-label="Search parts" placeholder="bolt or washer"><button id="search" disabled>Search</button>
+  </fieldset>
+  <fieldset><legend>Conversation</legend>
+    <button id="context" disabled>Add bolt to model context</button>
+    <button id="message" disabled>Send question</button>
+    <button id="display" disabled>Open fullscreen</button>
+  </fieldset>
+  <pre id="output" aria-label="Result"></pre>
+</main><script type="module">APP_SCRIPT</script></body>
+</html>
