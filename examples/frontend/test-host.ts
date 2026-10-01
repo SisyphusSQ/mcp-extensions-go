@@ -5,10 +5,12 @@ const iframe = document.getElementById("app") as HTMLIFrameElement;
 const events: Array<{ method: string; params?: unknown }> = [];
 let sequence = 0;
 const disabled = new URLSearchParams(window.location.search).has("noextensions");
+const parameters = new URLSearchParams(window.location.search);
+const initialMode = parameters.has("fullscreen") ? "fullscreen" : "inline";
 const bridge = new AppBridge(null, { name: "Local protocol fixture", version: "0" }, {
   serverTools: {}, serverResources: {}, message: {}, updateModelContext: { text: {} },
   experimental: disabled ? {} : { "openai/modelContext": {}, "openai/message": {}, "openai/resource": {} },
-}, { hostContext: { displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"], "openai/deepLink": { url: "/parts?tag=bolt" } } });
+}, { hostContext: { displayMode: initialMode, availableDisplayModes: parameters.has("nofullscreen") ? ["inline"] : ["inline", "fullscreen"], "openai/deepLink": { url: "/parts?tag=bolt" } } });
 
 async function proxy(method: "tools/call" | "resources/read", params: unknown) {
   const response = await fetch("/rpc", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ method, params }) });
@@ -31,6 +33,7 @@ bridge.onupdatemodelcontext = async params => {
 };
 bridge.onrequestdisplaymode = async params => {
   events.push({ method: "ui/request-display-mode", params });
+  if (parameters.has("keepinline")) return { mode: "inline" };
   bridge.setHostContext({ displayMode: params.mode });
   return { mode: params.mode };
 };

@@ -83,12 +83,19 @@ try {
   await app.locator("#output").filter({ hasText: '"showGrid": true' }).waitFor();
   assert.equal(await app.locator("#units").inputValue(), "in");
   assert.equal(await app.locator("#grid").isChecked(), true);
+  // Simulate another App changing an unrelated setting after this App's read.
+  await client.callTool({ name: "settings.update", arguments: { set: { showGrid: false } } });
+  await app.locator("#units").selectOption("mm"); await app.locator("#save").click();
+  await app.locator("#output").filter({ hasText: '"units": "mm"' }).waitFor();
+  assert.equal(await app.locator("#grid").isChecked(), false, "App overwrote another instance's unrelated patch");
   await app.locator("#query").fill("bolt"); await app.locator("#search").click();
   await app.locator("#output").filter({ hasText: "parts://bolt" }).waitFor();
   await app.locator("#context").click(); await app.locator("#output").filter({ hasText: "update-1" }).waitFor();
   await app.locator("#message").click();
   await page.waitForFunction(() => window.fixture.events.some(e => e.method === "ui/message"));
   await app.locator("#display").click(); await app.locator("#output").filter({ hasText: "fullscreen" }).waitFor();
+  assert.equal(await app.locator("#display").textContent(), "Already fullscreen");
+  assert.equal(await app.locator("#display").isDisabled(), true);
   await page.evaluate(() => window.fixture.deepLink("/parts/washer"));
   await app.locator("#deep-link").filter({ hasText: "/parts/washer" }).waitFor();
   await page.evaluate(() => window.fixture.file());
@@ -100,11 +107,24 @@ try {
   assert.equal(events.filter(e => e.method === "tools/call" && e.params.name === "open_workspace").length, 0, "App redundantly called the initial tool");
   assert.equal(events.find(e => e.method === "ui/update-model-context").params.content[0]._meta["openai/title"], "Bolt");
   assert.equal(events.find(e => e.method === "resources/read").params._meta["openai/resource"].representation, "text");
+  assert.deepEqual(events.filter(e => e.method === "tools/call" && e.params.name === "settings.update")[1].params.arguments.set, { units: "mm" });
   assert.deepEqual(errors, []);
   await page.goto(`http://127.0.0.1:${local.address().port}/?noextensions`);
   await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
   assert.equal(await app.locator("#context").isDisabled(), true);
   assert.equal(await app.locator("#message").isDisabled(), true);
+  for (const [query, label] of [["fullscreen", "Already fullscreen"], ["nofullscreen", "Fullscreen unavailable"]]) {
+    await page.goto(`http://127.0.0.1:${local.address().port}/?${query}`);
+    await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
+    assert.equal(await app.locator("#display").textContent(), label);
+    assert.equal(await app.locator("#display").isDisabled(), true);
+    assert.equal((await page.evaluate(() => window.fixture.events)).filter(e => e.method === "ui/request-display-mode").length, 0);
+  }
+  await page.goto(`http://127.0.0.1:${local.address().port}/?keepinline`);
+  await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
+  await app.locator("#display").click();
+  await app.locator("#status").filter({ hasText: "Host kept inline mode" }).waitFor();
+  assert.equal(await app.locator("#display-mode").textContent(), "inline");
   const standalone = await browser.newPage();
   await standalone.goto(`http://127.0.0.1:${local.address().port}/app`);
   await standalone.locator("#status").filter({ hasText: "Open this App through an MCP host" }).waitFor();

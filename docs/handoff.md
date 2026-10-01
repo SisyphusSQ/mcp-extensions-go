@@ -1,5 +1,23 @@
 # Server extensions handoff
 
+## Current continuation: local plugin acceptance
+
+PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) merged into private main at `3f45cf66eab5f6fd172763e604d794e12cef5cf1`. The active continuation branch is `suqing/live-e2e`. The initial delivery record below predates that merge; current host and persistence status is defined by [live-e2e.md](live-e2e.md).
+
+The official stdio example and private local plugin are implemented and installed/enabled on sqmc04. Shared example business handlers retain HTTP authentication. Single-owner file settings use bounded reads, OS locks and atomic replacement; real simultaneous stdio processes preserve unrelated patches and a restarted process reads persisted values. The App initializes saved controls, sends changed fields only, and displays actual host mode with appropriate fullscreen feedback.
+
+User screenshots confirm global Open workspace navigation, Connected and the initial result, effective settings values, and a model answer using bolt context after an explicit message. The user reported an ineffective Open fullscreen button; the display feedback fix is installed, with reopened-page human acceptance pending. The actual settings file was read locally: mode 0600, units=in, showGrid=false. This confirms persistence occurred; it is not a human restart acceptance result.
+
+Development evidence: Go 1.27 full race/vet/build passed; Go 1.25 full suite passed before the final small changes, then final HTTP/stdio/store race tests and vet/build passed. Linux/Windows amd64 Go 1.25 cross-builds passed. Final frontend build/typecheck/browser suite passed, including changed-field concurrency and fullscreen/already-fullscreen/unsupported/retained-mode scenarios. Cache-local `govulncheck v1.8.0` reported no vulnerabilities with Go 1.27; no global tool was installed. `x/sys v0.44.0` is now direct for the example's Windows OS locking, with no version change.
+
+Native desktop UI control and its default CLI control socket were unavailable. The agent did not restart the desktop or send a user conversation message; host evidence came from user-provided screenshots. Native mentions/settings/file routing, restart/isolation, deep links, additional context/message cases and extended forms remain unaccepted. Full OpenAI forms/MRTR still have the documented SDK blockers; no capability is fabricated.
+
+Security self-review preserved authentication and resource boundaries, operator-controlled bounded file access, private local settings and explicit concurrency ownership; no unresolved issue was found in this local single-owner scope. Multi-user and Windows/Linux runtime acceptance remain outside the evidence.
+
+Stop for human acceptance after commit/push; keep this branch separate from main. Do not repeat tests/checks during closeout. No tag, release, public publication, automation or memory/TODO update is created.
+
+## Initial server extension delivery (historical)
+
 ## Delivery location
 
 - Private GitHub repository: [SisyphusSQ/mcp-extensions-go](https://github.com/SisyphusSQ/mcp-extensions-go).
