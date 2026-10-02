@@ -12,8 +12,9 @@
 业务服务 / internal/example（HTTP 与 stdio）
   +-- settings：原生设置工具、capability、声明校验
   +-- mentions：app 可见的搜索工具、两种结果类型
-  +-- resources：文件输入/上下文解析、可选已授权根目录读取器
+  +-- resources：文件输入/上下文解析
   +-- ui：App 元数据、可信 HTML 注册
+  +-- forms：扩展 schema、原始回答、资源和类型模型
   +-- 官方 mcp.Server
        +-- schema、工具、资源、发现、会话与传输
        +-- 标准 elicitation 与标准 MRTR
@@ -49,7 +50,7 @@ Read 必须只读。Update 必须独立授权、保留未提供字段、检查�
 
 `FileInput` 包含文件名和不透明宿主资源 URI。App 使用官方 TypeScript 资源 API 读取该 URI，Go 不将它映射为文件系统路径。路径、表示、writable/etag 元数据解析器允许未来无关字段，但拒绝格式错误的已知字段。
 
-可选 `resources.Reader` 不执行认证或逐资源授权。调用者必须配置绝对允许根目录和正数大小上限。`os.Root` 在打开期间保证根目录约束，允许根目录内的相对符号链接并拒绝逃逸。Unix 非阻塞打开与普通文件检查拒绝 FIFO、设备和目录；stat 大小检查及限量读取处理检查后文件增长，I/O 前后检查取消。
+`internal/example.Reader` 已收回为私有示例代码，不属于公共 Extensions API，也不执行认证或逐资源授权。调用者必须配置绝对允许根目录和正数大小上限。`os.Root` 在打开期间保证根目录约束，允许根目录内的相对符号链接并拒绝逃逸。Unix 非阻塞打开与普通文件检查拒绝 FIFO、设备和目录；stat 大小检查及限量读取处理检查后文件增长，I/O 前后检查取消。
 
 可信根目录必须排除恶意 mount/硬链接；路径按调用者配置的根目录命名空间解释，包括 macOS `/var` 别名。HTTP 示例只读取运维明确选择的可信 App 构建文件，从不读取宿主传入的任意路径。
 
@@ -63,13 +64,13 @@ Read 必须只读。Update 必须独立授权、保留未提供字段、检查�
 
 测试桥接使用官方 AppBridge/PostMessageTransport、隔离的 headless Chrome profile、受限同源代理和临时 Go Bearer 凭据。上下文、模型消息与文件宿主行为来自测试数据，这是本机集成证据，不是 OpenAI 产品验收。
 
-## 表单与 MRTR 决策
+## 扩展表单与 SDK 边界
 
-官方 SDK 实现标准 MRTR，本机已验证真实多轮调用。业务续轮的所有权、过期、重放和事务仍由应用负责。
+forms 已实现 Python 扩展的平面声明、JSON enum／注解、丰富选择、建议值、资源选择和上传引用校验。回答保留原值；声明 UserOptions 后允许有效宿主用户 URI，可选回调进一步限制。资源额外描述字段按不透明 JSON 保留。公开 schema 推导提供别名、命名类型 enum／约束和类型化结果；默认值只进入解码结果。宿主承担选择／上传／预览。本库不读取资源。详见[表单指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)。
 
-旧版 OpenAI 自定义服务端发出 elicitation 受公开发送方法注册表限制。类型化 `InputRequestMap` 无法编码/解码 OpenAI 方法。接收中间件配合 ResultBase 可以通过官方 HTTP 输出适配后的扩展结果，不能将所有方向都说成不可实现。
+Settings 在保存前执行格式／字段校验，只处理提供的 patch，转换结果再次检查；Update 可以接收业务字段名，wire 和完整返回值保留 JSON 别名。合并状态／跨字段规则与事务属于业务。
 
-该路径仍是仅供测试的实验，没有真实扩展宿主、完整扩展字段/选择校验或生产续轮契约。未添加公共占位 API 或不支持的 capability。具体复现、SDK 源码位置和需要的公开接口见[协议调查](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation)。
+对齐仅限 MCP Extensions。标准 MRTR／会话／传输、tasks、通用状态加密／恢复、身份框架不做对齐。此前公共现代表单 MRTR 适配、请求状态包和两轮 review 示例已移除；接收结果适配仅保留为 SDK 调查测试。Python elicit_input 不实现 MRTR；旧版自定义发送仍受 Go SDK v1.8.0 公开发送 API 限制。见[协议调查](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation)。
 
 ## 安全与生命周期
 

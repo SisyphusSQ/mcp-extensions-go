@@ -11,7 +11,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SisyphusSQ/mcp-extensions-go/resources"
 	"github.com/SisyphusSQ/mcp-extensions-go/settings"
 )
 
@@ -125,7 +124,7 @@ func (s *Store) access(ctx context.Context, patch settings.Values) (settings.Val
 }
 
 func (s *Store) load(ctx context.Context) (settings.Values, error) {
-	reader, err := resources.OpenReader(filepath.Dir(s.path), 64<<10)
+	reader, err := OpenReader(filepath.Dir(s.path), 64<<10)
 	if err != nil {
 		return nil, err
 	}

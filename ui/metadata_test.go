@@ -105,3 +105,21 @@ func TestMetadataPreservesLargeJSONNumbers(t *testing.T) {
 		t.Fatalf("integer precision lost: %s", encoded)
 	}
 }
+
+func TestEntrypointWhitespaceNormalization(t *testing.T) {
+	m := ui.ToolMetadata{ResourceURI: "ui://app/home", Entrypoints: []ui.Entrypoint{
+		{Type: ui.File, Extensions: []string{" .txt "}},
+		{Type: ui.Settings, SearchTerms: []string{" units "}},
+	}}
+	meta, err := m.Metadata(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entries := meta[ui.OpenAIMetaKey].(map[string]any)["entrypoints"].([]any)
+	if entries[0].(map[string]any)["extensions"].([]any)[0] != ".txt" || entries[1].(map[string]any)["searchTerms"].([]any)[0] != "units" {
+		t.Fatal("Python normalization missing")
+	}
+	if m.Entrypoints[0].Extensions[0] != " .txt " || m.Entrypoints[1].SearchTerms[0] != " units " {
+		t.Fatal("caller declaration mutated")
+	}
+}

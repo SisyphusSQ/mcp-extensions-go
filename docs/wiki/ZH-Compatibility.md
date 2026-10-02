@@ -26,7 +26,7 @@
 | Settings 工具按钮 | layout 引用同服务接收 `{}` 的工具 | spinner/tooltip 或 App modal | `settings.Item` 工具类型 | 业务工具由调用者提供，不能反查工具注册表 | 声明检查；宿主按钮 UX 未验收 |
 | composer Mentions | 查询/结果类型、marker、app visibility、搜索授权 | 输入框 typeahead 与选中引用 | `mentions.AddTool`，`resource_link` 与 SDK `resource` 两种结果 | spec/SDK 不要求单独服务端 capability；平台 UX 未验收 | Mention 协议/错误/visibility 测试；HTTP 搜索与可读资源 |
 | 文件扩展启动 | `FileInput {file:{name,resourceUri}}`、类型化工具、入口元数据 | 注入不透明 URI、传递初始输入 | `resources.FileInput`、`open_file` 示例 | 不透明 URI 从不当作路径 | 类型化 SDK 输入测试；真实文件启动未验收 |
-| tools/call 的 `openai/resource.path` | 解析元数据，独立授权任何读取 | 附加本地执行路径 | `resources.Path`、可选根目录约束 Reader | 元数据不能证明宿主身份或权限 | 错误元数据、根目录/符号链接/大小/取消测试 |
+| tools/call 的 `openai/resource.path` | 解析元数据，独立授权任何读取 | 附加本地执行路径 | `resources.Path`；读取器仅为私有示例 | 元数据不能证明宿主身份或权限 | 错误元数据、根目录/符号链接/大小/取消测试 |
 | 宿主 resources/read 表示 | 对自有资源解析 text/blob 提示 | 拦截已打开文件不透明 URI 的读取 | `ParseReadMetadata`、TypeScript App 资源读取 | 宿主文件读取未验收 | 解析测试；本机 App bridge 与宿主清单 |
 | 宿主资源写入提示 | 解析 writable/etag 供业务使用 | 执行写入、条件 ETag、saved/conflict/too-large 结果 | `ParseContentMetadata`；复用官方 TS App 资源 API | 没有 Go 写宿主 RPC，不虚构 writable capability | 解析测试；宿主写入未验收 |
 | 资源订阅与写入 | 需要时实现普通自有 MCP 资源 | 拦截已打开文件 URI 的读取/订阅；`openai/resources/write` | 官方 SDK 与官方 TS API | 示例只是只读文件查看器 | 宿主订阅/写入清单未验收 |
@@ -41,9 +41,9 @@
 | 交互光标（SDK 源码） | 无 | 宿主上下文与 CSS variable | 官方 TS OpenAIExtensions 构造器 | 宿主交互模式未验收 | 本机 App 初始化 |
 | 插件 onboarding | 不属于服务端 SDK | manifest `com.openai.onboardingSkill` 与打包 skill | 本地 stdio 插件已安装；没有 onboarding skill | 不添加不必要 onboarding API/skill | 官方 CLI 安装/发现与全局入口截图；未声明 onboarding 流程 |
 | 标准 elicitation 与 MRTR | 返回内置 inputRequests/requestState，校验业务续轮 | 完成标准输入并重试 | 官方 SDK、本机调查测试 | 状态所有权、去重、过期、隔离由业务负责 | `internal/sdkcheck` 标准多轮测试 |
-| OpenAI 扩展表单 | 扩展 pattern、描述/thumbnail 选项、建议值、资源选择/预览、选择校验 | 声明 `openai/elicitation.form`，渲染完整支持表单 | 仅源码/协议调查 | 标准 Elicit 不是此扩展；见协议调查 | 可复现 SDK wire 边界测试；无宿主验收 |
+| OpenAI 扩展表单 | schema、回答／资源校验、类型模型 | 选择、建议值、预览、上传 UI | forms 声明／解析／模型；JSON enum／注解、丰富选择、资源额外字段 | 直接发送受 SDK 阻碍；正则／邮箱／数值边界；宿主未验收 | Python 51 schema＋86 回答／上传对照，Go 模型／race 测试 |
 | 旧版 `openai/elicitation/create` | 发出自定义服务端请求 | 渲染并返回 accept/cancel/decline | 官方类型化 Go SDK 无公开发送 API | 自定义接收注册不能增加自定义发送 | 发送中间件复现 |
-| 扩展 MRTR 表单 inputRequests | 保留自定义方法和轮次语义 | 执行扩展方法，回传响应/状态 | 仅调查 | 类型化 InputRequestMap 只接受内置类型；能输出任意结果不足以证明支持 | 封闭 map 与接收中间件适配复现 |
+| 扩展 MRTR 表单 inputRequests | 当前无公共扩展 API | 执行自定义请求及续轮 | 仅 SDK 调查测试 | 不属 Python Extensions 对齐；旧版 wrapper 不实现 MRTR | 公开边界复现；无宿主支持宣称 |
 
 ## 边界与错误语义
 
@@ -51,10 +51,14 @@ Settings 工厂返回 server 前拒绝无效基础类型声明、错误布局引
 
 官方类型化工具辅助通过 `isError: true` 报告无效参数与普通 handler 错误。Settings 返回值校验在成功前拒绝缺字段、未知字段或无效状态。调用者明确返回 `*jsonrpc.Error` 时，保留官方协议错误语义。存储回调必须使用适合给客户端显示的错误，授权请求、保留未提供字段并原子持久化。数值使用 Go 原生类型；`json.Number` 不是 jsonschema-go value validator 理解的数值类型。Pattern 使用现有 Go JSON Schema 校验器的 RE2 语法。
 
-文件解析不授权。Reader 需要明确的绝对允许根目录和字节限制，打开时使用 `os.Root`，仅允许根目录内符号链接和普通文件，I/O 前后检查取消。它不能逐资源授权、排除调用者根目录内恶意 mount/硬链接，或打断操作系统普通文件 syscall。调用者必须控制根目录并授权每次读取；示例从不依赖宿主路径打开文件。
+文件解析不授权。私有 `internal/example.Reader` 需要明确的绝对允许根目录和字节限制，打开时使用 `os.Root`，仅允许根目录内符号链接和普通文件，I/O 前后检查取消。它不能逐资源授权、排除调用者根目录内恶意 mount/硬链接，或打断操作系统普通文件 syscall。调用者必须控制根目录并授权每次读取；示例从不依赖宿主路径打开文件。
 
 浏览器能力只能由真实宿主声明。服务端不代替宿主声明 `openai/elicitation`、`openai/files`、`openai/modelContext`、`openai/message` 或资源权限，也不将任何 API 宣称为完整扩展表单。
 
 本地插件已启用，独立官方 app-server 发现 5 个工具、3 个资源和两处设置 capability。用户截图确认全局入口、Connected、首结果及上下文辅助的消息/模型回答，这些观察没有完成剩余宿主矩阵。2026-10-01 源码仓库公开，不代表上架公开插件目录或新增 capability。参阅[插件验收](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Live-E2E)和[前端验证](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Frontend-Validation)。
 
-[后续清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap)记录 D1–D6 可直接开发项、S1 有条件现代扩展 MRTR、S2 旧版自定义发送阻碍。当前 Settings 没有 `format`、exclusive 数值边界或模型生成辅助。这些是计划缺口，不是额外支持能力。Wiki 提供源文档的发布版本及中文对应内容；实现状态仍以源兼容性表为准。
+本轮只对齐固定版本 Python MCP Extensions。Settings 已增加 format、exclusive 边界、FieldValidators、FieldNames、类型推导。普通回调默认 wire 名称，类型化更新默认 Go 导出业务字段名；返回值仍使用 JSON 别名。只在保存前校验提供的 patch 字段，转换后再次校验。Python before／wrap 装饰器不自动复现；跨字段规则属于业务事务。
+
+通用请求状态加密／恢复、现代表单 MRTR 适配及两轮 review 示例已移除；本地读取器收回 internal/example。已有设置文件存储仍是业务示例。标准 MCP 会话、传输、tasks、EventStore、依赖框架不做对齐。
+
+Go 使用 RE2，不宣称完整 Python email-validator／IDNA 等价；独立整数保留 64 位精度，官方 SDK 的 map 解码可能已损失原始表示或精度。Python 对照样例只证明覆盖场景一致，不等于完整 Pydantic 或真实宿主验收。SDK 直接发送与真实表单宿主验收仍是独立缺口。详见[表单指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)及[状态清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap)。Wiki 源修改和已安装插件尚未发布／重载。

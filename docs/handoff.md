@@ -1,6 +1,18 @@
 # Server extensions handoff
 
-## Current continuation: public repository and published bilingual Wiki
+## 2026-10-02 extension-only alignment
+
+Development branch: `suqing/forms-settings-validation`. On 2026-10-02 the owner authorized commit, PR creation/merge into main and publication of the synchronized Wiki pages. This section supersedes the earlier backlog/status paragraphs below. Only OpenAI MCP Extensions Python 0.1.0 at `900032d8bd7c1566202d0cb1666986584f932043` is the alignment target; the underlying MCP Python SDK is excluded.
+
+Retained and expanded: flat form declarations/validation, generic JSON enums, annotation fields, rich choices/images, suggestions/free arrays, resource descriptor extras, declared host user selections/upload references, typed defaults and named-type schema inference. Settings now has format/exclusive-bound validation, supplied-field validators, alias mapping and typed model helpers. UI declaration whitespace and null resource-path context match Python. See [forms usage](forms.md) and [the authority matrix](compatibility.md).
+
+Removed from the uncommitted work: generic `requeststate` encryption/recovery, public modern MRTR adaptation, principal scaffolding, and the two-round `review_parts` tool. Moved the previously public file reader and its tests into `internal/example`; trusted file containment/limits and the existing single-owner settings store remain example business implementation. Source examples expose the original five tools and three resources again. No SDK fork, transport/session/task implementation, new dependency, external service or credential was added.
+
+Python-generated reference fixtures cover 51 schemas and 86 value/upload cases. Focused Go tests pass after these changes. Go 1.27.0 and exact Go 1.25.0 both passed `make test vet build` after the final code changes, including race tests, authenticated HTTP and child-process stdio integration. Local logs are `bin/extensions-alignment-go1.27.log` and `bin/extensions-alignment-go1.25.log`. Legacy custom sending remains blocked by the pinned SDK; real OpenAI host forms/chooser/upload acceptance is unverified. Adversarial/security review preserved HTTP authentication, bounded trusted file reads and resource authorization ownership; no new network/file read or credential entrypoint was added. Numeric enum precision, case-sensitive resource extras and effective typed zero values have focused regression coverage. Wiki publication uses the separate Wiki repository after the main PR merges. The installed plugin cache is not rebuilt/reloaded by this closeout. Existing development results are reused without rerunning tests, lint or verification commands.
+
+## Historical delivery record (through 2026-10-01)
+
+## Previous continuation: public repository and published bilingual Wiki
 
 PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) merged into main at `3f45cf66eab5f6fd172763e604d794e12cef5cf1` while the repository was private. PR [#2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) merged `suqing/live-e2e` at `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. PR [#3](https://github.com/SisyphusSQ/mcp-extensions-go/pull/3) merged the bilingual Wiki source at `fe96dc077b2b13f6a236d9e3bc563aec7b38f372`. The original local-plugin stop below was superseded by the user's explicit PR/merge and bilingual GitHub Wiki request. Host acceptance status remains defined by [live-e2e.md](live-e2e.md).
 
@@ -40,7 +52,7 @@ Human acceptance remains pending after merge. No tests/checks are repeated durin
 4. SDK investigation: standard multi-round elicitation was verified. Private reproductions show the custom sending and typed MRTR map limitations, and show that receiving result adaptation can emit an extended result over official HTTP. No complete OpenAI form API or unsupported capability is claimed.
 5. Real frontend source: standard App and OpenAI TypeScript extensions, initialization, first-result rendering, settings/search UI, supported display/context/message actions, deep-link updates, and host file text rendering. A local AppBridge fixture tests real browser execution against the authenticated Go server.
 
-All project documentation/comments remain English with README_ZH.md maintained as the Chinese companion. The [complete capability inventory](compatibility.md) is the implementation-status authority. Entry points: `settings/settings.go`, `mentions/mentions.go`, `resources/resources.go`, `resources/reader.go`, `examples/http/main.go`, and `examples/frontend/app.ts`.
+All project documentation/comments remain English with README_ZH.md maintained as the Chinese companion. The [complete capability inventory](compatibility.md) is the implementation-status authority. Entry points: `settings/settings.go`, `mentions/mentions.go`, `resources/resources.go`, `internal/example/reader.go`, `examples/http/main.go`, and `examples/frontend/app.ts`.
 
 ## Development evidence
 
@@ -69,7 +81,7 @@ Security self-review of this diff found no unresolved issue in the implemented s
 - **OpenAI host acceptance unverified:** no MCP Apps page connected to this server was available. Browser inventory reported a request-header policy error. Local AppBridge integration is not Codex/ChatGPT product acceptance. Follow [frontend-validation.md](frontend-validation.md) after a supported authenticated host is connected.
 - **Extended forms incomplete:** legacy custom server-to-client requests have no public typed sending API. Typed MRTR input maps reject the OpenAI method. A modern receiving-result adaptation route is technically possible, but a validated extended schema/selection API, bounded identity-scoped continuation design and real host interoperability still need implementation. See exact source links, reproductions and requested SDK interfaces in [protocol-investigation.md](protocol-investigation.md).
 - **Persistence and authorization remain caller-owned:** the example resets settings on restart and has one credential/record. It does not establish durable multi-user isolation or transactions for a real application.
-- **Files:** parsing is not permission. Reader roots must be trusted; hard links/mounts inside a hostile root and interruptible file syscalls are outside the reader contract. Host file writes/subscriptions and native file opening were not accepted in a live host.
+- **Files:** parsing is not permission. Private example reader roots must be trusted; hard links/mounts inside a hostile root and interruptible file syscalls are outside the reader contract. Host file writes/subscriptions and native file opening were not accepted in a live host.
 - **Deployment:** no remote HTTPS deployment, persistent service, release, tag or repository visibility change was performed.
 
 Commit/push closeout reuses the development evidence above and does not repeat tests, lint or verification commands. Git state, diff review and remote push/readback remain closeout operations. No additional Issue, PR, automation or memory/TODO record was created.

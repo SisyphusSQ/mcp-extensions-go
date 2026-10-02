@@ -27,8 +27,8 @@ type FileInput struct {
 
 // Validate checks the input contract. It does not resolve or read ResourceURI.
 func (input FileInput) Validate() error {
-	if input.File.Name == "" || strings.ContainsAny(input.File.Name, `/\`) || strings.TrimSpace(input.File.ResourceURI) == "" {
-		return fmt.Errorf("file input requires a filename without a path and a non-blank resourceUri")
+	if strings.TrimSpace(input.File.Name) == "" || strings.TrimSpace(input.File.ResourceURI) == "" {
+		return fmt.Errorf("file input requires a non-blank name and resourceUri")
 	}
 	return nil
 }
@@ -71,6 +71,9 @@ func namespace(meta mcp.Meta) (map[string]json.RawMessage, bool, error) {
 // empty string. Parsing is not authorization or proof of a trusted host origin.
 // Only an explicitly authorized reader may open it; this function never does.
 func Path(meta mcp.Meta) (string, bool, error) {
+	if meta[MetadataKey] == nil {
+		return "", false, nil
+	}
 	object, present, err := namespace(meta)
 	if err != nil || !present {
 		return "", present, err

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"slices"
 	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -24,10 +25,20 @@ func (m ToolMetadata) Metadata(base mcp.Meta) (mcp.Meta, error) {
 	if m.PreferredModelDisplayMode != "" && m.PreferredModelDisplayMode != Inline && m.PreferredModelDisplayMode != Fullscreen {
 		return nil, fmt.Errorf("invalid model display mode %q", m.PreferredModelDisplayMode)
 	}
+	m.Entrypoints = slices.Clone(m.Entrypoints)
 	for i, entry := range m.Entrypoints {
+		entry.Extensions = slices.Clone(entry.Extensions)
+		entry.SearchTerms = slices.Clone(entry.SearchTerms)
+		for j, extension := range entry.Extensions {
+			entry.Extensions[j] = strings.TrimSpace(extension)
+		}
+		for j, term := range entry.SearchTerms {
+			entry.SearchTerms[j] = strings.TrimSpace(term)
+		}
 		if err := entry.validate(); err != nil {
 			return nil, fmt.Errorf("entrypoint %d: %w", i, err)
 		}
+		m.Entrypoints[i] = entry
 	}
 	meta := make(mcp.Meta, len(base)+2)
 	for key, value := range base {
@@ -109,8 +120,8 @@ func (e Entrypoint) validate() error {
 			return fmt.Errorf("file entrypoint requires extensions and no other fields")
 		}
 		for _, extension := range e.Extensions {
-			if extension != strings.TrimSpace(extension) || !strings.HasPrefix(extension, ".") {
-				return fmt.Errorf("file extension must start with a dot and have no surrounding whitespace")
+			if !strings.HasPrefix(extension, ".") {
+				return fmt.Errorf("file extension must start with a dot")
 			}
 		}
 	case Settings:

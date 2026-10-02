@@ -23,3 +23,17 @@ func Convert[T any](value any) (T, error) {
 	err = decoder.Decode(&out)
 	return out, err
 }
+
+// ConvertStrict converts a JSON snapshot while rejecting unknown object fields.
+func ConvertStrict[T any](value any) (T, error) {
+	var out T
+	data, err := json.Marshal(value)
+	if err != nil {
+		return out, err
+	}
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.UseNumber()
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&out)
+	return out, err
+}

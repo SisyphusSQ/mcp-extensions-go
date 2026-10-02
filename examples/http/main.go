@@ -20,7 +20,6 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"github.com/SisyphusSQ/mcp-extensions-go/internal/example"
-	"github.com/SisyphusSQ/mcp-extensions-go/resources"
 )
 
 const appURI = example.AppURI
@@ -37,7 +36,7 @@ func main() {
 	}
 	// Only the server operator may select this trusted, locally built app file.
 	if path := os.Getenv("MCP_APP_HTML"); path != "" {
-		reader, err := resources.OpenReader(filepath.Dir(path), 2<<20)
+		reader, err := example.OpenReader(filepath.Dir(path), 2<<20)
 		if err != nil {
 			slog.Error("open trusted app directory", "error", err)
 			os.Exit(1)
