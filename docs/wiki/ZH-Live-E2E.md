@@ -8,7 +8,7 @@
 
 [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) 在仓库仍为私有时合并到 main，提交 `3f45cf66eab5f6fd172763e604d794e12cef5cf1`。[PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) 将 `suqing/live-e2e` 合并为 `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`。2026-10-01，所有者明确要求公开源码；插件仍是本地安装，没有上架公开插件目录。合并不代表完成人工验收。
 
-插件为 **MCP Extensions Go**，ID `mcp-extensions-go@mcp-extensions-go-local`，本地 marketplace 为 **MCP Extensions Go Local**，安装版本 `0.0.0-dev` 仅是安装元数据，不是 release/tag。包内包含真实 MCP 配置、生成可执行文件、App HTML 与图标，没有空 skills/hooks/apps。
+插件为 **MCP Extensions Go**，ID `mcp-extensions-go@mcp-extensions-go-local`，本地 marketplace 为 **MCP Extensions Go Local**，安装版本 `0.0.0-dev` 仅是安装元数据，与 v0.0.1 Go 模块 release/tag 分开。包内包含真实 MCP 配置、生成可执行文件、App HTML 与图标，没有空 skills/hooks/apps。
 
 ```sh
 cd /absolute/path/to/mcp-extensions-go

@@ -62,3 +62,7 @@ Settings 工厂返回 server 前拒绝无效基础类型声明、错误布局引
 通用请求状态加密／恢复、现代表单 MRTR 适配及两轮 review 示例已移除；本地读取器收回 internal/example。已有设置文件存储仍是业务示例。标准 MCP 会话、传输、tasks、EventStore、依赖框架不做对齐。
 
 Go 使用 RE2，不宣称完整 Python email-validator／IDNA 等价；独立整数保留 64 位精度，官方 SDK 的 map 解码可能已损失原始表示或精度。Python 对照样例只证明覆盖场景一致，不等于完整 Pydantic 或真实宿主验收。SDK 直接发送与真实表单宿主验收仍是独立缺口。详见[表单指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)及[状态清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap)。Wiki 源修改和已安装插件尚未发布／重载。
+
+## Agent 接入与新增子进程证据
+
+从 [Agent 接入指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)开始。examples/agent-quickstart 只使用公共 API；examples/acceptance 归档 2026-10-02 已通过的 186 次 MCP 子进程调用：51 个 Python 声明、82 个值、4 个上传引用、类型模型及 Settings 约束／别名／验证器。参阅[记录与边界](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.1/docs/validation-2026-10-02.md)。这是后端证据，不是宿主表单／选择／上传或生产存储验收；v0.0.1 收尾不重复测试，模块发版不重载插件。

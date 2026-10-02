@@ -4,7 +4,7 @@
 
 PR [#1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) was merged into `main` at `3f45cf66eab5f6fd172763e604d794e12cef5cf1` while the repository was private. The `suqing/live-e2e` delivery was subsequently merged through [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) at `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. The source repository became public at the owner's explicit request on 2026-10-01; the plugin remains a local installation without a public plugin-directory listing. The merge does not complete pending human acceptance.
 
-Plugin: **MCP Extensions Go**, ID `mcp-extensions-go@mcp-extensions-go-local`, local marketplace **MCP Extensions Go Local**, version `0.0.0-dev` (installation metadata only; no release/tag). The package contains actual MCP configuration, a generated executable, App HTML and an icon; no empty skills/hooks/apps are included.
+Plugin: **MCP Extensions Go**, ID `mcp-extensions-go@mcp-extensions-go-local`, local marketplace **MCP Extensions Go Local**, version `0.0.0-dev` (local installation metadata, separate from the v0.0.1 Go module release). The package contains actual MCP configuration, a generated executable, App HTML and an icon; no empty skills/hooks/apps are included.
 
 ```sh
 cd /absolute/path/to/mcp-extensions-go
@@ -64,4 +64,4 @@ Full OpenAI extended forms/MRTR remain incomplete for the documented SDK boundar
 
 Security self-review: HTTP auth was preserved; local stdio uses parent process access; host URIs never become filesystem reads; persistent paths are operator-owned with bounded reads, OS locks and private atomic state files; browser output uses text DOM APIs. These findings do not establish multi-user authorization or complete host acceptance.
 
-Commit/push/merge closeout reuses this development evidence without repeating tests or checks. Human acceptance continues against the merged code. No new release or tag is published. Future implementable gaps are recorded in the [bilingual GitHub Wiki source](wiki/README.md).
+Commit/push/merge closeout reuses this development evidence without repeating tests or checks. Human acceptance continues against the merged code. That earlier acceptance closeout published no release or tag; the v0.0.1 source release remains separate from plugin distribution. Future implementable gaps are recorded in the [bilingual GitHub Wiki source](wiki/README.md).

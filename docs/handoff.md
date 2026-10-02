@@ -1,5 +1,13 @@
 # Server extensions handoff
 
+## Agent integration and v0.0.1 release preparation (2026-10-02)
+
+The authorized branch is suqing/agent-guide-v0.0.1 in the existing checkout. Consumer guidance is docs/agent-integration.md, with English/Chinese Wiki pages and README/index navigation. examples/agent-quickstart imports public APIs only; examples/acceptance archives the previously passed 186-call subprocess probe. Source/generated binaries, logs, Node dependencies and private plugin cache remain distinct.
+
+The module release is v0.0.1, separate from the local plugin's 0.0.0-dev installation metadata. The release sequence is reviewed PR, merge into main, annotated module tag, GitHub Release and separate Wiki publication. No tests/lint/acceptance are repeated at this closeout. Prior Go 1.25/1.27 test/vet/build and 186-call results remain evidence; new example/snippet compilation is a build result, not runtime acceptance. See [the consumer guide](agent-integration.md) and [recorded validation](validation-2026-10-02.md). No global tools, dependencies, credentials or runtime resource permissions change.
+
+## Previous extension implementation record
+
 ## 2026-10-02 extension-only alignment
 
 Development branch: `suqing/forms-settings-validation`. On 2026-10-02 the owner authorized commit, PR creation/merge into main and publication of the synchronized Wiki pages. This section supersedes the earlier backlog/status paragraphs below. Only OpenAI MCP Extensions Python 0.1.0 at `900032d8bd7c1566202d0cb1666986584f932043` is the alignment target; the underlying MCP Python SDK is excluded.

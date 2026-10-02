@@ -47,3 +47,5 @@ Python 扩展 elicit_input 直接发送旧版 openai/elicitation/create，文档
 已移除此前新增的公共现代 MRTR 适配、通用请求状态加密／恢复和两轮 review 工具。标准会话、传输、MRTR、tasks 与持久化机制不作为 Extensions 对齐目标。本地读取器收回 internal/example，已有设置文件存储仍是业务示例。
 
 [Python 对照数据](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/forms/testdata/python-parity.json)包含 51 个 schema 与 86 个回答／上传案例；[生成脚本](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/scripts/generate-form-parity.py)记录固定源码与依赖版本。Go 测试直接读取数据，无需 Python 或网络。它证明已覆盖案例的语义一致，不证明完整 Pydantic 等价或真实 OpenAI 表单／选择／上传 UX 已验收。
+
+业务接入从 [Agent 指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)开始。[2026-10-02 子进程记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.1/docs/validation-2026-10-02.md)补充后端证据，不代表宿主表单验收。

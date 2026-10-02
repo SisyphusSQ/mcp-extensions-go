@@ -11,6 +11,7 @@ This Wiki is published from [`docs/wiki`](https://github.com/SisyphusSQ/mcp-exte
 
 Focused guides / 专题指南：
 
+- [Agent integration](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration) / [Agent 接入指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)
 - [Forms usage and models](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms) / [扩展表单使用与模型](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)
 - [Architecture](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Architecture) / [架构](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Architecture)
 - [Compatibility and capability inventory](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility) / [兼容性与完整能力表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility)
