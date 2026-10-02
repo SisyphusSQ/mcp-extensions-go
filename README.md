@@ -10,7 +10,8 @@ The official SDK owns JSON-RPC, schemas, tools, resources, discovery, sessions, 
 
 - `settings.NewServer`: real read/update tools, native primitive schemas and constraints, layout, full effective values, nonempty partial patches, and modern/legacy `openai/settings` discovery. The returned server is the ordinary official `*mcp.Server`.
 - `mentions.AddTool`: searchable resource links and the upstream SDK's resource variant, `mentions/search` tool metadata, read-only hints and required app visibility.
-- `resources`: typed file-entrypoint input, opaque resource references, `openai/resource` path/representation/write-hint parsing, and an optional byte-limited `os.Root` reader for already-authorized local files.
+- `resources`: typed file-entrypoint input, opaque resource references, `openai/resource` path/representation/write-hint parsing.
+- `forms`: Python-extension-compatible flat declarations, rich choices/images, suggestions, resource selections, unchanged-answer/upload-reference validation and typed Go binding.
 - `ui`: standard MCP Apps resource binding/visibility, OpenAI entrypoints, quick actions/display metadata, and trusted HTML resource registration.
 - `examples/http`: authenticated stateless Streamable HTTP with real in-memory settings, searchable/readable demo parts, workspace/file tools, loopback defaults, request limits and graceful shutdown.
 - `examples/frontend`: a bundled browser App using standard MCP Apps `App` plus OpenAI TypeScript extensions, with local browser integration tests through the official `AppBridge`.
@@ -18,7 +19,7 @@ The official SDK owns JSON-RPC, schemas, tools, resources, discovery, sessions, 
 
 Settings storage, resource authorization, cross-field validation and transactions are caller-owned. Visibility and metadata never grant permission. HTTP defaults to a one-credential memory store; an absolute operator-owned `MCP_SETTINGS_FILE` enables persistent state. The local plugin uses the durable example store by default, with OS locking and atomic file replacement. This is not multi-user storage.
 
-Full OpenAI extended forms are not implemented. v1.8.0 supports standard MRTR, but its typed input map and custom outbound request API have specific limits. A receiving-middleware result adapter can emit extension fields, but that alone does not establish extended MRTR support. See the [complete responsibility matrix](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility) and [reproducible SDK investigation](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Protocol-Investigation). Desktop screenshots confirm global launch and a connected App with the initial result; the remaining host acceptance scenarios are pending.
+OpenAI extended form declarations, validation and Go model binding are implemented. Legacy `openai/elicitation/create` sending remains blocked by the pinned official SDK's public outbound API. Alignment covers MCP Extensions only: standard sessions/transports/MRTR, encrypted continuation recovery and tasks are not implemented here. See [forms and settings usage](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms) and [the capability matrix](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility). Local protocol tests do not establish real host rendering/interaction acceptance.
 
 ## Run the Go example
 
@@ -69,7 +70,9 @@ Import `github.com/SisyphusSQ/mcp-extensions-go/settings` and the official `mcp`
 
 For mention search, use `mentions.AddTool(server, &mcp.Tool{Name: "search_mentions"}, searchHandler)`. Empty queries are valid. It preserves other metadata and ensures app visibility; no separate mentions capability is specified upstream.
 
-For UI declarations, use `ui.ToolMetadata.Metadata` and `ui.AddHTMLResource` with official tools/resources. Metadata snapshots preserve arbitrary JSON number precision and ownership. For files, `resources.Path(req.Params.Meta)` only parses context; authenticate and authorize independently before calling a root-contained `Reader`. Never open arbitrary host paths or opaque resource URIs directly.
+For UI declarations, use `ui.ToolMetadata.Metadata` and `ui.AddHTMLResource` with official tools/resources. Metadata snapshots preserve arbitrary JSON number precision and ownership. For files, `resources.Path(req.Params.Meta)` only parses context; authenticate and authorize independently before any business-owned file read. Never open arbitrary host paths or opaque resource URIs directly.
+
+Settings formats and exclusive numeric bounds are enforced before save. `FieldValidators` validate supplied patch fields; `FieldNames` map wire aliases to business names. `settings.NewModelServer[T]` derives fields and aliases from Go models; `forms.NewModelWithOptions[T]` accepts public schema inference options for form models. Storage and complete-state business validation remain caller-owned. See [usage and limits](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms).
 
 The repository became public at the owner's explicit request on 2026-10-01. Public source access does not require private-repository authentication or `GOPRIVATE`; pin a reviewed commit until a version is released. This project changes no global Go settings.
 
@@ -84,11 +87,12 @@ make test vet build
 GOTOOLCHAIN=go1.25.0 make test vet build
 ```
 
-`make test` runs race tests with official memory/HTTP/child-process stdio transports, settings/search/file behavior, and SDK boundary reproductions. The ignored executables are `bin/mcp-extensions-http` and `bin/mcp-extensions-stdio`. Frontend build/type/browser commands are documented separately. Tests passed on sqmc04 with Go 1.25.0 and Go 1.27.0; the frontend dependency installation reported zero npm audit vulnerabilities. Cache-local `govulncheck v1.8.0` reported no vulnerabilities. These checks do not establish remote deployment or completion of desktop UI acceptance.
+`make test` runs race tests with official memory/HTTP/child-process stdio transports, settings/search/file behavior, and SDK boundary reproductions. The ignored executables are `bin/mcp-extensions-http` and `bin/mcp-extensions-stdio`. Frontend build/type/browser commands are documented separately. The 2026-10-02 extension changes passed race tests, vet and build with Go 1.25.0 and Go 1.27.0, including the checked-in Python fixtures. The 2026-10-01 frontend and cache-local `govulncheck v1.8.0` results are historical evidence; no frontend tests or vulnerability scan were repeated for this closeout. These checks do not establish remote deployment or completion of desktop UI acceptance.
 
 - [Documentation (GitHub Wiki)](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 - [Architecture](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Architecture)
 - [Compatibility and complete capability inventory](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility)
+- [Forms, models and Settings validators](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms)
 - [Forms/MRTR investigation](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Protocol-Investigation)
 - [Frontend setup and host acceptance checklist](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Frontend-Validation)
 - [Local plugin and human acceptance](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Live-E2E)

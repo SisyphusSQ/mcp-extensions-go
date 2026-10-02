@@ -46,3 +46,9 @@ Only advertise capabilities actually implemented. Read actual client capabilitie
 Callers own verified identity, per-resource authorization, multi-user settings, search sources, cross-field transactions and durable continuation policy. The persistent example is single-owner; its Unix state files use 0600, Windows inherited ACLs were not validated, and power-loss durability is not claimed.
 
 Parsing `openai/resource.path` or receiving an opaque URI grants no access. Local reads require authorization, a trusted allowed root, symlink containment and limits. Roots containing hostile hard links/mounts and interruptible regular-file syscalls remain outside the reader contract. Preserve HTTP authentication, runtime credentials, browser text output and all resource boundaries during future changes. The source repository became public at the owner's explicit request on 2026-10-01; this does not change runtime access controls. No remote HTTPS deployment, public plugin-directory distribution, tag or release was performed.
+
+## Extension alignment (2026-10-02)
+
+Checked-in Python fixtures cover 51 form schemas and 86 value/upload cases. Go tests also cover typed defaults/aliases, named-type inference, field validation before storage and preserved partial patches. These are extension contract checks, not full Pydantic/ECMA-262/IDNA equivalence or host UI acceptance. The public modern MRTR adapter and generic request-state recovery were removed from scope. The file reader is private example code. Direct extension sending remains SDK-blocked. See [Forms](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms).
+
+Go 1.27.0 and exact Go 1.25.0 passed the final `make test vet build` matrix, including race tests and the authenticated HTTP/child-process stdio examples. No real OpenAI form host E2E was run.

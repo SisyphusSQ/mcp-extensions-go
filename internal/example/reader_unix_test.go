@@ -1,6 +1,6 @@
 //go:build darwin || linux || freebsd || openbsd || netbsd || dragonfly
 
-package resources_test
+package example_test
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SisyphusSQ/mcp-extensions-go/resources"
+	"github.com/SisyphusSQ/mcp-extensions-go/internal/example"
 )
 
 func TestReaderRejectsFIFOWithoutBlocking(t *testing.T) {
@@ -20,7 +20,7 @@ func TestReaderRejectsFIFOWithoutBlocking(t *testing.T) {
 	if err := syscall.Mkfifo(path, 0600); err != nil {
 		t.Fatal(err)
 	}
-	reader, err := resources.OpenReader(root, 4)
+	reader, err := example.OpenReader(root, 4)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -29,7 +29,7 @@ func TestReaderRejectsFIFOWithoutBlocking(t *testing.T) {
 	go func() { _, err := reader.ReadFile(t.Context(), path); done <- err }()
 	select {
 	case err := <-done:
-		if !errors.Is(err, resources.ErrNotRegular) {
+		if !errors.Is(err, example.ErrNotRegular) {
 			t.Fatalf("pipe error = %v", err)
 		}
 	case <-time.After(5 * time.Second):
@@ -44,7 +44,7 @@ func TestReaderSymlinkReplacementCannotEscape(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	reader, err := resources.OpenReader(root, 4)
+	reader, err := example.OpenReader(root, 4)
 	if err != nil {
 		t.Fatal(err)
 	}

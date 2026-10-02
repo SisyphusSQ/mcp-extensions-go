@@ -1,0 +1,1715 @@
+{
+  "upstream_commit": "900032d8bd7c1566202d0cb1666986584f932043",
+  "upstream_source_sha256": "e807a74ff4fa9470cc33ad883381ace0798cc507ef43688796f5560575c25646",
+  "dependencies": {
+    "pydantic": "2.12.5",
+    "email-validator": "2.3.0",
+    "rfc3986-validator": "0.1.1",
+    "mcp-types": "2.0.0"
+  },
+  "cases": [
+    {
+      "name": "integer enum",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": 1,
+          "valid": true
+        },
+        {
+          "value": 2,
+          "valid": true
+        },
+        {
+          "value": 3,
+          "valid": false
+        },
+        {
+          "value": true,
+          "valid": false
+        },
+        {
+          "value": 1.0,
+          "valid": false
+        },
+        {
+          "value": "1",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "number enum",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "enum": [
+              1,
+              2.5
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": 1,
+          "valid": true
+        },
+        {
+          "value": 1.0,
+          "valid": true
+        },
+        {
+          "value": 2.5,
+          "valid": true
+        },
+        {
+          "value": 3,
+          "valid": false
+        },
+        {
+          "value": true,
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "boolean enum",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": false,
+          "valid": true
+        },
+        {
+          "value": true,
+          "valid": false
+        },
+        {
+          "value": 0,
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "array enum",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "enum": [
+              [
+                "a"
+              ],
+              []
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": [
+            "a"
+          ],
+          "valid": true
+        },
+        {
+          "value": [],
+          "valid": true
+        },
+        {
+          "value": [
+            "b"
+          ],
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "mixed invalid enum",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "enum": [
+              1,
+              true
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "empty enum",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "enum": []
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "duplicate top enum",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "enum": [
+              "a",
+              "a"
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "a",
+          "valid": true
+        },
+        {
+          "value": "b",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "blank labels",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "enum": [
+              "a"
+            ],
+            "enumNames": [
+              ""
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "a",
+          "valid": true
+        },
+        {
+          "value": "b",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "blank rich title",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "a",
+                "title": ""
+              }
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "a",
+          "valid": true
+        },
+        {
+          "value": "b",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "choices and suggestions",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "enum": [
+              "a"
+            ],
+            "oneOf": [
+              {
+                "const": "a",
+                "title": "A"
+              }
+            ],
+            "x-openai-suggestions": [
+              {
+                "const": "b",
+                "title": "B"
+              }
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "a",
+          "valid": true
+        },
+        {
+          "value": "b",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "suggestions are hints",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "minLength": 2,
+            "x-openai-suggestions": [
+              {
+                "const": "a",
+                "title": "A"
+              }
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "custom",
+          "valid": true
+        },
+        {
+          "value": "a",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "annotations",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "examples": [
+              null,
+              1,
+              {
+                "nested": [
+                  null
+                ]
+              }
+            ],
+            "$comment": "note",
+            "_meta": {
+              "nullable": null
+            },
+            "deprecated": false,
+            "readOnly": true,
+            "writeOnly": false
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "",
+          "valid": true
+        },
+        {
+          "value": "text",
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "item annotations forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "readOnly": true
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "choice item annotations forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "a"
+              ],
+              "title": "A"
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "free arrays",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "x-openai-suggestions": [
+                {
+                  "const": "x",
+                  "title": ""
+                }
+              ]
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": [
+            "ok",
+            "custom"
+          ],
+          "valid": true
+        },
+        {
+          "value": [
+            "ok",
+            "ok"
+          ],
+          "valid": false
+        },
+        {
+          "value": [
+            "x"
+          ],
+          "valid": false
+        },
+        {
+          "value": [
+            1
+          ],
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "multi-select",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "a",
+                "b"
+              ]
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": [
+            "a"
+          ],
+          "valid": true
+        },
+        {
+          "value": [
+            "a",
+            "a"
+          ],
+          "valid": false
+        },
+        {
+          "value": [
+            "other"
+          ],
+          "valid": false
+        },
+        {
+          "value": [],
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "conflicting multi choices",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "a"
+              ],
+              "anyOf": [
+                {
+                  "const": "a",
+                  "title": "A"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "duplicate multi choices",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "a",
+                "a"
+              ]
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "exclusive form bound forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "multipleOf form forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "multipleOf": 2
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "numeric bounds",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": 0,
+          "valid": false
+        },
+        {
+          "value": 1,
+          "valid": true
+        },
+        {
+          "value": 3,
+          "valid": true
+        },
+        {
+          "value": 4,
+          "valid": false
+        },
+        {
+          "value": 1.0,
+          "valid": false
+        },
+        {
+          "value": "2",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "nullable annotations",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "title": null,
+            "description": null,
+            "examples": null,
+            "_meta": null,
+            "deprecated": null
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "text",
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "null default forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "default": null
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "null pattern forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "pattern": null
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "nullable bound",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "minLength": null
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "text",
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "wrong constraint type",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "boolean",
+            "minLength": null
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "image grammar",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "a",
+                "title": "A",
+                "x-openai-thumbnail": {
+                  "src": "data:image/png;base64,Y"
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "a",
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "HTTP image forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "a",
+                "title": "A",
+                "x-openai-thumbnail": {
+                  "src": "http://example.com/a"
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "date",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "2024-02-29",
+          "valid": true
+        },
+        {
+          "value": "0000-01-01",
+          "valid": false
+        },
+        {
+          "value": "2025-02-29",
+          "valid": false
+        },
+        {
+          "value": "2026-1-01",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "date-time",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "2026-10-02t01:02:03.1z",
+          "valid": true
+        },
+        {
+          "value": "0000-01-01T00:00:00Z",
+          "valid": false
+        },
+        {
+          "value": "2026-10-02T01:02:03+23:59",
+          "valid": true
+        },
+        {
+          "value": "2026-10-02T01:02:03+24:00",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "email",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "a@example.com",
+          "valid": true
+        },
+        {
+          "value": "a@localhost",
+          "valid": false
+        },
+        {
+          "value": "a@127.0.0.1",
+          "valid": false
+        },
+        {
+          "value": "A <a@example.com>",
+          "valid": false
+        },
+        {
+          "value": "a@-example.com",
+          "valid": false
+        },
+        {
+          "value": "a@example.com\n",
+          "valid": false
+        },
+        {
+          "value": "first.last+tag@example.com",
+          "valid": true
+        },
+        {
+          "value": "\"a\"@example.com",
+          "valid": false
+        },
+        {
+          "value": "用户@例子.公司",
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "URI",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "urn:x:part",
+          "valid": true
+        },
+        {
+          "value": "file:///a",
+          "valid": true
+        },
+        {
+          "value": "https://[::1]/a",
+          "valid": true
+        },
+        {
+          "value": "relative",
+          "valid": false
+        },
+        {
+          "value": "urn:x:%xy",
+          "valid": false
+        },
+        {
+          "value": "https://example.com\n",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "resource descriptors",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uri",
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "parts://a",
+          "valid": true
+        },
+        {
+          "value": "host://file",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "host selections and uploads",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ],
+              "userOptions": {
+                "accept": [
+                  ".txt",
+                  "image/*"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": [
+            "parts://a"
+          ],
+          "valid": true
+        },
+        {
+          "value": [
+            "host://file"
+          ],
+          "valid": true
+        },
+        {
+          "value": [
+            "relative"
+          ],
+          "valid": false
+        },
+        {
+          "value": [
+            "parts://a",
+            "parts://a"
+          ],
+          "valid": false
+        }
+      ],
+      "uploads": [
+        {
+          "content": {},
+          "uploaded": [
+            "host://file"
+          ],
+          "valid": true,
+          "result": [
+            "host://file"
+          ]
+        },
+        {
+          "content": {
+            "value": [
+              "parts://a"
+            ]
+          },
+          "uploaded": [
+            "host://file"
+          ],
+          "valid": true,
+          "result": [
+            "parts://a",
+            "host://file"
+          ]
+        },
+        {
+          "content": {},
+          "uploaded": [
+            "host://file",
+            "host://file"
+          ],
+          "valid": false
+        },
+        {
+          "content": {
+            "value": [
+              "parts://a"
+            ]
+          },
+          "uploaded": [
+            "host://file",
+            "host://second"
+          ],
+          "valid": false
+        }
+      ]
+    },
+    {
+      "name": "defaults exclude host selections",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uri",
+            "default": "host://file",
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ],
+              "userOptions": {
+                "accept": [
+                  ".txt",
+                  "image/*"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "implicit selection",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ],
+              "selection": "implicit"
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": [
+            "host://file"
+          ],
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "implicit default forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "default": [],
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ],
+              "selection": "implicit"
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "opaque accept extension",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uri",
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ],
+              "userOptions": {
+                "accept": [
+                  "."
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "duplicate accept",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uri",
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ],
+              "userOptions": {
+                "accept": [
+                  ".TXT",
+                  ".txt"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "whitespace accept forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uri",
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ],
+              "userOptions": {
+                "accept": [
+                  " text/plain"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "empty suggestions",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "x-openai-suggestions": []
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "custom",
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "duplicate suggestions",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "x-openai-suggestions": [
+              {
+                "const": "a",
+                "title": "A"
+              },
+              {
+                "const": "a",
+                "title": "A2"
+              }
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "a",
+          "valid": true
+        },
+        {
+          "value": "custom",
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "null multi type",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": null,
+              "enum": [
+                "a"
+              ]
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": [
+            "a"
+          ],
+          "valid": true
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "exact keyword casing",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "READONLY": true
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "empty format forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": ""
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "empty selection forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ],
+              "selection": ""
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "empty user kind forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uri",
+            "x-openai-input": {
+              "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ],
+              "userOptions": {
+                "kind": ""
+              }
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "enum and rich choice intersection",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "enum": [
+              "a",
+              "b"
+            ],
+            "oneOf": [
+              {
+                "const": "a",
+                "title": "A"
+              }
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": false,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "precise integer enum",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "enum": [
+              9007199254740993
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": 9007199254740993,
+          "valid": true
+        },
+        {
+          "value": 9007199254740992,
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "duplicate required names",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [],
+      "uploads": []
+    },
+    {
+      "name": "custom schema annotation",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "$schema": "urn:example:form-schema"
+      },
+      "valid": true,
+      "values": [],
+      "uploads": []
+    }
+  ]
+}

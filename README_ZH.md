@@ -10,7 +10,8 @@ JSON-RPC、schema、工具、资源、发现、会话、传输和标准 MRTR 由
 
 - `settings.NewServer`：真实读取/更新工具、原生设置类型与约束、分组布局、完整有效值、非空局部 patch，以及现代/旧版 `openai/settings` 能力发现。返回普通的官方 `*mcp.Server`。
 - `mentions.AddTool`：搜索输入、标准资源链接与上游 SDK 的 resource 结果类型，`mentions/search` 元数据、只读声明和必需的 app 可见性。
-- `resources`：文件入口输入、宿主不透明资源引用，`openai/resource` 路径/表示/写入提示解析，以及供已授权本地文件使用的 `os.Root` 限量读取器。
+- `resources`：文件入口参数、不透明资源引用，以及 `openai/resource` 路径、表示和写入提示解析。
+- `forms`：扩展表单声明、丰富单选/多选和图片、建议值、资源选择、原始回答/上传引用校验，以及 Go 模型绑定。
 - `ui`：标准 MCP Apps 工具资源绑定和可见性、OpenAI 入口、快捷动作与显示模式元数据、可信 HTML 注册。
 - `examples/http`：带 Bearer 认证的 stateless Streamable HTTP，包含真实内存设置、可搜索/读取的示例零件、工作区与文件入口工具、loopback 默认地址、请求限制与优雅退出。
 - `examples/frontend`：使用标准 MCP Apps `App` 和 OpenAI TypeScript 扩展的浏览器 App，并通过官方 `AppBridge` 进行本机浏览器集成测试。
@@ -18,7 +19,7 @@ JSON-RPC、schema、工具、资源、发现、会话、传输和标准 MRTR 由
 
 设置存储、资源授权、跨字段规则和事务由调用者负责。可见性与元数据不授予权限。HTTP 默认使用单个凭据对应的内存记录，可通过绝对路径 `MCP_SETTINGS_FILE` 启用持久化；本地插件默认使用带操作系统锁和原子文件替换的持久设置。该示例不提供多用户存储隔离。
 
-完整 OpenAI 扩展表单尚未实现。Go SDK v1.8.0 已支持标准 MRTR，但类型化输入映射和自定义发出请求存在具体限制；接收中间件可以输出扩展结果字段，单凭这一点不能声明扩展 MRTR 已实现。详见 [完整能力对应表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility) 与 [可复现的 SDK 调查](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation)。用户截图已确认真实桌面的全局入口、Connected 状态和首次工具结果，其余宿主场景仍待验收。
+扩展表单声明、校验和 Go 模型绑定已实现；旧版 `openai/elicitation/create` 的直接发送仍受官方 Go SDK 公开接口限制。对齐范围仅为 MCP Extensions，标准会话/传输/MRTR、加密续轮恢复和 tasks 不在本库实现。真实宿主的表单渲染/选择/上传仍未验收。详见[使用与边界](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)和[能力表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility)。
 
 ## 运行 Go 示例
 
@@ -38,7 +39,7 @@ go run ./examples/http
 
 ## 本机 Codex 插件
 
-本机已安装并启用 **MCP Extensions Go**，本地目录源名为 **MCP Extensions Go Local**。用户已通过侧栏更多菜单的 **Open workspace** 打开页面。可依次验收设置读写与重开后的保留、bolt 搜索，以及宿主提供的 fullscreen、mentions 和 `.txt` 文件入口。模型上下文和发送消息按钮仅在宿主声明支持时可用。
+2026-10-01 的记录确认本机已安装并启用 **MCP Extensions Go**，本地目录源名为 **MCP Extensions Go Local**；用户通过侧栏更多菜单的 **Open workspace** 打开过页面。本轮代码合并不自动更新已安装插件缓存。可依次验收设置读写与重开后的保留、bolt 搜索，以及宿主提供的 fullscreen、mentions 和 `.txt` 文件入口。模型上下文和发送消息按钮仅在宿主声明支持时可用。
 
 重新构建安装：
 
@@ -80,9 +81,11 @@ mcp.AddTool(server, tool, handler)
 
 Mentions 使用 `mentions.AddTool(server, &mcp.Tool{Name: "search_mentions"}, searchHandler)`；空查询有效。辅助保留其他元数据并保证 app 可见性。上游未要求单独的 mentions 服务端能力。
 
-UI 使用 `ui.ToolMetadata.Metadata`、`ui.AddHTMLResource` 和官方工具/资源。元数据快照保留 JSON 数字精度且不持有调用方的可变别名。`resources.Path(req.Params.Meta)` 只解析文件上下文；调用限于允许根目录的 `Reader` 前，必须独立认证和授权，不能直接打开任意宿主路径或不透明资源 URI。
+UI 使用 `ui.ToolMetadata.Metadata`、`ui.AddHTMLResource` 和官方工具/资源。元数据快照保留 JSON 数字精度且不持有调用方的可变别名。`resources.Path(req.Params.Meta)` 只解析文件上下文；业务读取文件前，必须独立认证和授权，不能直接打开任意宿主路径或不透明资源 URI。
 
 仓库已按所有者在 2026-10-01 的明确要求公开。读取公开源码不需要私有仓库认证或 `GOPRIVATE`；发布版本前请固定经过审阅的提交。本地插件尚未上架公开插件目录，本项目不更改全局 Go 设置。
+
+Settings 已补齐格式与 exclusive 数值边界校验、保存前 `FieldValidators`、`FieldNames` 别名映射和类型模型推导。原始 patch 保留未提供字段；跨字段校验和持久化事务仍由业务回调负责。
 
 [GitHub Wiki](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home) 将中文、英文分别组织，包含完整架构、能力对应表、前端验证、表单/MRTR 调查、本地插件验收及后续开发清单。源文档保留在 `docs/wiki`；Handoff 仅保留在源码仓库。
 
@@ -95,11 +98,12 @@ make test vet build
 GOTOOLCHAIN=go1.25.0 make test vet build
 ```
 
-`make test` 包括 race、官方内存/HTTP/真实子进程 stdio 传输、Settings/Mentions/文件行为及 SDK 边界复现。产物为不进入 Git 的 `bin/mcp-extensions-http` 与 `bin/mcp-extensions-stdio`。前端构建、类型检查和浏览器测试见专门文档。sqmc04 已通过 Go 1.25.0 与 Go 1.27.0 验证；前端依赖安装的 npm audit 报告为零漏洞。缓存内运行的 `govulncheck v1.8.0` 报告未发现漏洞，未安装全局工具。这些检查不代表远程部署或完整桌面 UI 验收。
+`make test` 包括 race、官方内存/HTTP/真实子进程 stdio 传输、Settings/Mentions/文件行为及 SDK 边界复现。产物为不进入 Git 的 `bin/mcp-extensions-http` 与 `bin/mcp-extensions-stdio`。前端构建、类型检查和浏览器测试见专门文档。2026-10-02 的扩展代码已通过 Go 1.25.0 与 Go 1.27.0 的 race 测试、vet、build，包含固定 Python 对照数据。2026-10-01 的前端与缓存内 `govulncheck v1.8.0` 结果属于历史证据，本次收尾未重复前端测试或漏洞扫描，未安装全局工具。这些检查不代表远程部署或完整桌面 UI 验收。
 
 - [文档入口（GitHub Wiki）](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 - [架构](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Architecture)
 - [完整能力与兼容性对应表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility)
+- [表单、模型与 Settings 字段校验](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)
 - [表单/MRTR 调查](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation)
 - [前端与宿主验收清单](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Frontend-Validation)
 - [本地插件与人工验收](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Live-E2E)
@@ -108,3 +112,4 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 - [验收证据与 SDK 限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits)
 - [交接记录（源码仓库）](docs/handoff.md)
 - [Wiki 源文档和发布步骤](docs/wiki/README.md)
+

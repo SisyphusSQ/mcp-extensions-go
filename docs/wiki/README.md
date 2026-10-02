@@ -23,14 +23,16 @@ These files are the version-controlled source for the repository's [GitHub Wiki]
 | [ZH-Validation-and-SDK-Limits.md](ZH-Validation-and-SDK-Limits.md) | [验收状态与 SDK 限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits) |
 | [_Sidebar.md](_Sidebar.md) | Wiki navigation |
 | [_Footer.md](_Footer.md) | Source and issue links |
+| [EN-Forms.md](EN-Forms.md) | [Forms usage and models](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms) |
+| [ZH-Forms.md](ZH-Forms.md) | [扩展表单使用与模型](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms) |
 
 ## Language layout
 
-The layout follows the owner's [orchestrator Wiki](https://github.com/SisyphusSQ/orchestrator/wiki), reference commit `1ce473c59ddab4558965b80a5762773c8935e25d`. Home only selects a language; English pages use `EN-`, Chinese pages use `ZH-`, the sidebar has separate language groups, and each page links its translation and Wiki Home. The footer links the source and issue tracker. Keep each content page in its own language.
+The navigation layout follows the owner's [orchestrator Wiki](https://github.com/SisyphusSQ/orchestrator/wiki), reference commit `1ce473c59ddab4558965b80a5762773c8935e25d`. Home selects a language and lists focused guides; English pages use `EN-`, Chinese pages use `ZH-`, the sidebar has separate language groups, and each page links its translation and Wiki Home. The footer links the source and issue tracker. Keep each content page in its own language.
 
 ## Documentation coverage
 
-Architecture, the complete compatibility matrix, frontend validation, SDK protocol investigation and local plugin/live acceptance are published as full English pages and Chinese companions. Preserve runnable instructions, error/security ownership, SDK source references, existing test evidence and unverified host scenarios. Handoff is intentionally excluded from the Wiki at the owner's request and remains a source-repository continuation record.
+The owned source set contains Home, nine English guides, nine Chinese guides, and the shared sidebar/footer (twenty-one files). Forms/Settings usage, architecture, the complete compatibility matrix, frontend validation, SDK protocol investigation and local plugin/live acceptance are maintained in both languages. Preserve runnable instructions, error/security ownership, SDK source references, existing test evidence and unverified host scenarios. Handoff is intentionally excluded from the Wiki at the owner's request and remains a source-repository continuation record.
 
 ## Publishing
 
@@ -38,8 +40,8 @@ The owner explicitly requested public visibility on 2026-10-01, superseding the 
 
 GitHub requires an initial Wiki page created through its website before the Wiki Git repository can be cloned. The owner created Home on 2026-10-01; the initial bilingual publication followed at `54c55ad`. The language-separated layout and footer were then published at `b50998e` on `master`: Home, three English pages, three Chinese pages, sidebar and footer. Public visibility and merging source documentation alone do not initialize or publish the Wiki.
 
-The full user-facing document expansion was published at `17c3278` on `master`: Home, eight English pages, eight Chinese pages, sidebar and footer. The public Home page displays 17 content pages and the expanded language groups. Handoff was not published.
+The full user-facing document expansion was published at `17c3278` on `master`: Home, eight English pages, eight Chinese pages, sidebar and footer. At that publication, the public Home page displayed 17 content pages and the expanded language groups. Handoff was not published.
 
-For future updates, clone `git@github.com:SisyphusSQ/mcp-extensions-go.wiki.git` into a separate local directory. Read its current pages and history first. Copy only the nineteen owned files listed above from `docs/wiki`; preserve unrelated pages and merge any existing navigation. Remove obsolete owned pages when renaming them, and update all incoming links. Do not publish this source README as a Wiki page. Commit and push the Wiki's existing default branch without force, then read back its commit/pages. The Wiki is a separate Git repository; merging the main repository does not publish its pages.
+For future updates, clone `git@github.com:SisyphusSQ/mcp-extensions-go.wiki.git` into a separate local directory. Read its current pages and history first. Copy only the twenty-one owned files listed above from `docs/wiki`; preserve unrelated pages and merge any existing navigation. Remove obsolete owned pages when renaming them, and update all incoming links. Do not publish this source README as a Wiki page. Commit and push the Wiki's existing default branch without force, then read back its commit/pages. The Wiki is a separate Git repository; merging the main repository does not publish its pages.
 
 Update each owning source document and both Wiki languages when behavior or status changes; `docs/compatibility.md` remains the implementation authority. Planned work must remain labeled as not implemented until a real public API and the relevant acceptance evidence exist. Publishing documentation does not authorize implementing its backlog or rerunning tests during closeout.

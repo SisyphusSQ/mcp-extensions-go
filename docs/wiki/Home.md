@@ -11,6 +11,7 @@ This Wiki is published from [`docs/wiki`](https://github.com/SisyphusSQ/mcp-exte
 
 Focused guides / 专题指南：
 
+- [Forms usage and models](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms) / [扩展表单使用与模型](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)
 - [Architecture](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Architecture) / [架构](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Architecture)
 - [Compatibility and capability inventory](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility) / [兼容性与完整能力表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility)
 - [Frontend validation](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Frontend-Validation) / [前端验证](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Frontend-Validation)

@@ -1,7 +1,7 @@
 .PHONY: fmt test vet build plugin
 
 fmt:
-	gofmt -w ui settings mentions resources internal examples/http examples/stdio
+	gofmt -w ui settings forms mentions resources internal examples/http examples/stdio
 
 test:
 	go test -race ./...

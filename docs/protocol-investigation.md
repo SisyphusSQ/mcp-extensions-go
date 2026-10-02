@@ -41,12 +41,16 @@ Standard `ServerSession.Elicit` checks the ordinary elicitation capability and u
 
 Modern raw HTTP probes include protocol metadata/client capabilities and the required `Mcp-Method`/`Mcp-Name` headers. This avoids confusing malformed modern requests with extension limitations.
 
-The receiving-result adapter remains a **test-only experiment**, not a public forms API. It has no live OpenAI host acceptance, complete extended-field/selection validation, or durable authenticated continuation contract. No `openai/elicitation` capability or unusable placeholder package was added. A future modern-only implementation could use that public result seam, but must first complete those requirements and test with an extension-capable host. Legacy direct custom elicitation remains blocked by the public sending API.
+The receiving-result adapter remains a **test-only experiment**, not a public sending/MRTR API. The separate `forms` package provides schema/answer validation and typed binding; the fixture does not integrate a supported modern form workflow or durable authenticated continuation contract. No `openai/elicitation` capability is advertised. Modern MRTR is outside current Python-extension alignment; this experiment documents the public SDK boundary only. Legacy direct custom elicitation remains blocked by the public sending API.
 
 ## Public SDK interfaces needed
 
 For supported typed interoperability, the official SDK would need public registration for outbound custom server requests with parameter/result factories (preserving context, cancellation, request association and capability checks), and extension registration for MRTR input request/response encoders/decoders. This could be a request registry or explicit custom request carrier; an `any` escape hatch that skips required lifecycle handling is insufficient.
 
-For the modern result-adapter route, no SDK fork is required to emit fields. The remaining work is a host-backed interoperability test and a validated, bounded, identity-scoped continuation design. Full extensions must check the actual per-request client capability in modern discovery, not assume the existence of a legacy session initialize value.
+Emitting adapted modern fields requires no SDK fork, but it does not establish supported MRTR interoperability. Python Extensions parity does not require this route, and no adapter or continuation recovery API is shipped. Any independently scoped future implementation must check actual per-request client capability and establish host interoperability and continuation ownership.
 
 Reproduce during development with `go test -race ./internal/sdkcheck -v`. This suite is also included in `make test`. It must not be rerun during commit/push closeout.
+
+## Extension-only alignment scope (2026-10-02)
+
+The public library now implements form declarations, validation and model binding; see [forms usage](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/forms.md). The receiving-result experiment in this investigation remains test-only. Python extension `elicit_input` does not implement MRTR. Generic continuation encryption/recovery and standard MCP SDK features are excluded from alignment; no public modern MRTR adapter or review tool is shipped.

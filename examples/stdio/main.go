@@ -14,7 +14,6 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"github.com/SisyphusSQ/mcp-extensions-go/internal/example"
-	"github.com/SisyphusSQ/mcp-extensions-go/resources"
 )
 
 func main() {
@@ -31,7 +30,7 @@ func run(ctx context.Context) error {
 	if err != nil || os.Getenv("MCP_APP_HTML") == "" {
 		return fmt.Errorf("MCP_APP_HTML must identify a trusted built App")
 	}
-	reader, err := resources.OpenReader(filepath.Dir(path), 2<<20)
+	reader, err := example.OpenReader(filepath.Dir(path), 2<<20)
 	if err != nil {
 		return err
 	}

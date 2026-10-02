@@ -47,12 +47,16 @@ SDK 源码来自固定 v1.8.0 模块，`internal/sdkcheck/mrtr_test.go` 使用�
 
 现代原始 HTTP 复现包含协议元数据/客户端 capability 和必需 `Mcp-Method`、`Mcp-Name` Header，避免把请求本身格式错误误判为扩展限制。
 
-结果适配器仍是**仅供测试的实验**，不是公开表单 API。没有真实 OpenAI 宿主验收、完整扩展字段/选择校验、持久且经过认证的续轮契约；未添加 `openai/elicitation` capability 或不可用占位包。未来现代模式可利用公开结果接口，但须先完成这些要求并连接真正支持扩展的宿主。旧版直接自定义 elicitation 仍受公开发送 API 阻碍。
+结果适配器仍是**仅供测试的实验**，不是公开发送／MRTR API。独立 forms 包已提供 schema／回答校验与模型绑定；该测试没有集成受支持的现代流程或持久且经过认证的续轮契约，不声明 openai/elicitation capability。现代 MRTR 不在本轮 Python Extensions 对齐范围，该实验仅记录公开 SDK 边界。旧版直接发送仍受 SDK API 阻碍。
 
 ## 需要的公开 SDK 接口
 
 要支持类型化互操作，官方 SDK 需要公开注册自定义服务端发出请求，并提供参数/结果工厂，保留 context、取消、请求关联及 capability 检查；还需要 MRTR 输入 request/response 编解码扩展注册。可以是请求 registry 或明确自定义 carrier；绕过生命周期要求的 `any` 逃生口不足以解决问题。
 
-现代结果适配路径无需 fork 即可输出字段，剩余工作是真实宿主互操作测试和经过校验、限量、绑定身份的续轮设计。完整扩展必须读取现代发现的实际每次请求 capability，不能假定存在旧版 session initialize 值。
+现代适配无需 fork 即可输出字段，但不能据此宣称 MRTR 互操作受支持；Python Extensions 对齐不要求此路径，也不发布适配／恢复 API。未来若单独授权该工作，必须读取实际每次请求 capability，并独立证明宿主互操作和续轮所有权。
 
 开发阶段复现入口为 `go test -race ./internal/sdkcheck -v`，也包含在 `make test` 中。提交/push 收尾不得重复运行。
+
+## 2026-10-02 Extensions 对齐范围
+
+公共表单声明、校验、类型绑定已实现，见[表单指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)。本文的接收结果适配仍只是调查测试。Python 扩展 elicit_input 不实现 MRTR，通用状态加密／恢复及底层 SDK 功能不做对齐；不发布公共现代 MRTR 适配或两轮 review 工具。
