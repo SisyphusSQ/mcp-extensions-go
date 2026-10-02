@@ -2,9 +2,17 @@
 
 [中文说明](README_ZH.md)
 
-A public, personal Go library for the server-side features of [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions), built on the official [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk). This is not an official OpenAI Go SDK. No version or tag has been released.
+A public, personal Go library for the server-side features of [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions), built on the official [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk). This is not an official OpenAI Go SDK. The first module release is [v0.0.1](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.1).
 
 The official SDK owns JSON-RPC, schemas, tools, resources, discovery, sessions, transports and standard MRTR. This module adds server extension types and helpers. Browser/host behavior uses the official TypeScript App SDKs.
+
+## Install and integrate
+
+```sh
+go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.1
+```
+
+**For coding agents:** start with the [Agent integration guide](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration), or its [versioned source](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.1/docs/agent-integration.md). It covers capability selection, adapting an existing server, business callbacks, public-only recipes and validation boundaries. A complete [stdio quickstart](examples/agent-quickstart/main.go) and the [new-extension acceptance runner](examples/acceptance/main.go) are included.
 
 ## Implemented
 
@@ -74,7 +82,7 @@ For UI declarations, use `ui.ToolMetadata.Metadata` and `ui.AddHTMLResource` wit
 
 Settings formats and exclusive numeric bounds are enforced before save. `FieldValidators` validate supplied patch fields; `FieldNames` map wire aliases to business names. `settings.NewModelServer[T]` derives fields and aliases from Go models; `forms.NewModelWithOptions[T]` accepts public schema inference options for form models. Storage and complete-state business validation remain caller-owned. See [usage and limits](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms).
 
-The repository became public at the owner's explicit request on 2026-10-01. Public source access does not require private-repository authentication or `GOPRIVATE`; pin a reviewed commit until a version is released. This project changes no global Go settings.
+The repository became public at the owner's explicit request on 2026-10-01. Public source access does not require private-repository authentication or `GOPRIVATE`; pin the reviewed `v0.0.1` module. This project changes no global Go settings. The local plugin's `0.0.0-dev` installation metadata is separate from the Go module release; this release does not distribute or reload that plugin.
 
 The [GitHub Wiki](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home) provides separate English and Chinese guides for architecture, the complete capability matrix, frontend validation, SDK forms/MRTR investigation, local plugin acceptance and future implementation work. Its source remains under `docs/wiki`; Handoff remains in the source repository.
 

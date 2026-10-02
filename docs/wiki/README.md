@@ -4,6 +4,8 @@ These files are the version-controlled source for the repository's [GitHub Wiki]
 
 | Source page | Published page |
 | --- | --- |
+| [EN-Agent-Integration.md](EN-Agent-Integration.md) | [Agent integration](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration) |
+| [ZH-Agent-Integration.md](ZH-Agent-Integration.md) | [Agent 接入指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration) |
 | [Home.md](Home.md) | [Language selection](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home) |
 | [EN-Overview.md](EN-Overview.md) | [Overview](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview) |
 | [ZH-Overview.md](ZH-Overview.md) | [项目概览](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview) |
@@ -32,7 +34,7 @@ The navigation layout follows the owner's [orchestrator Wiki](https://github.com
 
 ## Documentation coverage
 
-The owned source set contains Home, nine English guides, nine Chinese guides, and the shared sidebar/footer (twenty-one files). Forms/Settings usage, architecture, the complete compatibility matrix, frontend validation, SDK protocol investigation and local plugin/live acceptance are maintained in both languages. Preserve runnable instructions, error/security ownership, SDK source references, existing test evidence and unverified host scenarios. Handoff is intentionally excluded from the Wiki at the owner's request and remains a source-repository continuation record.
+The owned source set contains Home, ten English guides, ten Chinese guides, and the shared sidebar/footer (twenty-three files). Agent integration, Forms/Settings usage, architecture, the complete compatibility matrix, frontend validation, SDK protocol investigation and local plugin/live acceptance are maintained in both languages. Preserve runnable instructions, error/security ownership, SDK source references, existing test evidence and unverified host scenarios. Handoff is intentionally excluded from the Wiki at the owner's request and remains a source-repository continuation record.
 
 ## Publishing
 
@@ -42,6 +44,6 @@ GitHub requires an initial Wiki page created through its website before the Wiki
 
 The full user-facing document expansion was published at `17c3278` on `master`: Home, eight English pages, eight Chinese pages, sidebar and footer. At that publication, the public Home page displayed 17 content pages and the expanded language groups. Handoff was not published.
 
-For future updates, clone `git@github.com:SisyphusSQ/mcp-extensions-go.wiki.git` into a separate local directory. Read its current pages and history first. Copy only the twenty-one owned files listed above from `docs/wiki`; preserve unrelated pages and merge any existing navigation. Remove obsolete owned pages when renaming them, and update all incoming links. Do not publish this source README as a Wiki page. Commit and push the Wiki's existing default branch without force, then read back its commit/pages. The Wiki is a separate Git repository; merging the main repository does not publish its pages.
+For future updates, clone `git@github.com:SisyphusSQ/mcp-extensions-go.wiki.git` into a separate local directory. Read its current pages and history first. Copy only the twenty-three owned files listed above from `docs/wiki`; preserve unrelated pages and merge any existing navigation. Remove obsolete owned pages when renaming them, and update all incoming links. Do not publish this source README as a Wiki page. Commit and push the Wiki's existing default branch without force, then read back its commit/pages. The Wiki is a separate Git repository; merging the main repository does not publish its pages.
 
 Update each owning source document and both Wiki languages when behavior or status changes; `docs/compatibility.md` remains the implementation authority. Planned work must remain labeled as not implemented until a real public API and the relevant acceptance evidence exist. Publishing documentation does not authorize implementing its backlog or rerunning tests during closeout.

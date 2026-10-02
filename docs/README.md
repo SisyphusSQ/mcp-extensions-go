@@ -2,6 +2,8 @@
 
 | Document | Contents | Wiki |
 | --- | --- | --- |
+| [agent-integration.md](agent-integration.md) | Coding-agent workflow, capability selection, public-only quickstart and consumer validation | [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration) / [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration) |
+| [validation-2026-10-02.md](validation-2026-10-02.md) | Prior 186-call subprocess acceptance and the separate host/SDK boundaries | Source evidence, linked from both Wiki languages |
 | [architecture.md](architecture.md) | Responsibility layers, implementation order, storage/security ownership and public APIs | [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Architecture) / [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Architecture) |
 | [compatibility.md](compatibility.md) | Complete upstream → server → frontend/host → implementation → gap → acceptance matrix | [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility) / [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility) |
 | [protocol-investigation.md](protocol-investigation.md) | Verified standard MRTR, extended-form boundaries, reproductions and required public SDK interfaces | [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Protocol-Investigation) / [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation) |

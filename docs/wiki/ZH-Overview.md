@@ -4,7 +4,11 @@
 
 这是源码公开的个人 Go 服务端 SDK，不是 OpenAI 官方 SDK。它复用 `github.com/modelcontextprotocol/go-sdk v1.8.0`，Go 下限为 1.25.0。JSON-RPC、传输、会话、工具/资源和标准 MRTR 由官方 SDK 负责；浏览器与宿主行为复用标准 MCP Apps 和 OpenAI TypeScript App SDK。
 
-历史发布记录：2026-10-01；当前工作状态更新于 2026-10-02。服务端扩展已通过 [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) 合并。本地插件与实际验收支持已通过 [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) 合并，提交为 `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`。中英文 Wiki 源文档已通过 [PR #3](https://github.com/SisyphusSQ/mcp-extensions-go/pull/3) 合并；随后所有者明确授权将源码仓库公开。未发布 tag/release，插件也尚未上架公开目录。合并不等于所有宿主验收已经完成。
+历史发布记录：2026-10-01；当前工作状态更新于 2026-10-02。服务端扩展已通过 [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) 合并。本地插件与实际验收支持已通过 [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) 合并，提交为 `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`。中英文 Wiki 源文档已通过 [PR #3](https://github.com/SisyphusSQ/mcp-extensions-go/pull/3) 合并；随后所有者明确授权将源码仓库公开。在该历史阶段未发布 tag/release，插件也未上架公开目录。首个 Go 模块版本为 [v0.0.1](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.1)，本地插件与模块发版分开。合并不等于所有宿主验收已经完成。
+
+## Agent 接入
+
+安装 `github.com/SisyphusSQ/mcp-extensions-go@v0.0.1`，从[编码 Agent 指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)开始。提供只依赖公共 API 的接入示例及可复用扩展验收程序。
 
 ## 已实现
 

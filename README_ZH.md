@@ -2,9 +2,17 @@
 
 [English](README.md)
 
-基于官方 [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk) 的个人 Go 扩展库，用于实现 [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions) 的服务端职责。仓库已公开，不是 OpenAI 官方 Go SDK，尚未发布版本或 tag。
+基于官方 [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk) 的个人 Go 扩展库，用于实现 [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions) 的服务端职责。仓库已公开，不是 OpenAI 官方 Go SDK，首个模块版本为 [v0.0.1](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.1)。
 
 JSON-RPC、schema、工具、资源、发现、会话、传输和标准 MRTR 由官方 SDK 负责。本库增加服务端扩展类型与辅助；浏览器和宿主行为复用官方 TypeScript App SDK。
+
+## 安装与接入
+
+```sh
+go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.1
+```
+
+**编码 Agent 从这里开始：** [Agent 接入指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)，英文[版本化源码](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.1/docs/agent-integration.md)。包含能力选择、已有服务接入、回调责任、公共 API 模板和验证边界；仓库提供完整的 [stdio 接入示例](examples/agent-quickstart/main.go)及[新增能力验收程序](examples/acceptance/main.go)。模块 v0.0.1 与本地插件 0.0.0-dev 安装元数据分开，本次发版不分发或重载插件。
 
 ## 已实现
 
@@ -83,7 +91,7 @@ Mentions 使用 `mentions.AddTool(server, &mcp.Tool{Name: "search_mentions"}, se
 
 UI 使用 `ui.ToolMetadata.Metadata`、`ui.AddHTMLResource` 和官方工具/资源。元数据快照保留 JSON 数字精度且不持有调用方的可变别名。`resources.Path(req.Params.Meta)` 只解析文件上下文；业务读取文件前，必须独立认证和授权，不能直接打开任意宿主路径或不透明资源 URI。
 
-仓库已按所有者在 2026-10-01 的明确要求公开。读取公开源码不需要私有仓库认证或 `GOPRIVATE`；发布版本前请固定经过审阅的提交。本地插件尚未上架公开插件目录，本项目不更改全局 Go 设置。
+仓库已按所有者在 2026-10-01 的明确要求公开。读取公开源码不需要私有仓库认证或 `GOPRIVATE`；请固定经过审阅的 v0.0.1 模块。本地插件尚未上架公开插件目录，本项目不更改全局 Go 设置。
 
 Settings 已补齐格式与 exclusive 数值边界校验、保存前 `FieldValidators`、`FieldNames` 别名映射和类型模型推导。原始 patch 保留未提供字段；跨字段校验和持久化事务仍由业务回调负责。
 
@@ -112,4 +120,3 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 - [验收证据与 SDK 限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits)
 - [交接记录（源码仓库）](docs/handoff.md)
 - [Wiki 源文档和发布步骤](docs/wiki/README.md)
-

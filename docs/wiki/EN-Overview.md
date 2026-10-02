@@ -4,7 +4,11 @@
 
 This is a public personal Go server SDK, not an official OpenAI SDK. It extends official `github.com/modelcontextprotocol/go-sdk v1.8.0`; the Go floor is 1.25.0. The official SDK owns JSON-RPC, transports, sessions, tools/resources and standard MRTR. Browser and host behavior uses standard MCP Apps and OpenAI's TypeScript App SDK.
 
-Historical merge/plugin record: 2026-10-01; current extension documentation: 2026-10-02. Server extensions were merged through [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1). The local plugin and live acceptance setup were merged through [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2), commit `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. Bilingual Wiki source was merged through [PR #3](https://github.com/SisyphusSQ/mcp-extensions-go/pull/3). The owner then explicitly authorized making the source repository public. No tag/release or public plugin-directory distribution was created. A merge does not imply completion of host acceptance.
+Historical merge/plugin record: 2026-10-01; current extension documentation: 2026-10-02. Server extensions were merged through [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1). The local plugin and live acceptance setup were merged through [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2), commit `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. Bilingual Wiki source was merged through [PR #3](https://github.com/SisyphusSQ/mcp-extensions-go/pull/3). The owner then explicitly authorized making the source repository public. No tag/release or public plugin-directory distribution was created at that historical stage. The first Go module release is [v0.0.1](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.1); the local plugin remains separate. A merge does not imply completion of host acceptance.
+
+## Agent integration
+
+Install `github.com/SisyphusSQ/mcp-extensions-go@v0.0.1` and start with the [coding-agent guide](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration). It includes a public-only quickstart and the reusable extension acceptance runner.
 
 ## Implemented
 

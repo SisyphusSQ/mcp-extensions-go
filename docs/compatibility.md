@@ -60,3 +60,7 @@ Generic request-state encryption, restart/shared-worker continuation recovery, m
 Go pattern validation is RE2; email checks do not claim the full Python email-validator/IDNA algorithm. Standalone integer literals are bounded to signed/unsigned 64-bit; the official SDK's map decoding may already lose number precision/source representation. The checked-in Python cases establish selected schema/value/upload equivalence rather than complete Pydantic or product acceptance. Real host acceptance and the SDK-blocked direct sender remain separate gaps.
 
 The [bilingual roadmap](wiki/README.md) records implemented extension work and remaining limits. Source Wiki changes are not published by editing this repository; the installed plugin cache is also unchanged. This source matrix remains the implementation authority.
+
+## Consumer entrypoint and additional subprocess evidence
+
+The [agent integration guide](agent-integration.md) selects public APIs and explains adapting an existing server. The public-only quickstart is `examples/agent-quickstart`; `examples/acceptance` preserves the temporary subprocess probe's prior 186-call evidence from 2026-10-02. It covers all 51 Python fixture declarations, 82 values, four upload-reference cases, typed form models and actual Settings constraints/aliases/validators. See [recorded output and boundaries](validation-2026-10-02.md). These backend calls do not establish host forms/picker/uploads or production storage. They are not repeated during v0.0.1 closeout; the module release does not reload installed plugins.

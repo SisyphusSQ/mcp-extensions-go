@@ -1,7 +1,7 @@
 .PHONY: fmt test vet build plugin
 
 fmt:
-	gofmt -w ui settings forms mentions resources internal examples/http examples/stdio
+	gofmt -w ui settings forms mentions resources internal examples/http examples/stdio examples/acceptance examples/agent-quickstart
 
 test:
 	go test -race ./...
@@ -12,6 +12,8 @@ vet:
 build:
 	go build -o bin/mcp-extensions-http ./examples/http
 	go build -o bin/mcp-extensions-stdio ./examples/stdio
+	go build -o bin/mcp-extensions-acceptance ./examples/acceptance
+	go build -o bin/agent-quickstart ./examples/agent-quickstart
 
 # Build a private local plugin; generated artifacts stay outside Git.
 plugin:

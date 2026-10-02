@@ -1,6 +1,7 @@
 **English**
 
 - [Overview](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview)
+- [Agent integration](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration)
 - [Architecture](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Architecture)
 - [Compatibility and capabilities](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility)
 - [Frontend validation](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Frontend-Validation)
@@ -13,6 +14,7 @@
 **中文**
 
 - [项目概览](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview)
+- [Agent 接入指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)
 - [架构](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Architecture)
 - [兼容性与完整能力表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility)
 - [前端验证](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Frontend-Validation)
