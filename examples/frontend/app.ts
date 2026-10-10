@@ -20,7 +20,9 @@ function refreshActions() {
   for (const button of actions) button.disabled = !connected || busy;
   (element("save") as HTMLButtonElement).disabled = !connected || busy || !currentValues;
   (element("context") as HTMLButtonElement).disabled = !connected || busy || !extensions.modelContext;
-  (element("message") as HTMLButtonElement).disabled = !connected || busy || !extensions.message;
+  for (const id of ["message", "draft", "new-draft"]) {
+    (element(id) as HTMLButtonElement).disabled = !connected || busy || !extensions.message || id !== "message" && !["desktop", "web"].includes(app.getHostContext()?.platform ?? "");
+  }
   const display = element("display") as HTMLButtonElement;
   const supported = app.getHostContext()?.availableDisplayModes?.includes("fullscreen") ?? false;
   display.disabled = !connected || busy || displayMode === "fullscreen" || !supported;
@@ -100,6 +102,11 @@ element("context").addEventListener("click", () => void run(async () => {
 element("message").addEventListener("click", () => void run(async () => {
   return extensions.message!.send({ role: "user", content: [{ type: "text", text: "Tell me about the selected demo part." }] });
 }));
+for (const [id, target] of [["draft", "active"], ["new-draft", "new"]] as const) {
+  element(id).addEventListener("click", () => void run(async () => {
+    return extensions.message!.send({ role: "user", content: [{ type: "text", text: "Tell me about the selected demo part." }], _meta: { "openai/message": { target, send: false } } });
+  }));
+}
 element("display").addEventListener("click", () => void run(async () => {
   const result = await app.requestDisplayMode({ mode: "fullscreen" });
   displayMode = result.mode;

@@ -10,7 +10,7 @@ Business service / internal/example (HTTP and stdio)
   +-- mentions: app-visible search tool + two result variants
   +-- resources: file input/context parsing
   +-- ui: App metadata + trusted HTML registration
-  +-- forms: extension schema, unchanged answers, resources and typed models
+  +-- forms: extension schema, modern MRTR input/retry adapter and typed models
   +-- official mcp.Server
        +-- schemas, tools, resources, discovery, sessions and transports
        +-- standard elicitation and standard MRTR
@@ -38,7 +38,7 @@ Read must be read-only. Update must independently authorize, preserve omitted fi
 
 ## Mentions
 
-The helper registers an ordinary tool with `openai/extensions.mentions/search` and app visibility. Existing ui/extension fields are preserved in an independent snapshot. Search remains caller-owned and accepts an empty query. Results use standard official `mcp.ResourceLink` encoding or the SDK-source `resource` variant. Invalid result variants become tool errors; empty results encode as `items: []`. There is no upstream standalone mention server capability to fabricate.
+The helper registers an ordinary tool with `openai/extensions.mentions/search` and app visibility. Existing ui/extension fields are preserved in an independent snapshot. Search remains caller-owned and accepts an empty query. Results use standard official `mcp.ResourceLink` encoding or the SDK-source `resource` variant. Invalid result variants become tool errors; empty results encode as `items: []`. `mentions.WithCapability` prepares independent construction options for modern/legacy `openai/mentions: {searchTool}`. It must run before server construction, and that same tool name must be registered with `AddTool`. The retained metadata marker is a deprecated fallback.
 
 ## File context
 
@@ -62,10 +62,14 @@ The test-only bridge fixture uses official AppBridge/PostMessageTransport, an is
 
 Settings formats are enforced before persistence. Per-field validators run only for supplied patch fields and their transformed results are checked again. Update callbacks can receive business field names while the wire schema/effective values retain aliases. Typed model helpers preserve partial-map updates; merged-state rules and transactions remain application-owned.
 
-Parity targets OpenAI MCP Extensions, not the MCP Python SDK. Standard MRTR, sessions, transports, tasks, generic request-state encryption/recovery and identity frameworks are excluded. No modern form MRTR adapter or review workflow is public. The SDK-boundary result adapter remains only an investigation fixture. Python's legacy `elicit_input` explicitly does not implement MRTR; direct custom sending is blocked by Go SDK v1.8.0's public outbound registry. No SDK internals or protocol implementation is copied. See [reproductions and source locations](protocol-investigation.md).
+Parity targets OpenAI MCP Extensions, not the MCP Python SDK. Standard MRTR, sessions, transports, tasks, generic request-state encryption/recovery and identity frameworks are excluded. Modern `Form.RequestInput` uses official ElicitParams metadata and validates retry answers; continuation storage and business workflows remain caller-owned. The SDK-boundary result adapter remains only an investigation fixture. Python's legacy `elicit_input` explicitly does not implement MRTR; direct custom sending is blocked by Go SDK v1.8.0's public outbound registry. No SDK internals or protocol implementation is copied. See [reproductions and source locations](protocol-investigation.md).
 
 ## Security and lifecycle
 
 The HTTP example retains runtime-only credentials, constant-time digest comparison, loopback defaults, cross-origin/localhost protection, a 1 MiB request limit, timeouts and graceful shutdown. Library handlers receive the official request/context so verified identity and authorization can be supplied by the owning server. Callback error messages must not contain credentials. Root filesystem errors may contain paths and must be mapped appropriately by a business tool.
 
-The source repository became public at the owner's explicit request on 2026-10-01. Repository visibility does not change runtime authentication, filesystem authorization or the local plugin's distribution. The v0.0.1 source release publishes a reviewed Go module tag; it installs no global tooling or persistent service and performs no remote TLS deployment. Go 1.25 matrix testing uses the cache-local `GOTOOLCHAIN` mechanism. Node installs are local to the frontend example with locked versions and lifecycle scripts disabled.
+The source repository became public at the owner's explicit request on 2026-10-01. Repository visibility does not change runtime authentication, filesystem authorization or the local plugin's distribution. The v0.0.2 source release publishes a reviewed Go module tag; it installs no global tooling or persistent service and performs no remote TLS deployment. Go 1.25 matrix testing uses the cache-local `GOTOOLCHAIN` mechanism. Node installs are local to the frontend example with locked versions and lifecycle scripts disabled.
+
+## Upstream 0.2.0 migration
+
+Settings tool-item Title is optional and deprecated; hosts use the referenced tool display name. Settings App entrypoints now fail validation; deprecated Go symbols remain for source migration. The frontend supports explicit editable drafts only on desktop/web with message capability. The pinned official 0.2.0 artifact and updated TypeScript dependencies are local example inputs, not Go module dependencies. See [migration](upstream-0.2.0.md).

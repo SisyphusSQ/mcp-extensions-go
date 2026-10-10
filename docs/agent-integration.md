@@ -9,7 +9,7 @@ Read the target project's instructions, `go.mod`, MCP server constructor, transp
 Install the pinned module from the consuming project:
 
 ```sh
-go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.1
+go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.2
 ```
 
 This is a personal extension library, not an official OpenAI SDK. It uses `github.com/modelcontextprotocol/go-sdk v1.8.0`. Review a different existing SDK version before changing it; do not silently downgrade or upgrade the application's dependencies. No global Go configuration or `GOPRIVATE` setting is required for this public module.
@@ -17,14 +17,14 @@ This is a personal extension library, not an official OpenAI SDK. It uses `githu
 | Requirement | Public API | Caller / host responsibility |
 | --- | --- | --- |
 | Native settings, partial updates | `settings.NewServer`, `settings.NewModelServer[T]` | Identity, authorization, complete merged-state rules and transactional storage |
-| Composer resource suggestions | `mentions.AddTool`, `mentions.SearchResult` | Authorized search, readable resources and host typeahead UX |
+| Composer resource suggestions | `mentions.WithCapability`, `mentions.AddTool`, `mentions.SearchResult` | Authorized search, readable resources and host typeahead UX |
 | App resources and launch entrypoints | `ui.ToolMetadata.Metadata`, `ui.AddHTMLResource` | Trusted HTML, official TypeScript App handshake and host presentation |
 | File launch/context metadata | `resources.FileInput`, `resources.Path` | Host resource reads and independent authorization; URI/path metadata grants no access |
 | Form schema and accepted-answer validation | `forms.New`, `forms.Parse`, `forms.NewModel[T]` | Obtaining an answer through a supported integration and checking business rules |
 | Named-type schema inference | `forms.NewModelWithOptions[T]`, `settings.FieldsForWithOptions[T]` | Explicit public `jsonschema.ForOptions` declarations for custom types |
 | Standard tools, sessions, HTTP/stdio, MRTR | Official `mcp` APIs | Existing application's standard MCP integration |
 
-**Sending boundary:** there is no public `elicit_form`, extended-form sending helper or modern form MRTR adapter in this Go library. Legacy `openai/elicitation/create` is blocked by the pinned official SDK's public outbound API. Form declaration/validation support does not mean the host can display a form. Consult [compatibility](compatibility.md) before promising a capability.
+**Modern forms:** use `Form.RequestInput(ctx, req, forms.RequestOptions{Key: ..., Message: ...})` on MCP 2026-07-28 or later with both required client capabilities. Return its pending result immediately; otherwise handle cancel/decline or decode the accepted answer with your model. See the public-only [form example](../examples/form-mrtr/main.go) and [migration guide](upstream-0.2.0.md). Legacy `openai/elicitation/create` is blocked by the pinned official SDK's public outbound API. Form declaration/validation support does not mean the host can display a form. Consult [compatibility](compatibility.md) before promising a capability.
 
 ## 2. Start a new server or adapt an existing server
 
@@ -99,7 +99,7 @@ Flat primitive/string-array schemas are supported. Nested objects/arbitrary unio
 
 ### Mentions
 
-Register `mentions.AddTool(server, &mcp.Tool{Name: "search_mentions"}, searchHandler)`. The callback signature is `func(context.Context, *mcp.CallToolRequest, mentions.SearchParams) (mentions.SearchResult, error)`. Return `mentions.Item{Link: &mcp.ResourceLink{URI: ..., Name: ..., MIMEType: ...}}` or the documented resource variant. Empty queries are valid; no matches must produce an empty `Items` slice. The helper adds the search marker and app visibility, not a separate mention capability or authorization. A search link does not automatically register its readable resource. See [shared example registration](../internal/example/server.go) as source reference, not an importable public package.
+Register `mentions.AddTool(server, &mcp.Tool{Name: "search_mentions"}, searchHandler)`. The callback signature is `func(context.Context, *mcp.CallToolRequest, mentions.SearchParams) (mentions.SearchResult, error)`. Return `mentions.Item{Link: &mcp.ResourceLink{URI: ..., Name: ..., MIMEType: ...}}` or the documented resource variant. Empty queries are valid; no matches must produce an empty `Items` slice. Before server construction, call `mentions.WithCapability(options, "search_mentions")` and use the returned options with the ordinary or settings factory. `AddTool` ensures read-only/app-visible metadata and keeps the deprecated fallback marker. The capability and registered tool name must match; authorization remains caller-owned. A search link does not automatically register its readable resource. See [shared example registration](../internal/example/server.go) as source reference, not an importable public package.
 
 ### App entrypoints
 
@@ -127,4 +127,4 @@ Deliver the chosen capability/API, dependency version, changed integration point
 
 ## Copyable task prompt
 
-> Integrate the requested OpenAI MCP Extensions into this Go project using mcp-extensions-go v0.0.1. Read the target repository's instructions and this integration guide, then consult the capability matrix and only the needed API references. Reuse existing authentication, storage and official MCP transports. Preserve partial updates, apply merged-state rules before writes and authorize resource access independently. Do not invent unsupported form sending, MRTR/recovery or private example APIs. Implement the requested path, report actual validation evidence and distinguish backend results from real host acceptance.
+> Integrate the requested OpenAI MCP Extensions into this Go project using mcp-extensions-go v0.0.2. Read the target repository's instructions and this integration guide, then consult the capability matrix and only the needed API references. Reuse existing authentication, storage and official MCP transports. Preserve partial updates, apply merged-state rules before writes and authorize resource access independently. Use public modern form RequestInput when required; do not invent legacy sending, generic recovery or private example APIs. Implement the requested path, report actual validation evidence and distinguish backend results from real host acceptance.

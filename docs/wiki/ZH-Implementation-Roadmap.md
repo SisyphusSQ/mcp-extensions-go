@@ -2,6 +2,12 @@
 
 [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Implementation-Roadmap) · **中文** · [Wiki 首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
+## v0.0.2／上游 0.2.0 当前状态
+
+当前已提供现代 Form.RequestInput、Mention capability、可省略的 Settings 按钮标题、移除 Settings App 入口的迁移错误和 desktop／web 草稿示例。下面 2026-10-01／02 记录属于历史，其中排除现代 MRTR 的范围已被本轮授权取代；通用恢复和旧式发送限制仍在。真实宿主表单／草稿仍未验收。当前证据见[开发验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-10.md)。
+
+## 历史证据（2026-10-01／02）
+
 2026-10-02 所有者将范围限定为 OpenAI MCP Extensions Python 0.1.0，提交 `900032d8bd7c1566202d0cb1666986584f932043`，底层 MCP Python SDK 不做对齐。状态以[源能力表](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md)为准。
 
 | 项目 | 已实现 | 剩余边界 |

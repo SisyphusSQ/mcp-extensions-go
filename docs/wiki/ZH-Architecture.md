@@ -14,7 +14,7 @@
   +-- mentions：app 可见的搜索工具、两种结果类型
   +-- resources：文件输入/上下文解析
   +-- ui：App 元数据、可信 HTML 注册
-  +-- forms：扩展 schema、原始回答、资源和类型模型
+  +-- forms：扩展 schema、现代 MRTR 请求／回答适配与类型模型
   +-- 官方 mcp.Server
        +-- schema、工具、资源、发现、会话与传输
        +-- 标准 elicitation 与标准 MRTR
@@ -44,7 +44,7 @@ Read 必须只读。Update 必须独立授权、保留未提供字段、检查�
 
 ## Mentions
 
-辅助注册普通工具，并添加 `openai/extensions.mentions/search` 与 app visibility。已有 ui/extension 字段保留在独立快照中。搜索由调用者提供，空查询有效。结果使用官方 `mcp.ResourceLink` 编码，或上游 SDK 源码中的 `resource` 类型；无效结果类型成为工具错误，空结果编码为 `items: []`。上游没有要求单独的 mentions 服务端 capability，不能自行虚构。
+辅助注册普通工具，并添加 `openai/extensions.mentions/search` 与 app visibility。已有 ui/extension 字段保留在独立快照中。搜索由调用者提供，空查询有效。结果使用官方 `mcp.ResourceLink` 编码，或上游 SDK 源码中的 `resource` 类型；无效结果类型成为工具错误，空结果编码为 `items: []`。构造前用 mentions.WithCapability 设置现代／旧版 openai/mentions，随后注册同名 AddTool。保留的 marker 是 capability 缺失时的废弃兼容方式。
 
 ## 文件上下文
 
@@ -70,10 +70,14 @@ forms 已实现 Python 扩展的平面声明、JSON enum／注解、丰富选择
 
 Settings 在保存前执行格式／字段校验，只处理提供的 patch，转换结果再次检查；Update 可以接收业务字段名，wire 和完整返回值保留 JSON 别名。合并状态／跨字段规则与事务属于业务。
 
-对齐仅限 MCP Extensions。标准 MRTR／会话／传输、tasks、通用状态加密／恢复、身份框架不做对齐。此前公共现代表单 MRTR 适配、请求状态包和两轮 review 示例已移除；接收结果适配仅保留为 SDK 调查测试。Python elicit_input 不实现 MRTR；旧版自定义发送仍受 Go SDK v1.8.0 公开发送 API 限制。见[协议调查](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation)。
+对齐仅限 MCP Extensions。标准 MRTR／会话／传输、tasks、通用状态加密／恢复、身份框架不做对齐。v0.0.2 的 Form.RequestInput 通过官方 ElicitParams 元数据和 MRTR 结果类型适配现代表单，并校验重试回答；续轮存储与业务工作流仍由调用者负责。历史接收结果适配仅保留为 SDK 调查测试。Python elicit_input 不实现 MRTR；旧版自定义发送仍受 Go SDK v1.8.0 公开发送 API 限制。见[协议调查](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Protocol-Investigation)。
 
 ## 安全与生命周期
 
 HTTP 示例保留运行时凭据、常量时间摘要比较、loopback 默认地址、跨 Origin/localhost 防护、1 MiB 请求限制、超时与优雅退出。库处理器接收官方 request/context，所属服务可注入已验证身份与授权。回调错误不能包含凭据；文件系统错误可能含路径，业务工具须适当映射。
 
-源码仓库已按所有者在 2026-10-01 的明确要求公开。仓库可见性不改变运行时认证、文件授权或本地插件分发。v0.0.1 源码发版发布经过审阅的 Go 模块 tag；不安装全局工具或持久服务，不部署远程 TLS。Go 1.25 矩阵使用缓存内 `GOTOOLCHAIN`；Node 依赖安装在前端示例本地，锁定版本并禁用生命周期脚本。
+源码仓库已按所有者在 2026-10-01 的明确要求公开。仓库可见性不改变运行时认证、文件授权或本地插件分发。v0.0.2 源码发版发布经过审阅的 Go 模块 tag；不安装全局工具或持久服务，不部署远程 TLS。Go 1.25 矩阵使用缓存内 `GOTOOLCHAIN`；Node 依赖安装在前端示例本地，锁定版本并禁用生命周期脚本。
+
+## 0.2.0 迁移
+
+Settings 按钮 Title 可省略且已废弃，名称来自被引用工具；Settings App 入口拒绝声明。前端使用带来源和校验记录的原始官方 0.2.0 构建包，草稿按钮仅在 desktop／web 和 message capability 存在时启用。参阅[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.0.md)。

@@ -1,16 +1,27 @@
 // A local protocol fixture using the official AppBridge, not an OpenAI host.
-import { AppBridge, PostMessageTransport } from "@modelcontextprotocol/ext-apps/app-bridge";
+import { AppBridge, PostMessageTransport, McpUiMessageRequestSchema } from "@modelcontextprotocol/ext-apps/app-bridge";
+import { OpenAIMessageParamsSchema } from "@openai/mcp-extensions/app";
 
 const iframe = document.getElementById("app") as HTMLIFrameElement;
 const events: Array<{ method: string; params?: unknown }> = [];
+// Extend the host request schema through the official protected hook. The core
+// message schema alone strips OpenAI metadata before invoking onmessage.
+class FixtureBridge extends AppBridge {
+  enableOpenAIMessages() {
+    this.replaceRequestHandler(McpUiMessageRequestSchema.extend({ params: OpenAIMessageParamsSchema }), async request => {
+      events.push({ method: "ui/message", params: request.params });
+      return {};
+    });
+  }
+}
 let sequence = 0;
 const disabled = new URLSearchParams(window.location.search).has("noextensions");
 const parameters = new URLSearchParams(window.location.search);
 const initialMode = parameters.has("fullscreen") ? "fullscreen" : "inline";
-const bridge = new AppBridge(null, { name: "Local protocol fixture", version: "0" }, {
+const bridge = new FixtureBridge(null, { name: "Local protocol fixture", version: "0" }, {
   serverTools: {}, serverResources: {}, message: {}, updateModelContext: { text: {} },
   experimental: disabled ? {} : { "openai/modelContext": {}, "openai/message": {}, "openai/resource": {} },
-}, { hostContext: { displayMode: initialMode, availableDisplayModes: parameters.has("nofullscreen") ? ["inline"] : ["inline", "fullscreen"], "openai/deepLink": { url: "/parts?tag=bolt" } } });
+}, { hostContext: { platform: parameters.has("mobile") ? "mobile" : "desktop", displayMode: initialMode, availableDisplayModes: parameters.has("nofullscreen") ? ["inline"] : ["inline", "fullscreen"], "openai/deepLink": { url: "/parts?tag=bolt" } } });
 
 async function proxy(method: "tools/call" | "resources/read", params: unknown) {
   const response = await fetch("/rpc", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ method, params }) });
@@ -26,7 +37,7 @@ bridge.onreadresource = async params => {
   }
   return proxy("resources/read", params);
 };
-bridge.onmessage = async params => { events.push({ method: "ui/message", params }); return {}; };
+bridge.enableOpenAIMessages();
 bridge.onupdatemodelcontext = async params => {
   events.push({ method: "ui/update-model-context", params });
   return { _meta: { "openai/modelContext": { updateId: `update-${++sequence}` } } };

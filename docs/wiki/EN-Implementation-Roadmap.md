@@ -2,6 +2,12 @@
 
 **English** · [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Implementation-Roadmap) · [Wiki home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
+## Current v0.0.2 / upstream 0.2.0 status
+
+Modern Form.RequestInput, Mention capability discovery, optional legacy Settings button titles, rejection of removed Settings App entrypoints and desktop/web drafts are implemented. The 2026-10-01/02 records below are historical; their exclusion of modern MRTR is superseded by this authorized work. Generic recovery and legacy custom sending remain outside support. Real host forms/drafts are unverified. See [current development evidence](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-10.md).
+
+## Historical evidence (2026-10-01/02)
+
 The owner's 2026-10-02 scope targets OpenAI MCP Extensions Python 0.1.0 at `900032d8bd7c1566202d0cb1666986584f932043`, excluding the underlying MCP Python SDK. [The source capability matrix](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md) is authoritative.
 
 | Area | Implemented | Remaining limit |

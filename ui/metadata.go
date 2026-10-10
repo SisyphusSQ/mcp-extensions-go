@@ -125,14 +125,7 @@ func (e Entrypoint) validate() error {
 			}
 		}
 	case Settings:
-		if e.Extensions != nil || e.QuickAction != nil {
-			return fmt.Errorf("settings entrypoint only allows searchTerms")
-		}
-		for _, term := range e.SearchTerms {
-			if strings.TrimSpace(term) == "" {
-				return fmt.Errorf("settings search term must not be blank")
-			}
-		}
+		return fmt.Errorf("settings App entrypoints were removed; use openai/settings or a layout tool button")
 	default:
 		return fmt.Errorf("invalid entrypoint type %q", e.Type)
 	}

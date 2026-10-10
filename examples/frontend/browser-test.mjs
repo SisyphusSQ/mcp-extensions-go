@@ -93,6 +93,10 @@ try {
   await app.locator("#context").click(); await app.locator("#output").filter({ hasText: "update-1" }).waitFor();
   await app.locator("#message").click();
   await page.waitForFunction(() => window.fixture.events.some(e => e.method === "ui/message"));
+  await app.locator("#draft").click();
+  await page.waitForFunction(() => window.fixture.events.filter(e => e.method === "ui/message").length === 2);
+  await app.locator("#new-draft").click();
+  await page.waitForFunction(() => window.fixture.events.filter(e => e.method === "ui/message").length === 3);
   await app.locator("#display").click(); await app.locator("#output").filter({ hasText: "fullscreen" }).waitFor();
   assert.equal(await app.locator("#display").textContent(), "Already fullscreen");
   assert.equal(await app.locator("#display").isDisabled(), true);
@@ -104,6 +108,7 @@ try {
   const events = await page.evaluate(() => window.fixture.events);
   const message = events.find(e => e.method === "ui/message");
   assert.equal(message.params.role, "user");
+  assert.deepEqual(events.filter(e => e.method === "ui/message").slice(1).map(e => e.params._meta["openai/message"]), [{ target: "active", send: false }, { target: "new", send: false }]);
   assert.equal(events.filter(e => e.method === "tools/call" && e.params.name === "open_workspace").length, 0, "App redundantly called the initial tool");
   assert.equal(events.find(e => e.method === "ui/update-model-context").params.content[0]._meta["openai/title"], "Bolt");
   assert.equal(events.find(e => e.method === "resources/read").params._meta["openai/resource"].representation, "text");
@@ -113,6 +118,13 @@ try {
   await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
   assert.equal(await app.locator("#context").isDisabled(), true);
   assert.equal(await app.locator("#message").isDisabled(), true);
+  assert.equal(await app.locator("#draft").isDisabled(), true);
+  assert.equal(await app.locator("#new-draft").isDisabled(), true);
+  await page.goto(`http://127.0.0.1:${local.address().port}/?mobile`);
+  await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
+  assert.equal(await app.locator("#message").isDisabled(), false);
+  assert.equal(await app.locator("#draft").isDisabled(), true);
+  assert.equal(await app.locator("#new-draft").isDisabled(), true);
   for (const [query, label] of [["fullscreen", "Already fullscreen"], ["nofullscreen", "Fullscreen unavailable"]]) {
     await page.goto(`http://127.0.0.1:${local.address().port}/?${query}`);
     await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
@@ -128,7 +140,7 @@ try {
   const standalone = await browser.newPage();
   await standalone.goto(`http://127.0.0.1:${local.address().port}/app`);
   await standalone.locator("#status").filter({ hasText: "Open this App through an MCP host" }).waitFor();
-  console.log("PASS: official App/AppBridge handshake, Go HTTP settings/search, initial result, display/deep-link updates, context/message payloads, file text, absent capabilities, standalone notice");
+  console.log("PASS: official App/AppBridge handshake, Go HTTP settings/search, initial result, display/deep-link updates, context/send/draft payloads, mobile gating, file text, absent capabilities, standalone notice");
 } catch (error) {
   if (page) {
     for (const frame of page.frames()) console.error("Fixture frame:", await frame.locator("body").innerText().catch(() => "unavailable"));

@@ -6,7 +6,7 @@ Source: [`docs/frontend-validation.md`](https://github.com/SisyphusSQ/mcp-extens
 
 ## Run with the Go server
 
-The example uses `@modelcontextprotocol/ext-apps 1.7.5` and `@openai/mcp-extensions 0.1.0` directly. Node dependencies are local and locked. Browser/server credentials are never bundled into HTML. The default embedded HTTP page remains static; select the real built App explicitly:
+The example uses `@modelcontextprotocol/ext-apps 1.7.5` and `@openai/mcp-extensions 0.2.0` (unmodified official artifact, pinned in [vendor](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/examples/frontend/vendor/README.md)) directly. Node dependencies are local and locked. Browser/server credentials are never bundled into HTML. The default embedded HTTP page remains static; select the real built App explicitly:
 
 ```sh
 cd /Users/suqing/coding/golang/00_self/mcp-extensions-go/examples/frontend
@@ -42,13 +42,13 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/absolute/path/to/chrome npm test
 
 Without `PLAYWRIGHT_MODULE_PATH`, the suite tries a caller-installed `playwright` package. It never installs Playwright or downloads browsers automatically. On sqmc04 the existing bundled Playwright 1.62.1 and `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` were used with an isolated headless profile.
 
-The suite covers actual `ui/initialize`, initialized notification, initial tool result, authenticated Go settings read/update, mention search, display/deep-link updates, context/message payloads, host resource text with inert HTML-like contents, missing host capabilities, and standalone mode. Context/message/resource responses are test-host fixtures, not OpenAI model behavior.
+The suite covers actual `ui/initialize`, initialized notification, initial tool result, authenticated Go settings read/update, mention search, display/deep-link updates, context/message/current-draft/new-draft payloads and mobile draft gating, host resource text with inert HTML-like contents, missing host capabilities, and standalone mode. Context/message/resource responses are test-host fixtures, not OpenAI model behavior.
 
 ## OpenAI host acceptance: partial, user-observed
 
 On 2026-10-01 the local plugin was installed and enabled using the official CLI. A separate official app-server process discovered all five tools and three resources. User-provided desktop screenshots confirmed the global Open workspace entrypoint, Connected state, initial tool result, effective setting values, and an explicit question/model response with context count 1 and an answer identifying bolt. The user also reported that Open fullscreen appeared ineffective; the App now displays actual mode, disables unavailable/already-fullscreen requests, and reports a host response that retains another mode. Reloaded desktop acceptance of that feedback fix is pending.
 
-Native desktop control was unavailable: `com.openai.codex` was rejected by the UI tool, and the running desktop exposes no default CLI control socket. The agent did not restart it or send a conversation message. The local bridge suite and CLI discovery do not establish the remaining desktop outcomes. See [live-e2e.md](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Live-E2E) for installation and manual acceptance details.
+Native desktop control was unavailable: `com.openai.codex` was rejected by the UI tool, and the running desktop exposes no default CLI control socket. The agent did not restart it or send a conversation message. The local bridge suite and CLI discovery do not establish the remaining desktop outcomes. See [live-e2e.md](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/live-e2e.md) for installation and manual acceptance details.
 
 Continue human acceptance of the installed plugin and record:
 
@@ -57,6 +57,11 @@ Continue human acceptance of the installed plugin and record:
 3. Composer mention typeahead, empty query, selection, readable selected resource, and denied/unavailable search.
 4. File-extension input, host-owned resource read representations, large-file rejection, and unsupported capabilities. Writes/subscriptions need a separate example before claiming their acceptance.
 5. Model-context replacement/removal/updateId, explicit active/new conversation messages, and deep-link initialization plus subsequent navigation.
-6. Extension-capable forms and genuine MRTR continuation only after the SDK/host requirements in [the SDK investigation](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Protocol-Investigation) are resolved.
+6. Run the public form-mrtr example on a modern extension-capable host and accept/cancel/decline forms, resource arrays, chooser/uploads and preview UI; SDK interoperability does not prove rendering.
+7. Desktop/Work current/new draft editing without submission; mobile draft controls disabled.
 
 Do not mark any of these complete based on the local protocol fixture.
+
+## Cross-SDK form interoperability
+
+After `make build`, run `npm run test:forms` from `examples/frontend`. The locked TypeScript client 2.2.0 drives the public Go stdio example, inspecting extended schema metadata and valid/invalid answers and rejecting missing capabilities/legacy protocol. TypeScript SDK 1.31.0 fixes GHSA-6qxp-vccf-f47h in the older browser-test client; the App SDK remains 1.7.5. No OAuth credentials or auth provider are used by these fixtures.
