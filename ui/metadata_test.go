@@ -21,14 +21,13 @@ func TestToolMetadataWireContract(t *testing.T) {
 				Target: ui.QuickActionTarget{Type: "tool", Name: "open", Arguments: map[string]any{"tab": "home"}},
 			}},
 			{Type: ui.Thread}, {Type: ui.File, Extensions: []string{}},
-			{Type: ui.Settings, SearchTerms: []string{"工作台"}},
 		},
 	}
 	got, err := metadata.Metadata(base)
 	if err != nil {
 		t.Fatal(err)
 	}
-	wantJSON := `{"vendor":{"value":"original"},"ui":{"resourceUri":"ui://test/home.html","visibility":["app","model"]},"openai/ui":{"preferredModelDisplayMode":"fullscreen","entrypoints":[{"type":"global","quickAction":{"title":"打开","icons":[{"src":"data:image/png;base64,AA=="}],"target":{"type":"tool","name":"open","arguments":{"tab":"home"}}}},{"type":"thread"},{"type":"file","extensions":[]},{"type":"settings","searchTerms":["工作台"]}]}}`
+	wantJSON := `{"vendor":{"value":"original"},"ui":{"resourceUri":"ui://test/home.html","visibility":["app","model"]},"openai/ui":{"preferredModelDisplayMode":"fullscreen","entrypoints":[{"type":"global","quickAction":{"title":"打开","icons":[{"src":"data:image/png;base64,AA=="}],"target":{"type":"tool","name":"open","arguments":{"tab":"home"}}}},{"type":"thread"},{"type":"file","extensions":[]}]}}`
 	var want mcp.Meta
 	if err := json.Unmarshal([]byte(wantJSON), &want); err != nil {
 		t.Fatal(err)
@@ -56,7 +55,7 @@ func TestInvalidToolMetadata(t *testing.T) {
 		{"thread fields", ui.ToolMetadata{ResourceURI: "ui://app/home", Entrypoints: []ui.Entrypoint{{Type: ui.Thread, Extensions: []string{}}}}},
 		{"file missing extensions", ui.ToolMetadata{ResourceURI: "ui://app/home", Entrypoints: []ui.Entrypoint{{Type: ui.File}}}},
 		{"file invalid extension", ui.ToolMetadata{ResourceURI: "ui://app/home", Entrypoints: []ui.Entrypoint{{Type: ui.File, Extensions: []string{"csv"}}}}},
-		{"empty search term", ui.ToolMetadata{ResourceURI: "ui://app/home", Entrypoints: []ui.Entrypoint{{Type: ui.Settings, SearchTerms: []string{" "}}}}},
+		{"removed settings entrypoint", ui.ToolMetadata{ResourceURI: "ui://app/home", Entrypoints: []ui.Entrypoint{{Type: ui.Settings}}}},
 		{"empty quick action", ui.ToolMetadata{ResourceURI: "ui://app/home", Entrypoints: []ui.Entrypoint{{Type: ui.Global, QuickAction: &ui.QuickAction{}}}}},
 	}
 	for _, tt := range tests {
@@ -109,17 +108,16 @@ func TestMetadataPreservesLargeJSONNumbers(t *testing.T) {
 func TestEntrypointWhitespaceNormalization(t *testing.T) {
 	m := ui.ToolMetadata{ResourceURI: "ui://app/home", Entrypoints: []ui.Entrypoint{
 		{Type: ui.File, Extensions: []string{" .txt "}},
-		{Type: ui.Settings, SearchTerms: []string{" units "}},
 	}}
 	meta, err := m.Metadata(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	entries := meta[ui.OpenAIMetaKey].(map[string]any)["entrypoints"].([]any)
-	if entries[0].(map[string]any)["extensions"].([]any)[0] != ".txt" || entries[1].(map[string]any)["searchTerms"].([]any)[0] != "units" {
+	if entries[0].(map[string]any)["extensions"].([]any)[0] != ".txt" {
 		t.Fatal("Python normalization missing")
 	}
-	if m.Entrypoints[0].Extensions[0] != " .txt " || m.Entrypoints[1].SearchTerms[0] != " units " {
+	if m.Entrypoints[0].Extensions[0] != " .txt " {
 		t.Fatal("caller declaration mutated")
 	}
 }

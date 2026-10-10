@@ -29,7 +29,11 @@ func NewServer(html string, store *Store) (*mcp.Server, error) {
 	if store == nil {
 		return nil, fmt.Errorf("settings store is required")
 	}
-	server, err := settings.NewServer(&mcp.Implementation{Name: "mcp-extensions-go-example", Version: "0.0.0-dev"}, nil, settings.Config{
+	options, err := mentions.WithCapability(nil, "search_mentions")
+	if err != nil {
+		return nil, err
+	}
+	server, err := settings.NewServer(&mcp.Implementation{Name: "mcp-extensions-go-example", Version: "0.0.0-dev"}, options, settings.Config{
 		Fields: map[string]settings.Field{
 			"units":    {Type: "string", Title: "Measurement units", Enum: []string{"mm", "in"}},
 			"showGrid": {Type: "boolean", Title: "Show grid"},
@@ -54,7 +58,7 @@ func NewServer(html string, store *Store) (*mcp.Server, error) {
 	meta, err := (ui.ToolMetadata{
 		ResourceURI:               AppURI,
 		Visibility:                []ui.Visibility{ui.App, ui.Model},
-		Entrypoints:               []ui.Entrypoint{{Type: ui.Global}, {Type: ui.Thread}, {Type: ui.Settings, SearchTerms: []string{"units", "grid"}}},
+		Entrypoints:               []ui.Entrypoint{{Type: ui.Global}, {Type: ui.Thread}},
 		PreferredModelDisplayMode: ui.Inline,
 	}).Metadata(nil)
 	if err != nil {

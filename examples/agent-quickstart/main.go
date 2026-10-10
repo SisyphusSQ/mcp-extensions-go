@@ -28,7 +28,7 @@ func run(ctx context.Context) error {
 	// with verified identity, authorization and transactional business storage.
 	state := preferences{Units: "mm", ShowGrid: true, Email: "user@example.com", Label: "Workspace"}
 	var mu sync.Mutex
-	server, err := settings.NewModelServer(&mcp.Implementation{Name: "agent-quickstart", Version: "0.0.1"}, nil, settings.ModelConfig[preferences]{
+	server, err := settings.NewModelServer(&mcp.Implementation{Name: "agent-quickstart", Version: "0.0.2"}, nil, settings.ModelConfig[preferences]{
 		Fields: map[string]settings.Field{
 			"units":         {Title: "Units", Enum: []string{"mm", "in"}},
 			"showGrid":      {Title: "Show grid"},

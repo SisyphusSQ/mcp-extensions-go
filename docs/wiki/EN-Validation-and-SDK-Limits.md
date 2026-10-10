@@ -2,9 +2,15 @@
 
 **English** · [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits) · [Overview](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview) · [Wiki home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
+## Current v0.0.2 / upstream 0.2.0 status
+
+Modern Form.RequestInput, Mention capability discovery, optional legacy Settings button titles, rejection of removed Settings App entrypoints and desktop/web drafts are implemented. The 2026-10-01/02 records below are historical; their exclusion of modern MRTR is superseded by this authorized work. Generic recovery and legacy custom sending remain outside support. Real host forms/drafts are unverified. See [current development evidence](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-10.md).
+
 This page separates implementation gaps from host acceptance and business ownership. The [capability matrix](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md) remains the detailed implementation authority.
 
 ## Evidence already available
+
+## Historical evidence (2026-10-01/02)
 
 | Layer | Recorded evidence on sqmc04, 2026-10-01 |
 | --- | --- |

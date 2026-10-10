@@ -4,7 +4,7 @@
 
 对应源文档：[`docs/forms.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/forms.md)。实现状态以[源能力表](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md)为准。
 
-对齐基准是 OpenAI MCP Extensions Python 0.1.0，提交 [`900032d8bd7c1566202d0cb1666986584f932043`](https://github.com/openai/mcp-extensions/tree/900032d8bd7c1566202d0cb1666986584f932043)，不包括底层 MCP Python SDK。
+对齐基准是 OpenAI MCP Extensions Python 0.2.0，提交 [`900032d8bd7c1566202d0cb1666986584f932043`](https://github.com/openai/mcp-extensions/tree/900032d8bd7c1566202d0cb1666986584f932043)，不包括底层 MCP Python SDK。
 
 ## 声明与原始回答
 
@@ -40,11 +40,19 @@ Settings 提供 FieldsFor、FieldsForWithOptions 和 NewModelServer。字段要�
 
 FieldValidators 按 wire 名称配置，签名为 `func(context.Context, any) (any, error)`。只对提供的 patch 字段在保存前执行，可转换值，转换结果再次校验。官方 wire schema 校验在前，不自动复现 Python before／wrap 装饰器接受 schema-invalid 输入的行为。完整状态／跨字段规则必须由 Update 在业务事务内合并后检查；返回值校验不能撤回已发生的写入。本库没有数据库或通用重启恢复 API。
 
+## 现代扩展表单请求
+
+在官方工具 handler 调用 `model.Form().RequestInput(ctx, req, forms.RequestOptions{Key: "selection", Message: "Choose"})`。pending 非 nil 时立即返回该工具结果，不同时返回内容或写入业务状态；否则显式处理 cancel／decline，accept 时用 model.Decode。完整[公共 stdio 示例](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/examples/form-mrtr/main.go)由 make build 构建为 bin/form-mrtr。
+
+要求协议至少 2026-07-28，并且本次请求同时具有 elicitation.form 和 extensions["openai/elicitation"].form；不支持时返回 ErrUnsupportedClient，不自动替换为普通／旧版请求。核心 requestedSchema 是空对象，完整 schema 在 _meta["openai/elicitation"].requestedSchema。官方 SDK 在分发时设置 resultType，helper 刚构造的 pending 不用 NeedsInput 判断。
+
+Meta 保留无关元数据；SelectionPolicy 沿用既有资源选择策略。RequestState 是客户端回传、不可信、业务所有的状态，本库不签名／加密／存储／授权／去重／过期／恢复。业务写入前需将续轮绑定已验证身份、工具和参数，并检查重放与事务规则。引用语法校验不授予读取权，示例不写入业务数据。
+
 ## 发送边界与证据
 
-Python 扩展 elicit_input 直接发送旧版 openai/elicitation/create，文档明确它不实现 MRTR。Go SDK v1.8.0 缺少公开自定义发送 API，所以当前提供 schema／校验／绑定，发送仍受阻。
+Python 0.2.0 通过 request_form_input 支持现代 MRTR。Go Form.RequestInput 复用官方标准 elicitation/create／InputRequestMap，承载扩展 schema 并校验重试回答；旧版 elicit_input_legacy 自定义发送仍受公开 API 限制。
 
-已移除此前新增的公共现代 MRTR 适配、通用请求状态加密／恢复和两轮 review 工具。标准会话、传输、MRTR、tasks 与持久化机制不作为 Extensions 对齐目标。本地读取器收回 internal/example，已有设置文件存储仍是业务示例。
+0.2.0 现代适配已实现；通用请求状态加密／恢复和业务 review 工作流仍不提供。标准会话、传输、MRTR、tasks 与持久化机制不作为 Extensions 对齐目标。本地读取器收回 internal/example，已有设置文件存储仍是业务示例。
 
 [Python 对照数据](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/forms/testdata/python-parity.json)包含 51 个 schema 与 86 个回答／上传案例；[生成脚本](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/scripts/generate-form-parity.py)记录固定源码与依赖版本。Go 测试直接读取数据，无需 Python 或网络。它证明已覆盖案例的语义一致，不证明完整 Pydantic 等价或真实 OpenAI 表单／选择／上传 UX 已验收。
 

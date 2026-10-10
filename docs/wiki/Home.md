@@ -9,6 +9,8 @@ This Wiki is published from [`docs/wiki`](https://github.com/SisyphusSQ/mcp-exte
 
 本 Wiki 从仓库中的 [`docs/wiki`](https://github.com/SisyphusSQ/mcp-extensions-go/tree/main/docs/wiki) 发布。文档变更通过主仓库审查；直接修改 Wiki 的受管页面可能在下次发布时被覆盖。
 
+Current module **v0.0.2**, targeting upstream **0.2.0**: [migration / 迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.0.md) · [validation / 验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-10.md).
+
 Focused guides / 专题指南：
 
 - [Agent integration](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration) / [Agent 接入指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)

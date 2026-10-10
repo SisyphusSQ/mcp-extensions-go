@@ -1,6 +1,6 @@
 # OpenAI extension forms and Python alignment
 
-This package follows OpenAI MCP Extensions Python 0.1.0 at [`900032d8bd7c1566202d0cb1666986584f932043`](https://github.com/openai/mcp-extensions/tree/900032d8bd7c1566202d0cb1666986584f932043). The reference is the extension package, not the underlying MCP Python SDK. The implementation authority is [compatibility.md](compatibility.md).
+This package follows OpenAI MCP Extensions Python 0.2.0 at [`python-v0.2.0`](https://github.com/openai/mcp-extensions/tree/python-v0.2.0). The reference is the extension package, not the underlying MCP Python SDK. The implementation authority is [compatibility.md](compatibility.md).
 
 ## Declarations and unchanged answers
 
@@ -56,9 +56,17 @@ Settings has `FieldsFor[T]`, `FieldsForWithOptions[T]` and `NewModelServer[T]`. 
 
 `Config.FieldValidators` (also available on `ModelConfig`) maps wire names to `func(context.Context, any) (any, error)`. Validators run on supplied update fields before persistence and may transform values; the transformed patch is checked again. The wire schema is checked first, so Python before/wrap validators that intentionally accept schema-invalid input require caller-specific adaptation. Omitted fields never run validators. Complete-state/cross-field rules must run in the update callback against merged state, within the caller's transaction. Result validation cannot undo a completed write. No database or generic persistence/recovery API is provided.
 
+## Modern form requests
+
+Use `Form.RequestInput(ctx, req, RequestOptions{Key: "selection", Message: "Choose"})` inside an official tool handler. Return the pending `*mcp.CallToolResult` immediately, with no content or business write. On retry, the helper returns a validated `*Answer`; handle cancel/decline explicitly, or call your model's `Decode` on accept. See [the complete public example](../examples/form-mrtr/main.go).
+
+The request must use MCP 2026-07-28 or later and advertise both `elicitation.form` and `extensions["openai/elicitation"].form`. The helper uses the official per-request protocol/capability accessors. Missing support returns `ErrUnsupportedClient`; there is no automatic legacy fallback. It uses standard `elicitation/create`, an empty core object schema, and the independent full schema in `_meta["openai/elicitation"].requestedSchema`. The official SDK sets `resultType` during dispatch; callers detect a pending helper result by its non-nil pointer, not `NeedsInput()` before dispatch.
+
+`RequestOptions.Meta` preserves unrelated metadata. `SelectionPolicy` applies the existing answer-selection contract. Responses for other keys remain caller-owned. `RequestState` is opaque, untrusted client-echoed state: the helper does not sign, encrypt, store, expire, recover or authorize it. Business code must bind continuations to verified identity/tool/arguments and enforce replay/transaction rules before any mutation. The public example performs no writes and keeps no continuation storage.
+
 ## Sending boundary and parity evidence
 
-Python's extension `elicit_input` sends legacy `openai/elicitation/create`; its documentation explicitly says it does not implement MRTR. Go SDK v1.8.0 has no public custom outbound request API for this method. This library provides declarations/validation/model binding but no public sending facade, modern MRTR adapter, encrypted continuation helper or two-round review tool. Standard sessions, transports, MRTR, tasks and persistence machinery stay with the official SDK or application.
+Python's extension `elicit_input` sends legacy `openai/elicitation/create`; its documentation explicitly says it does not implement MRTR. Go SDK v1.8.0 has no public custom outbound request API for this method. Legacy custom sending remains unsupported. Modern `Form.RequestInput` implements the 0.2.0 extension adapter on official MRTR; no encrypted continuation helper or business workflow engine is supplied. Standard sessions, transports, MRTR, tasks and persistence machinery stay with the official SDK or application.
 
 [Python-generated fixtures](../forms/testdata/python-parity.json) cover 51 declarations and 86 value/upload cases. The [generator](../scripts/generate-form-parity.py) records the pinned source commit and dependency versions. Set `PYTHONPATH` to that upstream Python source and run the generator in an isolated environment with the recorded dependencies; Go tests consume checked-in fixtures without Python/network access. These cases verify selected extension semantics, not complete Pydantic compatibility or real OpenAI UI acceptance. Legacy direct sending remains SDK-blocked; real host chooser/upload/preview acceptance remains unverified.
 

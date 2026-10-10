@@ -4,7 +4,13 @@
 
 对应源文档：[`docs/protocol-investigation.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/protocol-investigation.md)。
 
-## 来源与方法
+## 当前 0.2.0 路径（2026-10-10）
+
+以下自定义方法调查属于 0.1.0 历史。0.2.0 现代 MRTR 使用标准 elicitation/create、空核心 schema 和 _meta["openai/elicitation"].requestedSchema。Form.RequestInput 直接复用 ElicitParams.Meta／InputRequestMap／InputResponses，通过每次请求访问器检查两种 form capability，不需要旧结果包装或 Python 的元数据修复中间件。
+
+旧自定义方法编码／发送限制仍适用于 legacy 连接，不能再将它推论为现代标准方法受阻。通用续轮恢复仍排除。参阅[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.0.md)。
+
+## 0.1.0 历史来源与方法
 
 OpenAI 协议和两种扩展实现在 commit `900032d8bd7c1566202d0cb1666986584f932043` 下读取。相关上游来源：
 
@@ -49,7 +55,7 @@ SDK 源码来自固定 v1.8.0 模块，`internal/sdkcheck/mrtr_test.go` 使用�
 
 结果适配器仍是**仅供测试的实验**，不是公开发送／MRTR API。独立 forms 包已提供 schema／回答校验与模型绑定；该测试没有集成受支持的现代流程或持久且经过认证的续轮契约，不声明 openai/elicitation capability。现代 MRTR 不在本轮 Python Extensions 对齐范围，该实验仅记录公开 SDK 边界。旧版直接发送仍受 SDK API 阻碍。
 
-## 需要的公开 SDK 接口
+## 旧版自定义方法需要的公开 SDK 接口
 
 要支持类型化互操作，官方 SDK 需要公开注册自定义服务端发出请求，并提供参数/结果工厂，保留 context、取消、请求关联及 capability 检查；还需要 MRTR 输入 request/response 编解码扩展注册。可以是请求 registry 或明确自定义 carrier；绕过生命周期要求的 `any` 逃生口不足以解决问题。
 

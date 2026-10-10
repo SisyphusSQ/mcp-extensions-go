@@ -1,5 +1,32 @@
 # Server extensions handoff
 
+## Upstream 0.2.0 and module v0.0.2 (2026-10-10)
+
+The owner authorized implementation, a branch/PR into main and the v0.0.2 release.
+Branch: `suqing/mcp-extensions-v0.2.0`. The [migration guide](upstream-0.2.0.md)
+and [current validation record](validation-2026-10-10.md) supersede historical
+claims below excluding a public modern form adapter.
+
+Implemented: public `Form.RequestInput` through official modern MRTR, keyed answer
+validation, two-round/concurrent flows, modern/legacy Mention capability options,
+optional deprecated Settings tool titles, rejection of removed Settings App
+entrypoints, and capability/platform-gated editable frontend drafts. Go SDK v1.8.0
+and Go floor 1.25.0 remain pinned. State/auth/transactions remain caller-owned;
+legacy custom sending and real host UX remain separate gaps.
+
+Development passed full race/vet/build on Go 1.27.0 and exact 1.25.0, frontend
+build/typecheck/browser integration, nine TypeScript 2.2.0 form scenarios, and npm
+audit with zero reported vulnerabilities. The frontend uses the original official
+Node 0.2.0 tagged workflow archive because npm did not expose that release;
+provenance/checksum and license are checked in. No SDK was edited or forked.
+
+Authorized closeout is PR merge, annotated v0.0.2 module tag, GitHub Release
+with source archive/checksum, and separate bilingual Wiki synchronization.
+This source record does not itself prove those remote steps completed; read the
+PR/release/tag and Wiki history. No tests are repeated during closeout. Existing
+plugin caches are not reloaded or deployed by this release. No global tooling,
+credentials, monitoring baseline or notification automation is changed.
+
 ## Agent integration and v0.0.1 release preparation (2026-10-02)
 
 The authorized branch is suqing/agent-guide-v0.0.1 in the existing checkout. Consumer guidance is docs/agent-integration.md, with English/Chinese Wiki pages and README/index navigation. examples/agent-quickstart imports public APIs only; examples/acceptance archives the previously passed 186-call subprocess probe. Source/generated binaries, logs, Node dependencies and private plugin cache remain distinct.

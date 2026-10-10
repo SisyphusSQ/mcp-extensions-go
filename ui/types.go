@@ -43,7 +43,8 @@ const (
 	Thread EntrypointType = "thread"
 	// File identifies the file entrypoint.
 	File EntrypointType = "file"
-	// Settings identifies the settings entrypoint.
+	// Settings identifies the removed settings App entrypoint.
+	// Deprecated: use structured settings or a tool button in its layout.
 	Settings EntrypointType = "settings"
 )
 
@@ -53,7 +54,8 @@ type Entrypoint struct {
 	Type        EntrypointType `json:"type"`
 	Extensions  []string       `json:"extensions,omitzero"`
 	QuickAction *QuickAction   `json:"quickAction,omitempty"`
-	SearchTerms []string       `json:"searchTerms,omitempty"`
+	// Deprecated: settings App entrypoints were removed upstream in v0.2.0.
+	SearchTerms []string `json:"searchTerms,omitempty"`
 }
 
 // QuickAction describes a shortcut tool call on a global entrypoint.

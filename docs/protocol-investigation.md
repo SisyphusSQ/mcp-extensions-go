@@ -1,6 +1,12 @@
 # Forms and MRTR: verified public SDK boundaries
 
-## Sources and method
+## Current 0.2.0 path (2026-10-10)
+
+The legacy/custom-method investigation below is historical. Upstream 0.2.0 modern forms use standard `elicitation/create` in MRTR, an empty core schema, and the full schema in `_meta["openai/elicitation"].requestedSchema`. `Form.RequestInput` now uses the public `mcp.ElicitParams.Meta`/`InputRequestMap`/`InputResponses` types directly and checks both client capabilities via per-request accessors. No custom result wrapper or Python metadata-restoration middleware is needed on this Go path. See [forms](forms.md), [migration](upstream-0.2.0.md) and [the modern spec](https://github.com/openai/mcp-extensions/blob/python-v0.2.0/docs/spec.md#multi-round-trip-elicitation).
+
+The custom-method encoding/sending restrictions below still apply to legacy connections. They do not block the new standard-method adapter. Generic continuation recovery remains excluded.
+
+## Historical 0.1.0 sources and method
 
 The OpenAI protocol and both extension implementations were read at commit `900032d8bd7c1566202d0cb1666986584f932043`. Relevant upstream sources:
 
@@ -41,13 +47,13 @@ Standard `ServerSession.Elicit` checks the ordinary elicitation capability and u
 
 Modern raw HTTP probes include protocol metadata/client capabilities and the required `Mcp-Method`/`Mcp-Name` headers. This avoids confusing malformed modern requests with extension limitations.
 
-The receiving-result adapter remains a **test-only experiment**, not a public sending/MRTR API. The separate `forms` package provides schema/answer validation and typed binding; the fixture does not integrate a supported modern form workflow or durable authenticated continuation contract. No `openai/elicitation` capability is advertised. Modern MRTR is outside current Python-extension alignment; this experiment documents the public SDK boundary only. Legacy direct custom elicitation remains blocked by the public sending API.
+The receiving-result adapter remains a **test-only experiment**, not a public sending/MRTR API. The separate `forms` package provides schema/answer validation and typed binding; the fixture does not integrate a supported modern form workflow or durable authenticated continuation contract. No `openai/elicitation` capability is advertised. Modern MRTR was outside the 2026-10-02 Python-extension alignment; this experiment documents the public SDK boundary only. Legacy direct custom elicitation remains blocked by the public sending API.
 
-## Public SDK interfaces needed
+## Public SDK interfaces needed for legacy custom methods
 
 For supported typed interoperability, the official SDK would need public registration for outbound custom server requests with parameter/result factories (preserving context, cancellation, request association and capability checks), and extension registration for MRTR input request/response encoders/decoders. This could be a request registry or explicit custom request carrier; an `any` escape hatch that skips required lifecycle handling is insufficient.
 
-Emitting adapted modern fields requires no SDK fork, but it does not establish supported MRTR interoperability. Python Extensions parity does not require this route, and no adapter or continuation recovery API is shipped. Any independently scoped future implementation must check actual per-request client capability and establish host interoperability and continuation ownership.
+Emitting adapted modern fields requires no SDK fork, but it does not establish supported MRTR interoperability. The 0.1.0 alignment did not require this custom-method route. The new 0.2.0 adapter uses the standard method; no continuation recovery API is shipped. Any independently scoped future implementation must check actual per-request client capability and establish host interoperability and continuation ownership.
 
 Reproduce during development with `go test -race ./internal/sdkcheck -v`. This suite is also included in `make test`. It must not be rerun during commit/push closeout.
 

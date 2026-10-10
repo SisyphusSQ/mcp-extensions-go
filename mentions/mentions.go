@@ -103,7 +103,8 @@ type SearchResult struct {
 type Handler func(context.Context, *mcp.CallToolRequest, SearchParams) (SearchResult, error)
 
 // Metadata marks a mention tool and ensures app visibility, preserving other
-// fields in ui and openai/extensions. No separate server capability is specified.
+// fields in ui and openai/extensions. The marker is a deprecated fallback used
+// when the server has no openai/mentions capability; prefer WithCapability.
 // Visibility is not authorization. The returned value is an independent snapshot.
 func Metadata(base mcp.Meta) (mcp.Meta, error) {
 	meta, err := wire.Clone(base)

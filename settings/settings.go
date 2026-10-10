@@ -60,9 +60,10 @@ type Schema struct {
 
 // Item is a property reference or a same-server tool accepting {}.
 type Item struct {
-	Kind        string `json:"kind"`
-	Property    string `json:"property,omitempty"`
-	Tool        string `json:"tool,omitempty"`
+	Kind     string `json:"kind"`
+	Property string `json:"property,omitempty"`
+	Tool     string `json:"tool,omitempty"`
+	// Deprecated: hosts ignore Title. Set the referenced MCP tool's title instead.
 	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`
 }
@@ -342,8 +343,8 @@ func prepare(fields map[string]Field, groups []Group) (Schema, []Group, *jsonsch
 				}
 				seen[item.Property] = true
 			case "tool":
-				if item.Property != "" || strings.TrimSpace(item.Tool) == "" || strings.TrimSpace(item.Title) == "" {
-					return Schema{}, nil, nil, fmt.Errorf("tool items require tool and title")
+				if item.Property != "" || strings.TrimSpace(item.Tool) == "" || item.Title != "" && strings.TrimSpace(item.Title) == "" {
+					return Schema{}, nil, nil, fmt.Errorf("tool items require a tool name and an optional non-blank legacy title")
 				}
 			default:
 				return Schema{}, nil, nil, fmt.Errorf("unknown layout item kind %q", item.Kind)

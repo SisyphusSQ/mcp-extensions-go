@@ -2,9 +2,15 @@
 
 [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Validation-and-SDK-Limits) · **中文** · [项目概览](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview) · [Wiki 首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
+## v0.0.2／上游 0.2.0 当前状态
+
+当前已提供现代 Form.RequestInput、Mention capability、可省略的 Settings 按钮标题、移除 Settings App 入口的迁移错误和 desktop／web 草稿示例。下面 2026-10-01／02 记录属于历史，其中排除现代 MRTR 的范围已被本轮授权取代；通用恢复和旧式发送限制仍在。真实宿主表单／草稿仍未验收。当前证据见[开发验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-10.md)。
+
 这里区分实现缺口、宿主验收和业务责任。[完整能力对应表](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md)仍是详细实现状态的权威记录。
 
 ## 已有验证证据
+
+## 历史证据（2026-10-01／02）
 
 | 层级 | sqmc04，2026-10-01 的已有记录 |
 | --- | --- |
