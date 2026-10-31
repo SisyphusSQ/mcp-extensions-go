@@ -282,7 +282,7 @@ func run(ctx context.Context) error {
 	if err := decoder.Decode(&fixtures); err != nil {
 		return err
 	}
-	if fixtures.Commit != "900032d8bd7c1566202d0cb1666986584f932043" {
+	if fixtures.Commit != "36f8b38df179144b44d157133bbc5f7c6e353ace" {
 		return errors.New("unexpected Python fixture baseline")
 	}
 	values, uploads := 0, 0

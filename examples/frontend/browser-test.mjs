@@ -46,7 +46,7 @@ try {
         res.setHeader("Content-Type", "text/html"); res.end(hostHTML);
       } else if (req.method === "GET" && req.url === "/host.js") {
         res.setHeader("Content-Type", "text/javascript"); res.end(hostJS);
-      } else if (req.method === "GET" && req.url === "/app") {
+      } else if (req.method === "GET" && (req.url === "/app" || req.url === "/app?webmcp")) {
         res.setHeader("Content-Type", "text/html"); res.end(appHTML);
       } else if (req.method === "GET" && req.url === "/favicon.ico") {
         res.writeHead(204); res.end();
@@ -66,7 +66,18 @@ try {
   });
   local.listen(0, "127.0.0.1"); await once(local, "listening");
   browser = await playwright.chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
-  page = await browser.newPage();
+  // This test-only injected API exercises registration/execution, not host discovery.
+  const browserContext = await browser.newContext();
+  await browserContext.addInitScript(() => {
+    if (location.pathname !== "/app" || !location.search.includes("webmcp")) return;
+    const tools = new Map();
+    Object.defineProperty(document, "modelContext", { value: { registerTool(tool) {
+      if (tools.has(tool.name)) throw new Error("Duplicate WebMCP tool");
+      tools.set(tool.name, tool);
+    } } });
+    window.webmcpFixture = tools;
+  });
+  page = await browserContext.newPage();
   const errors = [];
   page.on("pageerror", error => errors.push(error.message));
   page.on("console", message => { if (message.type() === "error") console.error(message.text()); });
@@ -123,8 +134,110 @@ try {
   await page.goto(`http://127.0.0.1:${local.address().port}/?mobile`);
   await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
   assert.equal(await app.locator("#message").isDisabled(), false);
-  assert.equal(await app.locator("#draft").isDisabled(), true);
-  assert.equal(await app.locator("#new-draft").isDisabled(), true);
+  for (const id of ["draft", "new-draft", "new-message"]) assert.equal(await app.locator(`#${id}`).isDisabled(), false);
+  for (const id of ["message", "new-message", "draft", "new-draft"]) {
+    await app.locator(`#${id}`).click();
+    await app.locator("#status").filter({ hasText: "Ready" }).waitFor();
+  }
+  assert.deepEqual((await page.evaluate(() => window.fixture.events)).filter(e => e.method === "ui/message").map(e => e.params._meta["openai/message"]), [
+    { target: "active", send: true }, { target: "new", send: true }, { target: "active", send: false }, { target: "new", send: false },
+  ]);
+  // Groups, external single/group/all removal, and preserving unsent selections.
+  await page.goto(`http://127.0.0.1:${local.address().port}/`);
+  await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
+  for (const id of ["washer", "note", "workspace"]) await app.locator(`#select-${id}`).check();
+  await app.locator("#context").click();
+  await app.locator("#status").filter({ hasText: "Ready" }).waitFor();
+  const groups = (await page.evaluate(() => window.fixture.events)).find(e => e.method === "ui/update-model-context").params.content;
+  assert.deepEqual(groups.map(b => b._meta["openai/group"]?.title), ["Parts", "Parts", "Notes", undefined]);
+  await page.evaluate(() => window.fixture.context(["washer", "note", "workspace"]));
+  await app.locator("#select-bolt:not(:checked)").waitFor();
+  await page.evaluate(() => window.fixture.context(["note", "workspace"]));
+  await app.locator("#select-washer:not(:checked)").waitFor();
+  await app.locator("#context").click();
+  await app.locator("#status").filter({ hasText: "Ready" }).waitFor();
+  let contexts = (await page.evaluate(() => window.fixture.events)).filter(e => e.method === "ui/update-model-context");
+  assert.deepEqual(contexts.at(-1).params.content.map(b => b._meta["example/selectionId"]), ["note", "workspace"]);
+  await app.locator("#select-bolt").check();
+  await page.evaluate(() => window.fixture.context(["workspace"]));
+  await app.locator("#select-note:not(:checked)").waitFor();
+  assert.equal(await app.locator("#select-bolt").isChecked(), true, "Unsent local selection was lost");
+  await app.locator("#context").click();
+  await app.locator("#status").filter({ hasText: "Ready" }).waitFor();
+  await page.evaluate(() => window.fixture.context(null));
+  await app.locator("#select-bolt:not(:checked)").waitFor();
+  await app.locator("#select-workspace:not(:checked)").waitFor();
+  for (const query of ["restore", "cleared", "remove-during-update"]) {
+    await page.goto(`http://127.0.0.1:${local.address().port}/?${query}`);
+    await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
+    if (query === "restore") {
+      assert.equal(await app.locator("#select-washer").isChecked(), true);
+      assert.equal(await app.locator("#select-bolt").isChecked(), false);
+    } else if (query === "cleared") {
+      assert.equal(await app.locator("#selections input:checked").count(), 0);
+    } else {
+      await app.locator("#context").click();
+      await app.locator("#status").filter({ hasText: "Ready" }).waitFor();
+      await app.locator("#select-bolt:not(:checked)").waitFor();
+    }
+  }
+  const other = await browserContext.newPage();
+  await other.goto(`http://127.0.0.1:${local.address().port}/?restore`);
+  await other.frameLocator("#app").locator("#status").filter({ hasText: "Connected" }).waitFor();
+  await page.evaluate(() => window.fixture.context(null));
+  assert.equal(await other.frameLocator("#app").locator("#select-washer").isChecked(), true, "Other App instance was cleared");
+  await other.close();
+  await page.goto(`http://127.0.0.1:${local.address().port}/?webmcp`);
+  await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
+  await app.locator("#webmcp").filter({ hasText: "Registered" }).waitFor();
+  const appFrame = () => page.frames().find(frame => frame.url().includes("/app"));
+  const invoke = (name, input) => appFrame().evaluate(async ({ name, input }) => {
+    try { return { value: await window.webmcpFixture.get(name).execute(input) }; }
+    catch (error) { return { error: error.message }; }
+  }, { name, input });
+  assert.deepEqual(await appFrame().evaluate(() => [...window.webmcpFixture.keys()]), ["read_view", "search_parts", "select_part"]);
+  assert.equal(await appFrame().evaluate(() => window.webmcpFixture.get("read_view").annotations.readOnlyHint), true);
+  assert.equal(JSON.parse((await invoke("read_view", {})).value).selected[0], "bolt");
+  assert.ok((await invoke("read_view", { extra: true })).error);
+  const search = await invoke("search_parts", { query: "washer" });
+  assert.ok(search.value.includes("parts://washer"));
+  assert.equal(await app.locator("#query").inputValue(), "washer");
+  const selection = await invoke("select_part", { part: "washer", selected: true });
+  assert.deepEqual(JSON.parse(selection.value).selected, ["bolt", "washer"]);
+  assert.equal(await app.locator("#select-washer").isChecked(), true);
+  for (const input of [{ part: "unknown", selected: true }, { part: "bolt", selected: "yes" }, { part: "bolt", selected: true, tool: "settings.update" }]) {
+    assert.ok((await invoke("select_part", input)).error);
+  }
+  const concurrent = await appFrame().evaluate(async () => Promise.allSettled([
+    window.webmcpFixture.get("search_parts").execute({ query: "bolt" }),
+    window.webmcpFixture.get("select_part").execute({ part: "bolt", selected: false }),
+  ]).then(results => results.map(result => result.status === "rejected" ? result.reason.message : "ok")));
+  assert.deepEqual(concurrent, ["ok", "Another operation is in progress"]);
+  await page.evaluate(() => window.fixture.context([]));
+  await app.locator("#select-washer:not(:checked)").waitFor();
+  assert.deepEqual(JSON.parse((await invoke("read_view", {})).value).selected, []);
+  await app.locator("#select-bolt").check();
+  await app.locator("#context").click();
+  await app.locator("#status").filter({ hasText: "Ready" }).waitFor();
+  assert.deepEqual(JSON.parse((await invoke("read_view", {})).value).selected, ["bolt"]);
+  await page.goto(`http://127.0.0.1:${local.address().port}/?noextensions&webmcp`);
+  await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
+  assert.equal((await invoke("select_part", { part: "washer", selected: true })).error, "The host does not support model context");
+  assert.equal(await app.locator("#select-washer").isChecked(), false);
+  for (const query of ["mobile&webmcp", "web&webmcp", ""]) {
+    await page.goto(`http://127.0.0.1:${local.address().port}/?${query}`);
+    await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
+    assert.equal(await app.locator("#webmcp").textContent(), "Unavailable on this host");
+    if (query) assert.equal(await appFrame().evaluate(() => window.webmcpFixture.size), 0);
+  }
+  await page.goto(`http://127.0.0.1:${local.address().port}/?settingsfail&webmcp`);
+  await app.locator("#status").filter({ hasText: "Settings fixture unavailable" }).waitFor();
+  assert.equal(await app.locator("#save").isDisabled(), true);
+  assert.equal(await app.locator("#search").isDisabled(), false);
+  assert.ok((await invoke("search_parts", { query: "bolt" })).value.includes("parts://bolt"));
+  await page.goto(`http://127.0.0.1:${local.address().port}/?initialfile`);
+  await page.waitForFunction(() => window.fixture.events.some(e => e.method === "resources/read"));
+  assert.equal(await app.locator("#output img").count(), 0);
   for (const [query, label] of [["fullscreen", "Already fullscreen"], ["nofullscreen", "Fullscreen unavailable"]]) {
     await page.goto(`http://127.0.0.1:${local.address().port}/?${query}`);
     await app.locator("#status").filter({ hasText: "Connected" }).waitFor();
@@ -140,7 +253,8 @@ try {
   const standalone = await browser.newPage();
   await standalone.goto(`http://127.0.0.1:${local.address().port}/app`);
   await standalone.locator("#status").filter({ hasText: "Open this App through an MCP host" }).waitFor();
-  console.log("PASS: official App/AppBridge handshake, Go HTTP settings/search, initial result, display/deep-link updates, context/send/draft payloads, mobile gating, file text, absent capabilities, standalone notice");
+  assert.deepEqual(errors, []);
+  console.log("PASS: official AppBridge/Go HTTP, grouped context deletion/echo/remount/in-flight/isolation, mobile target/send matrix, WebMCP registration/validation/execution/live UI state/unsupported hosts, settings/files/display and standalone");
 } catch (error) {
   if (page) {
     for (const frame of page.frames()) console.error("Fixture frame:", await frame.locator("body").innerText().catch(() => "unavailable"));

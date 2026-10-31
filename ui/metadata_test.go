@@ -105,6 +105,20 @@ func TestMetadataPreservesLargeJSONNumbers(t *testing.T) {
 	}
 }
 
+func TestEmptyResourceMetadataIsAnExplicitDeclaration(t *testing.T) {
+	meta, err := (ui.ResourceMetadata{}).Metadata(mcp.Meta{"vendor": "kept"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	encoded, err := json.Marshal(meta)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(encoded) != `{"openai/ui":{},"vendor":"kept"}` {
+		t.Fatalf("empty declaration must not silently become legacy omission: %s", encoded)
+	}
+}
+
 func TestEntrypointWhitespaceNormalization(t *testing.T) {
 	m := ui.ToolMetadata{ResourceURI: "ui://app/home", Entrypoints: []ui.Entrypoint{
 		{Type: ui.File, Extensions: []string{" .txt "}},

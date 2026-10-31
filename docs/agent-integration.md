@@ -9,7 +9,7 @@ Read the target project's instructions, `go.mod`, MCP server constructor, transp
 Install the pinned module from the consuming project:
 
 ```sh
-go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.2
+go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.3
 ```
 
 This is a personal extension library, not an official OpenAI SDK. It uses `github.com/modelcontextprotocol/go-sdk v1.8.0`. Review a different existing SDK version before changing it; do not silently downgrade or upgrade the application's dependencies. No global Go configuration or `GOPRIVATE` setting is required for this public module.
@@ -119,7 +119,7 @@ For the new server extension scenarios, the reusable [subprocess acceptance runn
 go run ./examples/acceptance
 ```
 
-Expect six `PASS` lines and exit zero. Its 186 MCP calls cover the pinned Python fixtures, complete answers, typed models and actual settings read/update errors. It preserves raw answer JSON deliberately. It opens no port, reads no selected file and changes no installed Workspace settings. [Recorded evidence](validation-2026-10-02.md) is not a claim that the runner was repeated during this release.
+Expect six `PASS` lines and exit zero. Its 192 MCP calls cover the pinned Python fixtures, complete answers, typed models and actual settings read/update errors. It preserves raw answer JSON deliberately. It opens no port, reads no selected file and changes no installed Workspace settings. [Current evidence](validation-2026-10-31.md) records the development run; it is not repeated during closeout.
 
 For the consuming application, inspect initialization/discovery, call its actual tools and check valid/invalid inputs, omitted updates, returned state and storage errors. Test its real callbacks/storage and authorization rather than treating this repository's temporary runner as production acceptance. For UI features, record the real host's initialization and interaction separately from local browser fixtures and protocol calls. Use [the host checklist](live-e2e.md); true form picker/upload/preview acceptance remains pending.
 
@@ -127,4 +127,8 @@ Deliver the chosen capability/API, dependency version, changed integration point
 
 ## Copyable task prompt
 
-> Integrate the requested OpenAI MCP Extensions into this Go project using mcp-extensions-go v0.0.2. Read the target repository's instructions and this integration guide, then consult the capability matrix and only the needed API references. Reuse existing authentication, storage and official MCP transports. Preserve partial updates, apply merged-state rules before writes and authorize resource access independently. Use public modern form RequestInput when required; do not invent legacy sending, generic recovery or private example APIs. Implement the requested path, report actual validation evidence and distinguish backend results from real host acceptance.
+> Integrate the requested OpenAI MCP Extensions into this Go project using mcp-extensions-go v0.0.3. Read the target repository's instructions and this integration guide, then consult the capability matrix and only the needed API references. Reuse existing authentication, storage and official MCP transports. Preserve partial updates, apply merged-state rules before writes and authorize resource access independently. Use public modern form RequestInput when required; do not invent legacy sending, generic recovery or private example APIs. Implement the requested path, report actual validation evidence and distinguish backend results from real host acceptance.
+
+## Upstream 0.2.1 browser integration
+
+Use [the 0.2.1 migration guide](upstream-0.2.1.md) for grouped context, host deletion/remount synchronization and capability-gated mobile messages/drafts. WebMCP is a Desktop expanded-App feature: register browser tools through `document.modelContext`, validate input, and reuse the same business functions as UI actions. It requires no additional Go RPC. Exact integer/decimal text must use string fields, then caller parsing/validation. The read-only numeric MRTR example demonstrates this boundary. Source/local tests and [real-host limits](validation-2026-10-31.md) must be reported separately.

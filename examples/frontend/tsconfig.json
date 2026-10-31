@@ -7,5 +7,5 @@
     "lib": ["ES2022", "DOM"],
     "skipLibCheck": true
   },
-  "include": ["app.ts", "test-host.ts"]
+  "include": ["*.ts"]
 }

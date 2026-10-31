@@ -2,7 +2,14 @@
 
 [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Implementation-Roadmap) · **中文** · [Wiki 首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
-## v0.0.2／上游 0.2.0 当前状态
+## v0.0.3／上游 0.2.1 与 WebMCP
+
+新增 context 分组／删除同步、移动消息组合与 WebMCP 示例已实现并通过本地验证。53 个 Python 声明、90 个回答／上传案例、19 个 MRTR 场景、192 次 MCP 验收调用均有证据。遗留 direct outbound 仍受 SDK 限制，通用恢复与资源写入不因此进入范围。
+
+2026-10-31 UI 工具拒绝访问 Desktop；真实 WebMCP 发现／调用、宿主删除、移动草稿及 Web mentions 仍未验收。见[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)与[验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md)。旧证据按原日期解释。
+
+
+## v0.0.2／上游 0.2.0 历史状态
 
 当前已提供现代 Form.RequestInput、Mention capability、可省略的 Settings 按钮标题、移除 Settings App 入口的迁移错误和 desktop／web 草稿示例。下面 2026-10-01／02 记录属于历史，其中排除现代 MRTR 的范围已被本轮授权取代；通用恢复和旧式发送限制仍在。真实宿主表单／草稿仍未验收。当前证据见[开发验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-10.md)。
 

@@ -6,7 +6,7 @@ Source: [`docs/frontend-validation.md`](https://github.com/SisyphusSQ/mcp-extens
 
 ## Run with the Go server
 
-The example uses `@modelcontextprotocol/ext-apps 1.7.5` and `@openai/mcp-extensions 0.2.0` (unmodified official artifact, pinned in [vendor](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/examples/frontend/vendor/README.md)) directly. Node dependencies are local and locked. Browser/server credentials are never bundled into HTML. The default embedded HTTP page remains static; select the real built App explicitly:
+The example uses `@modelcontextprotocol/ext-apps 1.7.5` and `@openai/mcp-extensions 0.2.1` from npm (registry integrity/provenance in the lockfile and [migration record](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)) directly. Node dependencies are local and locked. Browser/server credentials are never bundled into HTML. The default embedded HTTP page remains static; select the real built App explicitly:
 
 ```sh
 cd /Users/suqing/coding/golang/00_self/mcp-extensions-go/examples/frontend
@@ -42,7 +42,7 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/absolute/path/to/chrome npm test
 
 Without `PLAYWRIGHT_MODULE_PATH`, the suite tries a caller-installed `playwright` package. It never installs Playwright or downloads browsers automatically. On sqmc04 the existing bundled Playwright 1.62.1 and `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` were used with an isolated headless profile.
 
-The suite covers actual `ui/initialize`, initialized notification, initial tool result, authenticated Go settings read/update, mention search, display/deep-link updates, context/message/current-draft/new-draft payloads and mobile draft gating, host resource text with inert HTML-like contents, missing host capabilities, and standalone mode. Context/message/resource responses are test-host fixtures, not OpenAI model behavior.
+The suite covers actual `ui/initialize`, initialized notification, initial tool result, authenticated Go settings read/update, mention search, display/deep-link updates, context/message/current-draft/new-draft payloads and mobile active/new send/draft combinations, host resource text with inert HTML-like contents, missing host capabilities, and standalone mode. Context/message/resource responses are test-host fixtures, not OpenAI model behavior.
 
 ## OpenAI host acceptance: partial, user-observed
 
@@ -58,10 +58,20 @@ Continue human acceptance of the installed plugin and record:
 4. File-extension input, host-owned resource read representations, large-file rejection, and unsupported capabilities. Writes/subscriptions need a separate example before claiming their acceptance.
 5. Model-context replacement/removal/updateId, explicit active/new conversation messages, and deep-link initialization plus subsequent navigation.
 6. Run the public form-mrtr example on a modern extension-capable host and accept/cancel/decline forms, resource arrays, chooser/uploads and preview UI; SDK interoperability does not prove rendering.
-7. Desktop/Work current/new draft editing without submission; mobile draft controls disabled.
+7. Desktop/Work/iOS/Android current/new draft editing without submission, plus active/new immediate sending. The example uses text, respecting iOS resource-link limitations.
 
 Do not mark any of these complete based on the local protocol fixture.
 
 ## Cross-SDK form interoperability
 
-After `make build`, run `npm run test:forms` from `examples/frontend`. The locked TypeScript client 2.2.0 drives the public Go stdio example, inspecting extended schema metadata and valid/invalid answers and rejecting missing capabilities/legacy protocol. TypeScript SDK 1.31.0 fixes GHSA-6qxp-vccf-f47h in the older browser-test client; the App SDK remains 1.7.5. No OAuth credentials or auth provider are used by these fixtures.
+After `make build`, run `npm run test:forms` from `examples/frontend`. The locked TypeScript client 2.4.0 drives the public Go stdio example, inspecting extended schema metadata and valid/invalid answers and rejecting missing capabilities/legacy protocol. TypeScript SDK 1.32.2 and client 2.4.0 also cover GHSA-6prh-2h8m-c8cw in the older browser-test client; the App SDK remains 1.7.5. No OAuth credentials or auth provider are used by these fixtures.
+
+## Current 0.2.1 / WebMCP acceptance
+
+The page exposes four selectable context entries: two in Parts, one in Notes, and one using the default Context group. It restores attached selections on initialization, reconciles removals through host state/updateId, preserves unsent local selections, and queues notifications arriving during an update. A host removal must not be re-added by a later unrelated update. These are per-App selections, separate from the intentionally shared example settings store.
+
+On Desktop with `document.modelContext`, three tools are registered once per document: `read_view`, `search_parts`, and `select_part`. Inputs use strict JSON Schemas and Zod validation; execute returns `Promise<string>` and failures reject. Search/selection reuse UI functions, connection/busy gates and ordinary authorized server calls. Read-only view reads current state. Unsupported platforms or missing APIs display an unavailable status without breaking the App.
+
+The browser suite injects a test-only WebMCP registry. It covers actual App functions and Go calls, but does not implement OpenAI discovery/permission behavior. In a real expanded Desktop App, discover and invoke all three tools, compare the visible query/selections and context, reject invalid calls, and verify two instances remain isolated. Repeat single/group/all context removal and remount checks; test mobile draft editing and Work browser hosted-app mentions on those platforms.
+
+On 2026-10-31 all local checks passed; native `com.openai.codex` access was refused by the UI tool and the current MCP Apps inventory was empty. Therefore no new real OpenAI host result is claimed. See [exact development evidence](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md). Building/releasing source does not reload the installed plugin.

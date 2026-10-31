@@ -2,17 +2,17 @@
 
 [中文说明](README_ZH.md)
 
-A public, personal Go library for the server-side features of [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions), built on the official [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk). This is not an official OpenAI Go SDK. The current module release is [v0.0.2](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.2), aligned with upstream Python/Node 0.2.0.
+A public, personal Go library for the server-side features of [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions), built on the official [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk). This is not an official OpenAI Go SDK. The current module release is [v0.0.3](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.3), aligned with upstream Python/Node 0.2.1 at the source and local protocol/browser layers. Real OpenAI host acceptance remains separate.
 
 The official SDK owns JSON-RPC, schemas, tools, resources, discovery, sessions, transports and standard MRTR. This module adds server extension types and helpers. Browser/host behavior uses the official TypeScript App SDKs.
 
 ## Install and integrate
 
 ```sh
-go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.2
+go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.3
 ```
 
-**For coding agents:** start with the [Agent integration guide](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration), or its [versioned source](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.2/docs/agent-integration.md). It covers capability selection, adapting an existing server, business callbacks, public-only recipes and validation boundaries. A complete [stdio quickstart](examples/agent-quickstart/main.go) and the [new-extension acceptance runner](examples/acceptance/main.go) are included.
+**For coding agents:** start with the [Agent integration guide](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration), or its [versioned source](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.3/docs/agent-integration.md). It covers capability selection, adapting an existing server, business callbacks, public-only recipes and validation boundaries. A complete [stdio quickstart](examples/agent-quickstart/main.go) and the [new-extension acceptance runner](examples/acceptance/main.go) are included.
 
 ## Implemented
 
@@ -27,7 +27,7 @@ go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.2
 
 Settings storage, resource authorization, cross-field validation and transactions are caller-owned. Visibility and metadata never grant permission. HTTP defaults to a one-credential memory store; an absolute operator-owned `MCP_SETTINGS_FILE` enables persistent state. The local plugin uses the durable example store by default, with OS locking and atomic file replacement. This is not multi-user storage.
 
-OpenAI extended form declarations, validation and Go model binding are implemented. Legacy `openai/elicitation/create` sending remains blocked by the pinned official SDK's public outbound API. Alignment covers MCP Extensions only: standard sessions/transports/MRTR mechanics, encrypted continuation recovery and tasks remain official SDK/application responsibilities. `Form.RequestInput` adapts the OpenAI 0.2.0 schema and validated retry answers without owning continuation state. See [forms and settings usage](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms) and [the capability matrix](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility). Local protocol tests do not establish real host rendering/interaction acceptance.
+OpenAI extended form declarations, validation and Go model binding are implemented. Legacy `openai/elicitation/create` sending remains blocked by the pinned official SDK's public outbound API. Alignment covers MCP Extensions only: standard sessions/transports/MRTR mechanics, encrypted continuation recovery and tasks remain official SDK/application responsibilities. `Form.RequestInput` adapts the OpenAI 0.2.1 schema and validated retry answers without owning continuation state. See [forms and settings usage](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms) and [the capability matrix](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Compatibility). Local protocol tests do not establish real host rendering/interaction acceptance.
 
 ## Run the Go example
 
@@ -82,11 +82,11 @@ For UI declarations, use `ui.ToolMetadata.Metadata` and `ui.AddHTMLResource` wit
 
 Settings formats and exclusive numeric bounds are enforced before save. `FieldValidators` validate supplied patch fields; `FieldNames` map wire aliases to business names. `settings.NewModelServer[T]` derives fields and aliases from Go models; `forms.NewModelWithOptions[T]` accepts public schema inference options for form models. Storage and complete-state business validation remain caller-owned. See [usage and limits](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Forms).
 
-The repository became public at the owner's explicit request on 2026-10-01. Public source access does not require private-repository authentication or `GOPRIVATE`; pin the `v0.0.2` module. This project changes no global Go settings. The local plugin's `0.0.0-dev` installation metadata is separate from the Go module release; this release does not distribute or reload that plugin.
+The repository became public at the owner's explicit request on 2026-10-01. Public source access does not require private-repository authentication or `GOPRIVATE`; pin the `v0.0.3` module. This project changes no global Go settings. The local plugin's `0.0.0-dev` installation metadata is separate from the Go module release; this release does not distribute or reload that plugin.
 
 The [GitHub Wiki](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home) provides separate English and Chinese guides for architecture, the complete capability matrix, frontend validation, SDK forms/MRTR investigation, local plugin acceptance and future implementation work. Its source remains under `docs/wiki`; Handoff remains in the source repository.
 
-The [0.2.0 migration guide](docs/upstream-0.2.0.md) covers Mention capability construction, removed Settings App entrypoints, optional legacy button titles, modern forms and editable drafts. The frontend uses an unmodified, checksum-pinned official 0.2.0 build archive because that version was unavailable from npm at implementation time.
+The [0.2.1 migration guide](docs/upstream-0.2.1.md) covers grouped context and deletion synchronization, mobile drafts, Desktop WebMCP tools, numeric answer boundaries and the registry package migration. The frontend pins the official npm 0.2.1 package and patched SDK/Zod dependencies; it no longer needs the 0.2.0 workflow archive.
 
 ## Development
 
@@ -97,7 +97,7 @@ make test vet build
 GOTOOLCHAIN=go1.25.0 make test vet build
 ```
 
-`make test` runs race tests with official memory/HTTP/child-process stdio transports, settings/search/file behavior, modern form MRTR and SDK boundary reproductions. `make build` writes ignored example executables under `bin/`. The 2026-10-10 changes passed `make test vet build` with Go 1.25.0 and Go 1.27.0, frontend typecheck/build/browser integration, nine cross-SDK form scenarios and npm audit (zero reported vulnerabilities). See [recorded evidence and boundaries](docs/validation-2026-10-10.md). These checks do not establish remote deployment or real host forms/draft acceptance; tests are not repeated during commit/release closeout.
+`make test` runs race tests with official memory/HTTP/child-process stdio transports, settings/search/file behavior, modern form MRTR and SDK boundary reproductions. `make build` writes ignored example executables under `bin/`. The 2026-10-31 development checks passed on Go 1.25.0 and Go 1.27.0, frontend typecheck/build/browser integration, 19 cross-SDK form scenarios and 192 subprocess acceptance calls. npm audit reported zero vulnerabilities. See [recorded evidence and host limits](docs/validation-2026-10-31.md). These checks do not establish real OpenAI host rendering or WebMCP discovery; tests are not repeated during commit/release closeout.
 
 - [Documentation (GitHub Wiki)](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 - [Architecture](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Architecture)

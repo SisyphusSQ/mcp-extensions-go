@@ -6,9 +6,18 @@ This is a public personal Go server SDK, not an official OpenAI SDK. It extends 
 
 Historical merge/plugin record: 2026-10-01; current extension documentation: 2026-10-10. Server extensions were merged through [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1). The local plugin and live acceptance setup were merged through [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2), commit `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`. Bilingual Wiki source was merged through [PR #3](https://github.com/SisyphusSQ/mcp-extensions-go/pull/3). The owner then explicitly authorized making the source repository public. No tag/release or public plugin-directory distribution was created at that historical stage. The first Go module release is [v0.0.1](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.1); the local plugin remains separate. A merge does not imply completion of host acceptance.
 
+## Current v0.0.3 / upstream 0.2.1 and WebMCP
+
+Source/local-test alignment is 0.2.1 (`36f8b38`); the separately pinned WebMCP example is `9e6d418`. The App implements named/default context groups, external item/group/all removal with updateId/remount/in-flight synchronization, mobile active/new send/draft combinations, and optional Desktop `read_view`, `search_parts`, `select_part` tools via `document.modelContext`.
+
+The registry extension is unchanged. SDK 1.32.2/client 2.4.0 and a Zod 4.6.7 override address current dependency advisories; App SDK remains 1.7.5. Python 0.2.1 fixtures cover 53 declarations and 90 values/upload cases. Local Go 1.25/1.27 race/vet/build, frontend type/build/browser, 19 MRTR scenarios, 192 acceptance calls and npm audit passed. Exact numeric text uses strings; empty resource metadata remains an explicit all-mode declaration.
+
+Native Desktop UI access was refused on 2026-10-31. Actual WebMCP discovery/calls, host context deletion, mobile drafts and Work browser hosted mentions remain unaccepted. The installed plugin/cache is unchanged. See [migration](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md) and [current evidence](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md); older observations below retain their historical scope.
+
+
 ## Agent integration
 
-Install `github.com/SisyphusSQ/mcp-extensions-go@v0.0.2` and start with the [coding-agent guide](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration). It includes a public-only quickstart and the reusable extension acceptance runner.
+Install `github.com/SisyphusSQ/mcp-extensions-go@v0.0.3` and start with the [coding-agent guide](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration). It includes a public-only quickstart and the reusable extension acceptance runner.
 
 ## Implemented
 

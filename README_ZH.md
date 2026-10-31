@@ -2,17 +2,17 @@
 
 [English](README.md)
 
-基于官方 [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk) 的个人 Go 扩展库，用于实现 [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions) 的服务端职责。仓库已公开，不是 OpenAI 官方 Go SDK，当前模块版本为 [v0.0.2](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.2)，对齐上游 Python/Node 0.2.0。
+基于官方 [MCP Go SDK v1.8.0](https://github.com/modelcontextprotocol/go-sdk) 的个人 Go 扩展库，用于实现 [OpenAI MCP Extensions](https://github.com/openai/mcp-extensions) 的服务端职责。仓库已公开，不是 OpenAI 官方 Go SDK，当前模块版本为 [v0.0.3](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.3)，源码与本地协议／浏览器层对齐上游 Python/Node 0.2.1；真实 OpenAI 宿主验收单独记录。
 
 JSON-RPC、schema、工具、资源、发现、会话、传输和标准 MRTR 由官方 SDK 负责。本库增加服务端扩展类型与辅助；浏览器和宿主行为复用官方 TypeScript App SDK。
 
 ## 安装与接入
 
 ```sh
-go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.2
+go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.3
 ```
 
-**编码 Agent 从这里开始：** [Agent 接入指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)，英文[版本化源码](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.2/docs/agent-integration.md)。包含能力选择、已有服务接入、回调责任、公共 API 模板和验证边界；仓库提供完整的 [stdio 接入示例](examples/agent-quickstart/main.go)及[新增能力验收程序](examples/acceptance/main.go)。模块 v0.0.2 与本地插件 0.0.0-dev 安装元数据分开，本次发版不分发或重载插件。
+**编码 Agent 从这里开始：** [Agent 接入指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)，英文[版本化源码](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.3/docs/agent-integration.md)。包含能力选择、已有服务接入、回调责任、公共 API 模板和验证边界；仓库提供完整的 [stdio 接入示例](examples/agent-quickstart/main.go)及[新增能力验收程序](examples/acceptance/main.go)。模块 v0.0.3 与本地插件 0.0.0-dev 安装元数据分开，本次发版不分发或重载插件。
 
 ## 已实现
 
@@ -27,7 +27,7 @@ go get github.com/SisyphusSQ/mcp-extensions-go@v0.0.2
 
 设置存储、资源授权、跨字段规则和事务由调用者负责。可见性与元数据不授予权限。HTTP 默认使用单个凭据对应的内存记录，可通过绝对路径 `MCP_SETTINGS_FILE` 启用持久化；本地插件默认使用带操作系统锁和原子文件替换的持久设置。该示例不提供多用户存储隔离。
 
-扩展表单声明、校验和 Go 模型绑定已实现；旧版 `openai/elicitation/create` 的直接发送仍受官方 Go SDK 公开接口限制。对齐范围仅为 MCP Extensions，标准会话/传输/MRTR 机制、加密续轮恢复和 tasks 仍由官方 SDK／业务负责；`Form.RequestInput` 适配 0.2.0 schema 与重试回答，不拥有续轮状态。真实宿主的表单渲染/选择/上传仍未验收。详见[使用与边界](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)和[能力表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility)。
+扩展表单声明、校验和 Go 模型绑定已实现；旧版 `openai/elicitation/create` 的直接发送仍受官方 Go SDK 公开接口限制。对齐范围仅为 MCP Extensions，标准会话/传输/MRTR 机制、加密续轮恢复和 tasks 仍由官方 SDK／业务负责；`Form.RequestInput` 适配 0.2.1 schema 与重试回答，不拥有续轮状态。真实宿主的表单渲染/选择/上传仍未验收。详见[使用与边界](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Forms)和[能力表](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Compatibility)。
 
 ## 运行 Go 示例
 
@@ -91,13 +91,13 @@ Mentions 使用 `mentions.AddTool(server, &mcp.Tool{Name: "search_mentions"}, se
 
 UI 使用 `ui.ToolMetadata.Metadata`、`ui.AddHTMLResource` 和官方工具/资源。元数据快照保留 JSON 数字精度且不持有调用方的可变别名。`resources.Path(req.Params.Meta)` 只解析文件上下文；业务读取文件前，必须独立认证和授权，不能直接打开任意宿主路径或不透明资源 URI。
 
-仓库已按所有者在 2026-10-01 的明确要求公开。读取公开源码不需要私有仓库认证或 `GOPRIVATE`；请固定v0.0.2 模块。本地插件尚未上架公开插件目录，本项目不更改全局 Go 设置。
+仓库已按所有者在 2026-10-01 的明确要求公开。读取公开源码不需要私有仓库认证或 `GOPRIVATE`；请固定v0.0.3 模块。本地插件尚未上架公开插件目录，本项目不更改全局 Go 设置。
 
 Settings 已补齐格式与 exclusive 数值边界校验、保存前 `FieldValidators`、`FieldNames` 别名映射和类型模型推导。原始 patch 保留未提供字段；跨字段校验和持久化事务仍由业务回调负责。
 
 [GitHub Wiki](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home) 将中文、英文分别组织，包含完整架构、能力对应表、前端验证、表单/MRTR 调查、本地插件验收及后续开发清单。源文档保留在 `docs/wiki`；Handoff 仅保留在源码仓库。
 
-参阅 [0.2.0 迁移指南](docs/upstream-0.2.0.md)：构造 server 前先用 `mentions.WithCapability` 配置 Mention 能力；Settings App 入口已移除，按钮名称来自被引用工具。前端采用原始官方 0.2.0 构建包及校验记录，因为实施时 npm 尚无该版本。
+参阅 [0.2.1 迁移指南](docs/upstream-0.2.1.md)。Mention 能力、移除 Settings App 入口和按钮名称规则保留；前端已迁移到官方 npm 0.2.1，旧 workflow 归档不再使用。
 
 ## 开发
 
@@ -108,7 +108,7 @@ make test vet build
 GOTOOLCHAIN=go1.25.0 make test vet build
 ```
 
-`make test` 包括 race、官方内存/HTTP/子进程 stdio、Settings/Mentions/文件、现代表单 MRTR 及 SDK 边界复现。`make build` 在被 Git 忽略的 `bin/` 生成示例程序。2026-10-10 适配已通过 Go 1.25.0／1.27.0 的 `make test vet build`、前端类型检查／构建／浏览器集成、9 个跨 SDK 表单场景，以及 npm audit（报告 0 个漏洞）。详见[验证记录与边界](docs/validation-2026-10-10.md)。这些结果不等于远程部署或真实宿主的表单／草稿验收；提交／发版收尾不重复测试。
+`make test` 包括 race、官方内存/HTTP/子进程 stdio、Settings/Mentions/文件、现代表单 MRTR 及 SDK 边界复现。`make build` 在被 Git 忽略的 `bin/` 生成示例程序。2026-10-31 适配已通过 Go 1.25.0／1.27.0 的 `make test vet build`、前端类型检查／构建／浏览器集成、19 个跨 SDK 表单场景，以及 npm audit（报告 0 个漏洞）。详见[验证记录与边界](docs/validation-2026-10-31.md)。这些结果不等于远程部署或真实宿主的表单／草稿验收；提交／发版收尾不重复测试。
 
 - [文档入口（GitHub Wiki）](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 - [架构](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Architecture)
@@ -122,3 +122,9 @@ GOTOOLCHAIN=go1.25.0 make test vet build
 - [验收证据与 SDK 限制](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits)
 - [交接记录（源码仓库）](docs/handoff.md)
 - [Wiki 源文档和发布步骤](docs/wiki/README.md)
+
+## v0.0.3 适配与证据
+
+新增 context 分组、宿主删除／重新挂载同步、移动端 active/new 与发送／草稿组合，以及 Desktop `document.modelContext` WebMCP 工具。前端改用官方 npm 0.2.1，固定修复后的 SDK／Zod 依赖并移除旧归档。详见[迁移指南](docs/upstream-0.2.1.md)。
+
+2026-10-31 开发验证通过 Go 1.25.0／1.27.0 race、vet、构建，前端类型／构建／浏览器集成，19 个跨 SDK 表单场景和 192 次子进程 MCP 调用；npm audit 为 0 项漏洞。Desktop UI 工具拒绝访问，WebMCP 真宿主发现／调用、移动端草稿及 Work browser mentions 仍未验收；不据此宣称全平台通过。见[验证记录](docs/validation-2026-10-31.md)。

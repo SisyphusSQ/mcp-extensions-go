@@ -1,6 +1,6 @@
 // A local protocol fixture using the official AppBridge, not an OpenAI host.
 import { AppBridge, PostMessageTransport, McpUiMessageRequestSchema } from "@modelcontextprotocol/ext-apps/app-bridge";
-import { OpenAIMessageParamsSchema } from "@openai/mcp-extensions/app";
+import { OpenAIMessageParamsSchema, type OpenAIModelContextHostState } from "@openai/mcp-extensions/app";
 
 const iframe = document.getElementById("app") as HTMLIFrameElement;
 const events: Array<{ method: string; params?: unknown }> = [];
@@ -18,10 +18,13 @@ let sequence = 0;
 const disabled = new URLSearchParams(window.location.search).has("noextensions");
 const parameters = new URLSearchParams(window.location.search);
 const initialMode = parameters.has("fullscreen") ? "fullscreen" : "inline";
+let context: OpenAIModelContextHostState | undefined = parameters.has("restore") ? {
+  updateId: "restored-1", content: [{ type: "text", text: "Washer", _meta: { "example/selectionId": "washer" } }],
+} : parameters.has("cleared") ? null : undefined;
 const bridge = new FixtureBridge(null, { name: "Local protocol fixture", version: "0" }, {
   serverTools: {}, serverResources: {}, message: {}, updateModelContext: { text: {} },
   experimental: disabled ? {} : { "openai/modelContext": {}, "openai/message": {}, "openai/resource": {} },
-}, { hostContext: { platform: parameters.has("mobile") ? "mobile" : "desktop", displayMode: initialMode, availableDisplayModes: parameters.has("nofullscreen") ? ["inline"] : ["inline", "fullscreen"], "openai/deepLink": { url: "/parts?tag=bolt" } } });
+}, { hostContext: { platform: parameters.has("mobile") ? "mobile" : parameters.has("web") ? "web" : "desktop", displayMode: initialMode, availableDisplayModes: parameters.has("nofullscreen") ? ["inline"] : ["inline", "fullscreen"], "openai/deepLink": { url: "/parts?tag=bolt" }, ...(context !== undefined ? { "openai/modelContext": context } : {}) } });
 
 async function proxy(method: "tools/call" | "resources/read", params: unknown) {
   const response = await fetch("/rpc", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ method, params }) });
@@ -29,7 +32,13 @@ async function proxy(method: "tools/call" | "resources/read", params: unknown) {
   return response.json();
 }
 
-bridge.oncalltool = async params => { events.push({ method: "tools/call", params }); return proxy("tools/call", params); };
+bridge.oncalltool = async params => {
+  events.push({ method: "tools/call", params });
+  if (parameters.has("settingsfail") && params.name === "settings.read") {
+    return { isError: true, content: [{ type: "text", text: "Settings fixture unavailable" }] };
+  }
+  return proxy("tools/call", params);
+};
 bridge.onreadresource = async params => {
   events.push({ method: "resources/read", params });
   if (params.uri === "host-resource://fixture") {
@@ -40,7 +49,14 @@ bridge.onreadresource = async params => {
 bridge.enableOpenAIMessages();
 bridge.onupdatemodelcontext = async params => {
   events.push({ method: "ui/update-model-context", params });
-  return { _meta: { "openai/modelContext": { updateId: `update-${++sequence}` } } };
+  const updateId = `update-${++sequence}`;
+  context = { ...params, updateId };
+  bridge.setHostContext({ "openai/modelContext": context });
+  if (parameters.has("remove-during-update")) {
+    context = null;
+    bridge.setHostContext({ "openai/modelContext": null });
+  }
+  return { _meta: { "openai/modelContext": { updateId } } };
 };
 bridge.onrequestdisplaymode = async params => {
   events.push({ method: "ui/request-display-mode", params });
@@ -50,15 +66,19 @@ bridge.onrequestdisplaymode = async params => {
 };
 bridge.oninitialized = async () => {
   events.push({ method: "ui/notifications/initialized" });
-  await bridge.sendToolInput({ arguments: {} });
+  await bridge.sendToolInput({ arguments: parameters.has("initialfile") ? { file: { name: "fixture.txt", resourceUri: "host-resource://fixture" } } : {} });
   const result = await proxy("tools/call", { name: "open_workspace", arguments: {} });
   await bridge.sendToolResult(result);
 };
 Object.assign(window, { fixture: {
   events,
+  context: (ids: string[] | null) => {
+    context = ids === null ? null : { updateId: `host-${++sequence}`, content: (context?.content ?? []).filter(block => ids.includes(String(block._meta?.["example/selectionId"]))) };
+    bridge.setHostContext({ "openai/modelContext": context });
+  },
   deepLink: (url: string) => bridge.setHostContext({ "openai/deepLink": { url } }),
   file: () => bridge.sendToolInput({ arguments: { file: { name: "fixture.txt", resourceUri: "host-resource://fixture" } } }),
 } });
 // Connect before loading the document so ui/initialize cannot race the listener.
 await bridge.connect(new PostMessageTransport(iframe.contentWindow!, iframe.contentWindow!));
-iframe.src = "/app";
+iframe.src = `/app${parameters.has("webmcp") ? "?webmcp" : ""}`;

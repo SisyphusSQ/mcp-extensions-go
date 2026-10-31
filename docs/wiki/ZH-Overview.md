@@ -6,9 +6,16 @@
 
 历史发布记录：2026-10-01；当前工作状态更新于 2026-10-10。服务端扩展已通过 [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) 合并。本地插件与实际验收支持已通过 [PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) 合并，提交为 `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`。中英文 Wiki 源文档已通过 [PR #3](https://github.com/SisyphusSQ/mcp-extensions-go/pull/3) 合并；随后所有者明确授权将源码仓库公开。在该历史阶段未发布 tag/release，插件也未上架公开目录。首个 Go 模块版本为 [v0.0.1](https://github.com/SisyphusSQ/mcp-extensions-go/releases/tag/v0.0.1)，本地插件与模块发版分开。合并不等于所有宿主验收已经完成。
 
+## v0.0.3／上游 0.2.1 与 WebMCP
+
+源码／本地协议和浏览器层已对齐 0.2.1，并单独跟随 WebMCP 示例 9e6d418。新增 context 分组／删除同步、移动草稿与 Desktop 可选工具；Go SDK 和 Go 下限不变。两套 Go 工具链、浏览器、19 个 MRTR 场景及 192 次验收调用通过，npm audit 为零项漏洞。
+
+2026-10-31 UI 工具拒绝访问 Desktop；真实 WebMCP 发现／调用、宿主删除、移动草稿及 Web mentions 仍未验收。见[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)与[验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md)。旧证据按原日期解释。
+
+
 ## Agent 接入
 
-安装 `github.com/SisyphusSQ/mcp-extensions-go@v0.0.2`，从[编码 Agent 指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)开始。提供只依赖公共 API 的接入示例及可复用扩展验收程序。
+安装 `github.com/SisyphusSQ/mcp-extensions-go@v0.0.3`，从[编码 Agent 指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)开始。提供只依赖公共 API 的接入示例及可复用扩展验收程序。
 
 ## 已实现
 

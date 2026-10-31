@@ -1,5 +1,13 @@
 # Server extensions handoff
 
+## Upstream 0.2.1 / WebMCP and module v0.0.3 (2026-10-31)
+
+Issue [#9](https://github.com/SisyphusSQ/mcp-extensions-go/issues/9), branch `suqing/mcp-extensions-v0.0.3`. The owner authorized implementation, acceptance and release. Registry dependency migration, patched SDK/Zod graph, grouped context/removal/remount synchronization, mobile target/send support, optional Desktop WebMCP tools and numeric/reference fixture coverage are implemented. Go SDK/floor are unchanged.
+
+Current source/local alignment: Python/Node 0.2.1 at `36f8b38`; WebMCP example separately follows `9e6d418`. [Migration](upstream-0.2.1.md) and [development evidence](validation-2026-10-31.md) supersede earlier current-version statements. Both Go toolchains, frontend type/build/browser, 19 MRTR scenarios, 192 subprocess calls and npm audit passed during development. Native Desktop UI access was refused; no new real host discovery/call/mobile/Web acceptance is claimed. Plugin cache and monitoring configuration remain unchanged.
+
+Release closeout is the existing PR/main, annotated tag, source archive/checksum, GitHub Release and independent bilingual Wiki publication flow. Record actual remote results separately. No tests are repeated once closeout begins.
+
 ## Upstream 0.2.0 and module v0.0.2 (2026-10-10)
 
 The owner authorized implementation, a branch/PR into main and the v0.0.2 release.

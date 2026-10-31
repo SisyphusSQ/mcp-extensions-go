@@ -4,6 +4,13 @@
 
 对应源文档：[`docs/live-e2e.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/live-e2e.md)。
 
+## v0.0.3／上游 0.2.1 与 WebMCP
+
+当前分支源码和本地验收已更新；已安装插件缓存未重载。真实宿主检查应先独立构建／刷新插件，再验收 expanded App 的 WebMCP 发现／调用、context 单项／整组删除、重新挂载及两实例隔离。iOS／Android 草稿编辑和 Work browser connected hosted-app mentions 也必须按实际平台分别记录。
+
+2026-10-31 UI 工具拒绝访问 Desktop；真实 WebMCP 发现／调用、宿主删除、移动草稿及 Web mentions 仍未验收。见[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)与[验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md)。旧证据按原日期解释。
+
+
 ## 位置与安装
 
 [PR #1](https://github.com/SisyphusSQ/mcp-extensions-go/pull/1) 在仓库仍为私有时合并到 main，提交 `3f45cf66eab5f6fd172763e604d794e12cef5cf1`。[PR #2](https://github.com/SisyphusSQ/mcp-extensions-go/pull/2) 将 `suqing/live-e2e` 合并为 `4ce5a1f73d1755a72d5b669b7a17c16bfd8721b6`。2026-10-01，所有者明确要求公开源码；插件仍是本地安装，没有上架公开插件目录。合并不代表完成人工验收。
