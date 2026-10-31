@@ -84,7 +84,7 @@ blocked by the pinned SDK public API.
 ## Frontend and editable drafts
 
 The example uses the unmodified official Node 0.2.0 build from its tagged release
-workflow, committed as a 33 KiB archive with [provenance and SHA-256](../examples/frontend/vendor/README.md).
+workflow, committed as a 33 KiB archive with [provenance and SHA-256](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.2/examples/frontend/vendor/README.md).
 The public npm registry returned 404 for 0.2.0 at implementation time. Local
 `npm ci --ignore-scripts` uses that file and the lockfile; no global install or
 SDK fork is required.

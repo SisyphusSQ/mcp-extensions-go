@@ -2,7 +2,16 @@
 
 **English** · [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Validation-and-SDK-Limits) · [Overview](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Overview) · [Wiki home](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
-## Current v0.0.2 / upstream 0.2.0 status
+## Current v0.0.3 / upstream 0.2.1 and WebMCP
+
+Source/local-test alignment is 0.2.1 (`36f8b38`); the separately pinned WebMCP example is `9e6d418`. The App implements named/default context groups, external item/group/all removal with updateId/remount/in-flight synchronization, mobile active/new send/draft combinations, and optional Desktop `read_view`, `search_parts`, `select_part` tools via `document.modelContext`.
+
+The registry extension is unchanged. SDK 1.32.2/client 2.4.0 and a Zod 4.6.7 override address current dependency advisories; App SDK remains 1.7.5. Python 0.2.1 fixtures cover 53 declarations and 90 values/upload cases. Local Go 1.25/1.27 race/vet/build, frontend type/build/browser, 19 MRTR scenarios, 192 acceptance calls and npm audit passed. Exact numeric text uses strings; empty resource metadata remains an explicit all-mode declaration.
+
+Native Desktop UI access was refused on 2026-10-31. Actual WebMCP discovery/calls, host context deletion, mobile drafts and Work browser hosted mentions remain unaccepted. The installed plugin/cache is unchanged. See [migration](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md) and [current evidence](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md); older observations below retain their historical scope.
+
+
+## Historical v0.0.2 / upstream 0.2.0 status
 
 Modern Form.RequestInput, Mention capability discovery, optional legacy Settings button titles, rejection of removed Settings App entrypoints and desktop/web drafts are implemented. The 2026-10-01/02 records below are historical; their exclusion of modern MRTR is superseded by this authorized work. Generic recovery and legacy custom sending remain outside support. Real host forms/drafts are unverified. See [current development evidence](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-10.md).
 

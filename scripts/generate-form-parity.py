@@ -17,8 +17,8 @@ from openai_mcp_form_protocol import (
     validate_file_selections,
 )
 
-COMMIT = "900032d8bd7c1566202d0cb1666986584f932043"
-SOURCE_SHA256 = "e807a74ff4fa9470cc33ad883381ace0798cc507ef43688796f5560575c25646"
+COMMIT = "36f8b38df179144b44d157133bbc5f7c6e353ace"
+SOURCE_SHA256 = "01e79d6a3bf1aaa14d7b6cd368dabb6fb53c71f56f330ee0875608f3d72a7c66"
 source = Path(inspect.getfile(openai_mcp_form_protocol)).read_bytes()
 if hashlib.sha256(source).hexdigest() != SOURCE_SHA256:
     raise ValueError("PYTHONPATH must use the pinned OpenAI form protocol source")
@@ -86,12 +86,14 @@ add("nullable bound", {"type": "string", "minLength": None}, ["text"])
 add("wrong constraint type", {"type": "boolean", "minLength": None})
 add("image grammar", {"type": "string", "oneOf": [{"const": "a", "title": "A", "x-openai-thumbnail": {"src": "data:image/png;base64,Y"}}]}, ["a"])
 add("HTTP image forbidden", {"type": "string", "oneOf": [{"const": "a", "title": "A", "x-openai-thumbnail": {"src": "http://example.com/a"}}]})
+add("deprecated preview alias", {"type": "string", "oneOf": [{"const": "a", "title": "A", "x-openai-preview": {"src": "https://example.com/a.png"}}]}, ["a", "b"])
 add("date", {"type": "string", "format": "date"}, ["2024-02-29", "0000-01-01", "2025-02-29", "2026-1-01"])
 add("date-time", {"type": "string", "format": "date-time"}, ["2026-10-02t01:02:03.1z", "0000-01-01T00:00:00Z", "2026-10-02T01:02:03+23:59", "2026-10-02T01:02:03+24:00"])
 add("email", {"type": "string", "format": "email"}, ["a@example.com", "a@localhost", "a@127.0.0.1", "A <a@example.com>", "a@-example.com", "a@example.com\n", "first.last+tag@example.com", '"a"@example.com', "用户@例子.公司"])
 add("URI", {"type": "string", "format": "uri"}, ["urn:x:part", "file:///a", "https://[::1]/a", "relative", "urn:x:%xy", "https://example.com\n"])
 resource = {"type": "resource", "options": [{"uri": "parts://a", "name": "", "extra": {"nullable": None}, "_meta": {"null": None}}]}
 add("resource descriptors", {"type": "string", "format": "uri", "x-openai-input": resource}, ["parts://a", "host://file"])
+add("deprecated file alias", {"type": "string", "format": "uri", "x-openai-input": {**resource, "type": "file"}}, ["parts://a", "host://file"])
 user = {**resource, "userOptions": {"accept": [".txt", "image/*"]}}
 add("host selections and uploads", {"type": "array", "items": {"type": "string", "format": "uri"}, "minItems": 1, "maxItems": 2, "uniqueItems": True, "x-openai-input": user}, [["parts://a"], ["host://file"], ["relative"], ["parts://a", "parts://a"]], [({}, ["host://file"]), ({"value": ["parts://a"]}, ["host://file"]), ({}, ["host://file", "host://file"]), ({"value": ["parts://a"]}, ["host://file", "host://second"])])
 add("defaults exclude host selections", {"type": "string", "format": "uri", "default": "host://file", "x-openai-input": user})

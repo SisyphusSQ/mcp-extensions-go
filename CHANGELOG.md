@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### v0.0.3(20261031)
+
+- feature
+  - Align with upstream 0.2.1 and add Desktop WebMCP workspace tools using the official example's document.modelContext API.
+  - Add grouped model context with host removal/remount synchronization and capability-gated mobile active/new messages and drafts.
+  - Refresh Python 0.2.1 fixtures and add ordinary-number/exact-string MRTR interoperability examples.
+- bugFix
+  - Pin patched TypeScript SDK clients and Zod; update affected transitive dependencies without changing the official extension package.
+- note
+  - Preserve the zero-value resource metadata declaration; document its distinction from omitted openai/ui metadata.
+  - Go SDK v1.8.0, Go 1.25.0 floor, legacy outbound limitations and caller-owned authorization/state remain unchanged. Real OpenAI host acceptance is separate from local browser/protocol validation.
+
 ### v0.0.2(20261010)
 
 - feature

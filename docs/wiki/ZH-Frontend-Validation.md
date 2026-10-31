@@ -4,9 +4,16 @@
 
 对应源文档：[`docs/frontend-validation.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/frontend-validation.md)。
 
+## v0.0.3／上游 0.2.1 与 WebMCP
+
+前端已改用官方 npm 0.2.1；SDK 1.32.2、client 2.4.0、Zod 4.6.7 override 与受影响间接依赖修复已知公告，App SDK 仍为 1.7.5。页面展示 Parts／Notes／默认 Context 组，按宿主状态同步单项／整组／全部删除、重新挂载和进行中通知。消息 capability 启用移动端 active/new 发送／草稿；示例仅发文本以保留 iOS resource_link 限制。浏览器注入的 WebMCP 注册表只验证真实 App 函数，不能证明 OpenAI 发现／权限。
+
+2026-10-31 UI 工具拒绝访问 Desktop；真实 WebMCP 发现／调用、宿主删除、移动草稿及 Web mentions 仍未验收。见[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)与[验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md)。旧证据按原日期解释。
+
+
 ## 配合 Go 服务端运行
 
-示例直接使用 `@modelcontextprotocol/ext-apps 1.7.5` 和 `@openai/mcp-extensions 0.2.0`（原始官方产物，来源和校验见 examples/frontend/vendor/README.md），Node 依赖在本地且版本锁定。浏览器/服务端凭据从不打包进 HTML。HTTP 默认内嵌页仍为静态页，使用真实 App 需要明确选择构建产物：
+示例直接使用 `@modelcontextprotocol/ext-apps 1.7.5` 和 `@openai/mcp-extensions 0.2.1`（官方 npm 包，完整性固定在 lockfile；SDK 1.32.2、client 2.4.0、Zod 4.6.7），Node 依赖在本地且版本锁定。浏览器/服务端凭据从不打包进 HTML。HTTP 默认内嵌页仍为静态页，使用真实 App 需要明确选择构建产物：
 
 ```sh
 cd /Users/suqing/coding/golang/00_self/mcp-extensions-go/examples/frontend
@@ -64,10 +71,10 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/absolute/path/to/chrome npm test
 4. 文件扩展输入、宿主资源读取表示、大文件拒绝和不支持的能力。写入/订阅须先补独立示例，不能宣称已验收。
 5. 模型上下文替换/移除/updateId、明确 active/new 聊天消息，以及 deep link 初始与后续导航。
 6. 在声明两种 form capability 的现代宿主中运行公开 form-mrtr 示例，验收接受／取消／拒绝、资源数组、选择／上传／预览；SDK 互操作不能证明渲染。
-7. desktop／Work 当前或新聊天草稿可编辑且不自动提交，mobile 草稿控件禁用。
+7. desktop／Work 当前或新聊天草稿可编辑且不自动提交，mobile 草稿按 capability 启用。
 
 不能基于本机协议测试把这些场景标记为已完成。
 
-## v0.0.2 表单与草稿验证
+## v0.0.3 表单与草稿验证
 
-make build 后在 examples/frontend 运行 npm run test:forms，使用固定的官方 TypeScript client 2.2.0 调用 Go 的公共 stdio 示例。浏览器套件检查 active／new 和 send:false，移动端禁用草稿按钮。SDK 1.31.0 修复原浏览器客户端 OAuth 公告；fixture 不使用 OAuth 凭据。真实选择／上传／预览与宿主草稿编辑仍需分别验收。
+make build 后在 examples/frontend 运行 npm run test:forms，使用固定的官方 TypeScript client 2.4.0 调用 Go 的公共 stdio 示例。浏览器套件检查 active／new 和 send:false，移动端启用受 capability 控制的草稿按钮。SDK 1.32.2 修复原浏览器客户端 OAuth 公告；fixture 不使用 OAuth 凭据。真实选择／上传／预览与宿主草稿编辑仍需分别验收。

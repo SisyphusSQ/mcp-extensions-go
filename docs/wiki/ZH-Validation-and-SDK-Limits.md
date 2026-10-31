@@ -2,7 +2,14 @@
 
 [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Validation-and-SDK-Limits) · **中文** · [项目概览](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Overview) · [Wiki 首页](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/Home)
 
-## v0.0.2／上游 0.2.0 当前状态
+## v0.0.3／上游 0.2.1 与 WebMCP
+
+2026-10-31 通过 Go 1.25.0／1.27.0 race、vet、构建，前端类型／构建／浏览器、19 个跨 SDK 表单场景与 192 次验收调用；npm audit 为零项漏洞。WebMCP 本地注册／调用、非法输入／并发失败、当前 UI 状态及不支持平台已覆盖。新验收记录取代旧记录的当前状态，但不抹去历史证据。
+
+2026-10-31 UI 工具拒绝访问 Desktop；真实 WebMCP 发现／调用、宿主删除、移动草稿及 Web mentions 仍未验收。见[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)与[验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md)。旧证据按原日期解释。
+
+
+## v0.0.2／上游 0.2.0 历史状态
 
 当前已提供现代 Form.RequestInput、Mention capability、可省略的 Settings 按钮标题、移除 Settings App 入口的迁移错误和 desktop／web 草稿示例。下面 2026-10-01／02 记录属于历史，其中排除现代 MRTR 的范围已被本轮授权取代；通用恢复和旧式发送限制仍在。真实宿主表单／草稿仍未验收。当前证据见[开发验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-10.md)。
 

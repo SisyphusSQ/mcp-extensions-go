@@ -28,7 +28,24 @@ func run(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	server := mcp.NewServer(&mcp.Implementation{Name: "extended-form-example", Version: "0.0.2"}, nil)
+	numeric, err := forms.New(forms.Schema{Type: "object", Properties: map[string]forms.Field{
+		"count": {Type: "integer"}, "measurement": {Type: "number"},
+		"exact": {Type: "string", Pattern: `^-?[0-9]+(\.[0-9]+)?$`},
+	}, Required: []string{"count", "measurement", "exact"}})
+	if err != nil {
+		return err
+	}
+	server := mcp.NewServer(&mcp.Implementation{Name: "extended-form-example", Version: "0.0.3"}, nil)
+	mcp.AddTool(server, &mcp.Tool{Name: "numeric", Title: "Validate numeric answers", Annotations: &mcp.ToolAnnotations{ReadOnlyHint: true}}, func(ctx context.Context, req *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, any, error) {
+		pending, answer, err := numeric.RequestInput(ctx, req, forms.RequestOptions{Key: "numbers", Message: "Enter ordinary numbers and exact numeric text"})
+		if err != nil || pending != nil {
+			return pending, nil, err
+		}
+		if answer.Action != "accept" {
+			return nil, map[string]string{"action": answer.Action}, nil
+		}
+		return nil, answer.Content, nil
+	})
 	mcp.AddTool(server, &mcp.Tool{Name: "choose", Title: "Choose demo resources", Annotations: &mcp.ToolAnnotations{ReadOnlyHint: true}}, func(ctx context.Context, req *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, any, error) {
 		// In a business tool, authorize every call and validate any caller-owned
 		// continuation before requesting input or accepting a retry's answer.

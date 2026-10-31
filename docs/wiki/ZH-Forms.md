@@ -4,7 +4,14 @@
 
 对应源文档：[`docs/forms.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/forms.md)。实现状态以[源能力表](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md)为准。
 
-对齐基准是 OpenAI MCP Extensions Python 0.2.0，提交 [`900032d8bd7c1566202d0cb1666986584f932043`](https://github.com/openai/mcp-extensions/tree/900032d8bd7c1566202d0cb1666986584f932043)，不包括底层 MCP Python SDK。
+对齐基准是 OpenAI MCP Extensions Python 0.2.1，提交 [`36f8b38df179144b44d157133bbc5f7c6e353ace`](https://github.com/openai/mcp-extensions/tree/36f8b38df179144b44d157133bbc5f7c6e353ace)，不包括底层 MCP Python SDK。
+
+## v0.0.3／上游 0.2.1 与 WebMCP
+
+Python 0.2.1 对照已重新生成，共 53 个声明、90 个回答／上传案例。file 和 preview 表单别名继续接受且弃用；资源描述符 openai/preview 不受影响。精确大整数／小数必须请求 string，再由业务解析。独立校验拒绝 integer 的原始 1.0／1e0，JavaScript 会在发送前归一化为 1；官方 SDK 链路无法恢复原始表示或已丢失精度。19 个 MRTR 场景通过，生产数值校验无需放宽。
+
+2026-10-31 UI 工具拒绝访问 Desktop；真实 WebMCP 发现／调用、宿主删除、移动草稿及 Web mentions 仍未验收。见[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)与[验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md)。旧证据按原日期解释。
+
 
 ## 声明与原始回答
 
@@ -50,10 +57,10 @@ Meta 保留无关元数据；SelectionPolicy 沿用既有资源选择策略。Re
 
 ## 发送边界与证据
 
-Python 0.2.0 通过 request_form_input 支持现代 MRTR。Go Form.RequestInput 复用官方标准 elicitation/create／InputRequestMap，承载扩展 schema 并校验重试回答；旧版 elicit_input_legacy 自定义发送仍受公开 API 限制。
+Python 0.2.1 通过 request_form_input 支持现代 MRTR。Go Form.RequestInput 复用官方标准 elicitation/create／InputRequestMap，承载扩展 schema 并校验重试回答；旧版 elicit_input_legacy 自定义发送仍受公开 API 限制。
 
 0.2.0 现代适配已实现；通用请求状态加密／恢复和业务 review 工作流仍不提供。标准会话、传输、MRTR、tasks 与持久化机制不作为 Extensions 对齐目标。本地读取器收回 internal/example，已有设置文件存储仍是业务示例。
 
-[Python 对照数据](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/forms/testdata/python-parity.json)包含 51 个 schema 与 86 个回答／上传案例；[生成脚本](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/scripts/generate-form-parity.py)记录固定源码与依赖版本。Go 测试直接读取数据，无需 Python 或网络。它证明已覆盖案例的语义一致，不证明完整 Pydantic 等价或真实 OpenAI 表单／选择／上传 UX 已验收。
+[Python 对照数据](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/forms/testdata/python-parity.json)包含 53 个 schema 与 90 个回答／上传案例；[生成脚本](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/scripts/generate-form-parity.py)记录固定源码与依赖版本。Go 测试直接读取数据，无需 Python 或网络。它证明已覆盖案例的语义一致，不证明完整 Pydantic 等价或真实 OpenAI 表单／选择／上传 UX 已验收。
 
 业务接入从 [Agent 指南](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration)开始。[2026-10-02 子进程记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.1/docs/validation-2026-10-02.md)补充后端证据，不代表宿主表单验收。

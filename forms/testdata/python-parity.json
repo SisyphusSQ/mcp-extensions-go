@@ -1,6 +1,6 @@
 {
-  "upstream_commit": "900032d8bd7c1566202d0cb1666986584f932043",
-  "upstream_source_sha256": "e807a74ff4fa9470cc33ad883381ace0798cc507ef43688796f5560575c25646",
+  "upstream_commit": "36f8b38df179144b44d157133bbc5f7c6e353ace",
+  "upstream_source_sha256": "01e79d6a3bf1aaa14d7b6cd368dabb6fb53c71f56f330ee0875608f3d72a7c66",
   "dependencies": {
     "pydantic": "2.12.5",
     "email-validator": "2.3.0",
@@ -861,6 +861,41 @@
       "uploads": []
     },
     {
+      "name": "deprecated preview alias",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "a",
+                "title": "A",
+                "x-openai-preview": {
+                  "src": "https://example.com/a.png"
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "a",
+          "valid": true
+        },
+        {
+          "value": "b",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
       "name": "date",
       "schema": {
         "type": "object",
@@ -1038,6 +1073,48 @@
             "format": "uri",
             "x-openai-input": {
               "type": "resource",
+              "options": [
+                {
+                  "uri": "parts://a",
+                  "name": "",
+                  "extra": {
+                    "nullable": null
+                  },
+                  "_meta": {
+                    "null": null
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "valid": true,
+      "values": [
+        {
+          "value": "parts://a",
+          "valid": true
+        },
+        {
+          "value": "host://file",
+          "valid": false
+        }
+      ],
+      "uploads": []
+    },
+    {
+      "name": "deprecated file alias",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uri",
+            "x-openai-input": {
+              "type": "file",
               "options": [
                 {
                   "uri": "parts://a",

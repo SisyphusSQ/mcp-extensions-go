@@ -65,3 +65,9 @@ Full OpenAI extended forms/MRTR remain incomplete for the documented SDK boundar
 Security self-review: HTTP auth was preserved; local stdio uses parent process access; host URIs never become filesystem reads; persistent paths are operator-owned with bounded reads, OS locks and private atomic state files; browser output uses text DOM APIs. These findings do not establish multi-user authorization or complete host acceptance.
 
 Commit/push/merge closeout reuses this development evidence without repeating tests or checks. Human acceptance continues against the merged code. That earlier acceptance closeout published no release or tag; the v0.0.1 source release remains separate from plugin distribution. Future implementable gaps are recorded in the [bilingual GitHub Wiki source](wiki/README.md).
+
+## Upstream 0.2.1 and v0.0.3
+
+The frontend uses the official registry package 0.2.1, grouped context with host removal/remount synchronization, and capability-gated mobile active/new messages and drafts. Desktop WebMCP tools use `document.modelContext`, strict input validation and shared UI functions; they are scoped to the current App document. Public Go protocol helpers and SDK pins remain unchanged. Empty resource metadata remains an explicit declaration rather than legacy omission. See [migration](upstream-0.2.1.md) and [current validation](validation-2026-10-31.md).
+
+The current browser suite covers grouping/removal/echo/remount/in-flight notifications/isolation and injected WebMCP registration/execution. Native Desktop UI access was refused on 2026-10-31; genuine WebMCP discovery/calls, mobile draft UX and hosted Web mentions remain unaccepted. Older desktop screenshots and 0.2.0 validation are historical evidence. The installed plugin/cache was not reloaded by the source release.

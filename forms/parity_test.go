@@ -40,7 +40,7 @@ func TestPythonProtocolParity(t *testing.T) {
 	if err := decoder.Decode(&fixture); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.Commit != "900032d8bd7c1566202d0cb1666986584f932043" || fixture.SourceSHA256 != "e807a74ff4fa9470cc33ad883381ace0798cc507ef43688796f5560575c25646" || len(fixture.Cases) == 0 {
+	if fixture.Commit != "36f8b38df179144b44d157133bbc5f7c6e353ace" || fixture.SourceSHA256 != "01e79d6a3bf1aaa14d7b6cd368dabb6fb53c71f56f330ee0875608f3d72a7c66" || len(fixture.Cases) == 0 {
 		t.Fatal("missing reference provenance")
 	}
 	for _, row := range fixture.Cases {

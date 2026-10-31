@@ -82,6 +82,9 @@ type ToolMetadata struct {
 }
 
 // ResourceMetadata describes OpenAI display hints on HTML resource contents.
+// Its zero value emits openai/ui: {}, meaning all host display modes are allowed.
+// This differs from omitting openai/ui entirely, which preserves legacy inline
+// behavior. Declare explicit modes for predictable initial host presentation.
 type ResourceMetadata struct {
 	AvailableDisplayModes []DisplayMode `json:"availableDisplayModes,omitempty"`
 	PreferredDisplayMode  DisplayMode   `json:"preferredDisplayMode,omitempty"`

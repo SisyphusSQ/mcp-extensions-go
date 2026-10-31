@@ -49,7 +49,7 @@ provider or OAuth credentials. Go dependencies were unchanged; no fresh
 
 The npm registry returned 404 for the official extension's 0.2.0 version.
 The original official tagged workflow package is checked in unmodified with
-its license, SHA-256 and [provenance](../examples/frontend/vendor/README.md).
+its license, SHA-256 and [provenance](https://github.com/SisyphusSQ/mcp-extensions-go/blob/v0.0.2/examples/frontend/vendor/README.md).
 
 This evidence does not establish native host form rendering, chooser/uploads,
 preview, draft editing, storage isolation or production deployment. Legacy custom

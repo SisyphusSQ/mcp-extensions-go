@@ -4,9 +4,16 @@
 
 对应源文档：[`docs/compatibility.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/compatibility.md)。实现状态以该源文档为准。
 
+## v0.0.3／上游 0.2.1 与 WebMCP
+
+具名／默认 context 分组及删除／回声／重新挂载／实例隔离已有本地浏览器证据；移动 active/new × send true/false 已覆盖。Desktop WebMCP 通过 document.modelContext 注册 read_view、search_parts、select_part，严格校验、返回字符串并读取当前实例状态。空资源元数据仍是显式声明，区别于完全省略。
+
+2026-10-31 UI 工具拒绝访问 Desktop；真实 WebMCP 发现／调用、宿主删除、移动草稿及 Web mentions 仍未验收。见[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)与[验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md)。旧证据按原日期解释。
+
+
 ## 已核对的上游基准
 
-当前目标为上游 Python／Node 0.2.0，2026-10-10 核对：Python 标签为 `ebeff485e6d1bf52b6ebf3b4137555e53851d078`，Node 标签为 `d3a79b765e3ad95eaa03f23b0d3d2f91987b8603`。依据 [0.2.0 协议](https://github.com/openai/mcp-extensions/blob/python-v0.2.0/docs/spec.md)、源码及与旧 `900032d8bd7c1566202d0cb1666986584f932043` 基准的差异。参阅[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.0.md)。
+当前源码／本地测试目标为上游 Python／Node 0.2.1，固定提交 `36f8b38df179144b44d157133bbc5f7c6e353ace`；WebMCP 示例单独跟随 `9e6d418439cca0790bece62f6cd886ad4c04f133`。2026-10-31 开发验证已通过；真实宿主验收仍单独记录，不宣称全平台兼容。见[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)与[验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md)。
 
 官方 MCP Go SDK 仍为 v1.8.0，Go 下限 1.25.0，`golang.org/x/sys v0.44.0` 保持固定以修复 GO-2026-5024。本项目是个人服务端扩展库，不是 OpenAI 官方 SDK。
 
@@ -34,14 +41,15 @@
 | MCP Apps CSP 与权限 | 声明资源安全元数据 | sandbox 与策略执行 | 元数据透传；App 有脚本 hash CSP | 业务域名/权限由调用者声明 | 静态资源测试、前端 CSP 浏览器测试 |
 | App `ui/initialize`、工具输入/结果 | 提供可信打包 HTML 和工具 | 标准 App bridge、生命周期、宿主上下文 | 前端使用官方 App，由本地插件打包 | HTTP 默认静态页没有握手；生命周期/隔离待验收 | 本机浏览器握手；截图确认 Connected 和首结果 |
 | deep link | 提供 App 入口，不在 Go 保存浏览器状态 | 解析 hostContext、后续变化、平台 URI 导航 | 官方 TS `OpenAIExtensions.deepLink` 示例 | 实际 codex/chatgpt URI 导航未验收 | 浏览器宿主上下文测试；宿主清单 |
+| Desktop WebMCP | 提供普通授权业务工具 | expanded App 发现／调用 | 可选 document.modelContext 注册三个 Workspace 工具 | 注入 API 的本地证据；真实宿主待验收 | 浏览器输入／调用／错误／状态测试 |
 | 模型上下文与 updateId | 提供业务工具/资源内容 | 按 App 替换上下文、幂等、移除、通知 | 官方 TS modelContext 示例 | 移除/幂等/实例隔离待宿主验收 | 本机 bridge；截图上下文数量 1，模型回答 bolt |
 | 内容 title/thumbnail 与 background audience | 使用官方内容元数据/annotations | composer 附件标签/缩略图、assistant-only 后台上下文 | 标准 MCP 内容透传；App 的带 title 上下文 | 没有独立 Go model-context capability；iOS thumbnail 有限制 | 本机 payload 测试；宿主未验收 |
-| `ui/message`、active/new 目标与 send | 返回适合明确 UI 动作的数据 | 宿主发送消息；移动端目标限制 | 官方 TS 0.2.0 message API，Send／当前草稿／新草稿按钮 | 草稿仅 desktop／web；真实宿主编辑仍未验收 | 本机 payload 测试；截图确认桌面聊天面板提问与模型回复 |
+| `ui/message`、active/new 目标与 send | 返回适合明确 UI 动作的数据 | 宿主发送消息；移动端目标限制 | 官方 TS 0.2.1 message API，Send／当前草稿／新草稿按钮 | 草稿按消息 capability 启用，包含 mobile；真实宿主编辑仍未验收 | 本机 payload 测试；截图确认桌面聊天面板提问与模型回复 |
 | 本地打开文件 | 业务允许时提供已授权绝对路径 | `openai/files/open` 与原生查看器 | 前端依赖提供官方 TS API | 没有 Go 到宿主自定义 RPC，示例不暴露路径 | 仅宿主清单，未验收 |
 | 交互光标（SDK 源码） | 无 | 宿主上下文与 CSS variable | 官方 TS OpenAIExtensions 构造器 | 宿主交互模式未验收 | 本机 App 初始化 |
 | 插件 onboarding | 不属于服务端 SDK | manifest `com.openai.onboardingSkill` 与打包 skill | 本地 stdio 插件已安装；没有 onboarding skill | 不添加不必要 onboarding API/skill | 官方 CLI 安装/发现与全局入口截图；未声明 onboarding 流程 |
 | 标准 elicitation 与 MRTR | 返回内置 inputRequests/requestState，校验业务续轮 | 完成标准输入并重试 | 官方 SDK、本机调查测试 | 状态所有权、去重、过期、隔离由业务负责 | `internal/sdkcheck` 标准多轮测试 |
-| OpenAI 扩展表单 | schema、回答／资源校验、类型模型 | 选择、建议值、预览、上传 UI | forms 声明／解析／模型；JSON enum／注解、丰富选择、资源额外字段 | 旧版直接发送受 SDK 阻碍；现代 RequestInput 已支持；正则／邮箱／数值边界；宿主未验收 | Python 51 schema＋86 回答／上传对照，Go 模型／race 测试 |
+| OpenAI 扩展表单 | schema、回答／资源校验、类型模型 | 选择、建议值、预览、上传 UI | forms 声明／解析／模型；JSON enum／注解、丰富选择、资源额外字段 | 旧版直接发送受 SDK 阻碍；现代 RequestInput 已支持；正则／邮箱／数值边界；宿主未验收 | Python 0.2.1 的 53 schema＋90 回答／上传对照，Go 模型／race 测试 |
 | 旧版 `openai/elicitation/create` | 发出自定义服务端请求 | 渲染并返回 accept/cancel/decline | 官方类型化 Go SDK 无公开发送 API | 自定义接收注册不能增加自定义发送 | 发送中间件复现 |
 | 扩展 MRTR 表单 inputRequests | Form.RequestInput 与重试回答校验 | 声明两种 form capability、渲染 metadata schema 并重试 | 公共适配器复用官方标准 elicitation/create | 状态／身份／事务由业务负责；真实宿主未验收 | Go 两轮／并发与 TypeScript stdio 互操作 |
 
@@ -57,7 +65,7 @@ Settings 工厂返回 server 前拒绝无效基础类型声明、错误布局引
 
 本地插件已启用，独立官方 app-server 发现 5 个工具、3 个资源和两处设置 capability。用户截图确认全局入口、Connected、首结果及上下文辅助的消息/模型回答，这些观察没有完成剩余宿主矩阵。2026-10-01 源码仓库公开，不代表上架公开插件目录或新增 capability。参阅[插件验收](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Live-E2E)和[前端验证](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Frontend-Validation)。
 
-当前对齐 Python／Node Extensions 0.2.0，底层 SDK 实现不做对齐。Settings 已增加 format、exclusive 边界、FieldValidators、FieldNames、类型推导。普通回调默认 wire 名称，类型化更新默认 Go 导出业务字段名；返回值仍使用 JSON 别名。只在保存前校验提供的 patch 字段，转换后再次校验。Python before／wrap 装饰器不自动复现；跨字段规则属于业务事务。
+当前源码／本地测试对齐 Python／Node Extensions 0.2.1，底层 SDK 实现不做对齐。Settings 已增加 format、exclusive 边界、FieldValidators、FieldNames、类型推导。普通回调默认 wire 名称，类型化更新默认 Go 导出业务字段名；返回值仍使用 JSON 别名。只在保存前校验提供的 patch 字段，转换后再次校验。Python before／wrap 装饰器不自动复现；跨字段规则属于业务事务。
 
 通用请求状态加密／恢复仍排除；0.2.0 现代 MRTR 适配现已通过公开 SDK 类型实现；本地读取器收回 internal/example。已有设置文件存储仍是业务示例。标准 MCP 会话、传输、tasks、EventStore、依赖框架不做对齐。
 

@@ -4,6 +4,13 @@
 
 对应源文档：[`docs/architecture.md`](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/architecture.md)。
 
+## v0.0.3／上游 0.2.1 与 WebMCP
+
+Go SDK 继续负责协议与传输。新增能力位于前端：按钮与 WebMCP 共享固定业务函数和并发门控，工具只在 Desktop 可选 API 存在且 App 连接后注册；不新增 Go RPC、任意工具代理或文件写入。选择状态归 App 实例，示例设置存储仍有意共享。
+
+2026-10-31 UI 工具拒绝访问 Desktop；真实 WebMCP 发现／调用、宿主删除、移动草稿及 Web mentions 仍未验收。见[迁移指南](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md)与[验证记录](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md)。旧证据按原日期解释。
+
+
 ## 目标与职责分层
 
 为 OpenAI MCP Extensions 提供经过校验的 Go 服务端辅助，协议、schema、传输与会话继续由官方 MCP Go SDK v1.8.0 负责。Go 下限为 1.25.0。不访问 SDK 内部，不使用 unsafe/反射技巧，不 fork SDK，也不建立第二套 JSON-RPC 实现。

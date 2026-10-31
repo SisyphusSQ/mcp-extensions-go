@@ -1,6 +1,6 @@
 # OpenAI extension forms and Python alignment
 
-This package follows OpenAI MCP Extensions Python 0.2.0 at [`python-v0.2.0`](https://github.com/openai/mcp-extensions/tree/python-v0.2.0). The reference is the extension package, not the underlying MCP Python SDK. The implementation authority is [compatibility.md](compatibility.md).
+This package follows OpenAI MCP Extensions Python 0.2.1 at [`python-v0.2.1`](https://github.com/openai/mcp-extensions/tree/python-v0.2.1). The reference is the extension package, not the underlying MCP Python SDK. The implementation authority is [compatibility.md](compatibility.md).
 
 ## Declarations and unchanged answers
 
@@ -66,8 +66,14 @@ The request must use MCP 2026-07-28 or later and advertise both `elicitation.for
 
 ## Sending boundary and parity evidence
 
-Python's extension `elicit_input` sends legacy `openai/elicitation/create`; its documentation explicitly says it does not implement MRTR. Go SDK v1.8.0 has no public custom outbound request API for this method. Legacy custom sending remains unsupported. Modern `Form.RequestInput` implements the 0.2.0 extension adapter on official MRTR; no encrypted continuation helper or business workflow engine is supplied. Standard sessions, transports, MRTR, tasks and persistence machinery stay with the official SDK or application.
+Python's extension `elicit_input` sends legacy `openai/elicitation/create`; its documentation explicitly says it does not implement MRTR. Go SDK v1.8.0 has no public custom outbound request API for this method. Legacy custom sending remains unsupported. Modern `Form.RequestInput` implements the 0.2.1 extension adapter on official MRTR; no encrypted continuation helper or business workflow engine is supplied. Standard sessions, transports, MRTR, tasks and persistence machinery stay with the official SDK or application.
 
-[Python-generated fixtures](../forms/testdata/python-parity.json) cover 51 declarations and 86 value/upload cases. The [generator](../scripts/generate-form-parity.py) records the pinned source commit and dependency versions. Set `PYTHONPATH` to that upstream Python source and run the generator in an isolated environment with the recorded dependencies; Go tests consume checked-in fixtures without Python/network access. These cases verify selected extension semantics, not complete Pydantic compatibility or real OpenAI UI acceptance. Legacy direct sending remains SDK-blocked; real host chooser/upload/preview acceptance remains unverified.
+[Python-generated fixtures](../forms/testdata/python-parity.json) cover 53 declarations and 90 value/upload cases. The [generator](../scripts/generate-form-parity.py) records the pinned source commit and dependency versions. Set `PYTHONPATH` to that upstream Python source and run the generator in an isolated environment with the recorded dependencies; Go tests consume checked-in fixtures without Python/network access. These cases verify selected extension semantics, not complete Pydantic compatibility or real OpenAI UI acceptance. Legacy direct sending remains SDK-blocked; real host chooser/upload/preview acceptance remains unverified.
 
 For a consumer workflow and standalone public-only example, start with the [agent integration guide](agent-integration.md). The [2026-10-02 subprocess record](validation-2026-10-02.md) provides additional backend evidence without claiming host form acceptance.
+
+## Numeric wire evidence (0.2.1)
+
+Hosts submit integer/number answers as JSON numbers. Exact large integers and decimal text must use a string declaration, optionally with a pattern, followed by caller-owned parsing and business validation. The read-only `numeric` tool in `examples/form-mrtr` demonstrates ordinary numbers and exact strings.
+
+Standalone validation rejects integer literals written as `1.0`/`1e0` and preserves 64-bit integer literals. A JavaScript client serializes integral `1.0`/`1e0` as `1`; those answers pass the real TypeScript/Go MRTR chain. No validator can recover the original spelling or precision already lost at a prior SDK boundary. Do not coerce number strings or silently round exact identifiers. [Current evidence](validation-2026-10-31.md) includes 19 interop scenarios and regenerated Python 0.2.1 fixtures (53 schemas, 90 value/upload cases).

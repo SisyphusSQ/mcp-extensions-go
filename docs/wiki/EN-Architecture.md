@@ -77,3 +77,9 @@ The source repository became public at the owner's explicit request on 2026-10-0
 ## Upstream 0.2.0 migration
 
 Settings tool-item Title is optional and deprecated; hosts use the referenced tool display name. Settings App entrypoints now fail validation; deprecated Go symbols remain for source migration. The frontend supports explicit editable drafts only on desktop/web with message capability. The pinned official 0.2.0 artifact and updated TypeScript dependencies are local example inputs, not Go module dependencies. See [migration](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.0.md).
+
+## Upstream 0.2.1 and v0.0.3
+
+The frontend uses the official registry package 0.2.1, grouped context with host removal/remount synchronization, and capability-gated mobile active/new messages and drafts. Desktop WebMCP tools use `document.modelContext`, strict input validation and shared UI functions; they are scoped to the current App document. Public Go protocol helpers and SDK pins remain unchanged. Empty resource metadata remains an explicit declaration rather than legacy omission. See [migration](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/upstream-0.2.1.md) and [current validation](https://github.com/SisyphusSQ/mcp-extensions-go/blob/main/docs/validation-2026-10-31.md).
+
+The current browser suite covers grouping/removal/echo/remount/in-flight notifications/isolation and injected WebMCP registration/execution. Native Desktop UI access was refused on 2026-10-31; genuine WebMCP discovery/calls, mobile draft UX and hosted Web mentions remain unaccepted. Older desktop screenshots and 0.2.0 validation are historical evidence. The installed plugin/cache was not reloaded by the source release.

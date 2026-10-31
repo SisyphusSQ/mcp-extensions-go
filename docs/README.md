@@ -2,8 +2,10 @@
 
 | Document | Contents | Wiki |
 | --- | --- | --- |
+| [upstream-0.2.1.md](upstream-0.2.1.md) | v0.0.3 / 0.2.1 migration, grouped context, mobile drafts, WebMCP and numeric boundaries | Linked from both Wiki languages |
+| [validation-2026-10-31.md](validation-2026-10-31.md) | Current two-toolchain, browser, MRTR and dependency evidence; separate real-host limits | Source evidence |
 | [upstream-0.2.0.md](upstream-0.2.0.md) | v0.0.2 migration, public MRTR, Mention discovery, Settings changes and draft examples | Linked from both Wiki languages |
-| [validation-2026-10-10.md](validation-2026-10-10.md) | Current Go, cross-SDK, browser and dependency evidence with host limits | Source evidence, linked from both Wiki languages |
+| [validation-2026-10-10.md](validation-2026-10-10.md) | Historical 0.2.0 Go, cross-SDK, browser and dependency evidence with host limits | Source evidence, linked from both Wiki languages |
 | [agent-integration.md](agent-integration.md) | Coding-agent workflow, capability selection, public-only quickstart and consumer validation | [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Agent-Integration) / [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Agent-Integration) |
 | [validation-2026-10-02.md](validation-2026-10-02.md) | Prior 186-call subprocess acceptance and the separate host/SDK boundaries | Source evidence, linked from both Wiki languages |
 | [architecture.md](architecture.md) | Responsibility layers, implementation order, storage/security ownership and public APIs | [English](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/EN-Architecture) / [中文](https://github.com/SisyphusSQ/mcp-extensions-go/wiki/ZH-Architecture) |
